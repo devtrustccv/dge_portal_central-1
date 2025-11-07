@@ -1,0 +1,1 @@
+rsync -av --progress --exclude='.git' --exclude='node_modules' --exclude='.next' ../dge_portal_central/. .
