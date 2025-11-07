@@ -1,0 +1,1 @@
+export const cookieDomains = /*"dge-portal-central.vercel.app"*/ "localhost" 
