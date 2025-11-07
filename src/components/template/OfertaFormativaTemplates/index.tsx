@@ -1,17 +1,18 @@
 'use client'
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { SidebarFilter } from "@/components/molecules/FiltersBeta";
 import { SaibaMais } from "@/components/atoms/saiba-mais";
 import { IPageListaServicoData } from "@/services/page-list-oferta/type";
-import {setCookie} from "nookies";
+import { setCookie } from "nookies";
 import {
     Tabs,
     TabsList,
     TabsTrigger,
     TabsContent
 } from "@/components/atoms/tabs";
-import {CandidaturasAbertas} from "@/components/template/OfertaFormativaTemplates/components/CandidaturasAbertas";
-import {FormacoesEmExecucao} from "@/components/template/OfertaFormativaTemplates/components/FormacoesEmExecucao";
+import { CandidaturasAbertas } from "@/components/template/OfertaFormativaTemplates/components/CandidaturasAbertas";
+import { FormacoesEmExecucao } from "@/components/template/OfertaFormativaTemplates/components/FormacoesEmExecucao";
 
 export interface IPageOfertaFormativaData extends IPageListaServicoData {
     searchParams: { [key: string]: string | string[] | undefined };
@@ -22,6 +23,13 @@ export function ListaOfertaFormativaTemplates({
   saiba_mais,
   searchParams,
 }: IPageOfertaFormativaData) {
+    const router = useRouter();
+    const params = useSearchParams();
+
+    const [activeTab, setActiveTab] = useState<string>(
+        (params.get("tab") as string) || "ativas"
+    );
+
     const [loading, setLoading] = useState(true);
     const [oferta, setOferta] = useState<{
         hits: any[];
@@ -52,27 +60,17 @@ export function ListaOfertaFormativaTemplates({
         window.location.href = loginUrl;
     };
 
-    // Funçao para selecionar os cards
     const handleSelectCard = (documentId: string) => {
         if (selectedItems.includes(documentId)) {
             const updatedItems = selectedItems.filter(item => item !== documentId);
             setSelectedItems(updatedItems);
-
-            // Esconde o alerta se a quantidade de itens selecionados for menor que 3
-            if (showAlert && updatedItems.length < 3) {
-                setShowAlert(false);
-            }
+            if (showAlert && updatedItems.length < 3) setShowAlert(false);
         } else if (selectedItems.length < 3) {
-            // Adiciona o card se o número de itens selecionados for menor que 3
             setSelectedItems([...selectedItems, documentId]);
         } else {
-            // Exibe o alerta se tentar selecionar mais de 3 cards
             setShowAlert(true);
-            setTimeout(() => {
-                setShowAlert(false);
-            }, 10000); // O alerta será fechado após 10 segundos
+            setTimeout(() => setShowAlert(false), 10000);
         }
-
     };
 
     function capitalizeFirstLetter(str: string) {
@@ -88,6 +86,23 @@ export function ListaOfertaFormativaTemplates({
         }))
     }));
 
+    const handleTabChange = (value: string) => {
+        setActiveTab(value);
+        const newParams = new URLSearchParams(window.location.search);
+        newParams.set("tab", value);
+        router.replace(`?${newParams.toString()}`, { scroll: false });
+    };
+
+    useEffect(() => {
+        const currentTab = params.get("tab");
+        if (!currentTab) {
+            router.replace("?tab=ativas", { scroll: false });
+            setActiveTab("ativas");
+        } else if (currentTab !== activeTab) {
+            setActiveTab(currentTab);
+        }
+    }, [params]);
+
     return (
         <div className="container w-auto h-auto mt-16 flex flex-col justify-center">
             <div className="grid grid-cols-0 lg:grid-cols-[auto_1fr] gap-x-0 md:gap-x-12">
@@ -96,15 +111,24 @@ export function ListaOfertaFormativaTemplates({
                         <SidebarFilter data={(formattedConfigs as any) ?? []}/>
                     </div>
                 )}
-                <Tabs defaultValue="ativas" className="w-full">
+
+                <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
                     <TabsList className="grid w-full h-[44px] grid-cols-2 bg-[#EFF2F5] text-[#616E85]">
-                        <TabsTrigger value="ativas" className="w-full h-[36px] md:px-1 lg:px-4 text-md md:text-md lg:text-lg rounded-[13px] text-[#616E85] data-[state=active]:text-[#334155] data-[state=active]:bg-[#FFFFFF] whitespace-nowrap">
+                        <TabsTrigger value="ativas" className="w-full h-[36px] md:px-1 lg:px-4 text-md lg:text-lg rounded-[13px]
+                         text-[#616E85] data-[state=active]:text-[#334155]
+                         data-[state=active]:bg-[#FFFFFF] whitespace-nowrap"
+                        >
                             Candidaturas Abertas
                         </TabsTrigger>
-                        <TabsTrigger value="arquivada" className="w-full h-[36px] md:px-1 lg:px-4 text-md md:text-md lg:text-lg rounded-[13px] text-[#616E85] data-[state=active]:text-[#334155] data-[state=active]:bg-[#FFFFFF] whitespace-nowrap">
+
+                        <TabsTrigger value="arquivada" className="w-full h-[36px] md:px-1 lg:px-4 text-md lg:text-lg rounded-[13px]
+                         text-[#616E85] data-[state=active]:text-[#334155]
+                         data-[state=active]:bg-[#FFFFFF] whitespace-nowrap"
+                        >
                             Formações em Execução
                         </TabsTrigger>
                     </TabsList>
+
                     <TabsContent value="ativas">
                         <CandidaturasAbertas
                             formattedConfigs={formattedConfigs}
@@ -118,9 +142,11 @@ export function ListaOfertaFormativaTemplates({
                             selectedItems={selectedItems}
                             handleSelectCard={handleSelectCard}
                             page={page}
-                            searchParams={searchParams} pathname={""}
+                            searchParams={searchParams}
+                            pathname={""}
                         />
                     </TabsContent>
+
                     <TabsContent value="arquivada">
                         <FormacoesEmExecucao
                             formattedConfigs={formattedConfigs}
@@ -131,22 +157,16 @@ export function ListaOfertaFormativaTemplates({
                             handleLogin={handleLogin}
                             showAlert={showAlert}
                             setShowAlert={setShowAlert}
-                            selectedItems={selectedItems}
-                            handleSelectCard={handleSelectCard}
                             page={page}
-                            searchParams={searchParams} pathname={""}
+                            searchParams={searchParams}
+                            pathname={""}
                         />
                     </TabsContent>
                 </Tabs>
             </div>
 
             <div className="mt-16">
-                {saiba_mais && (
-                    <SaibaMais
-                        title="Saiba Mais"
-                        data={saiba_mais}
-                    />
-                )}
+                {saiba_mais && <SaibaMais title="Saiba Mais" data={saiba_mais} />}
             </div>
         </div>
     );

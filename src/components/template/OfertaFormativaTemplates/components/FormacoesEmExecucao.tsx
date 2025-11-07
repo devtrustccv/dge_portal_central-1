@@ -1,11 +1,9 @@
 import {SearchCard} from "@/components/molecules/SearchCard";
 import CardSkeleton from "@/components/template/OfertaEmpregoTemplate/CardSkeleton";
-import {CardInfo} from "@/components/organisms/OfertaFormativas/components/features/CardInfo";
 import {CardFormacaoItem} from "@/components/organisms/OfertaFormativas/components/features/CoreComponent";
 import {Pagination} from "@/components/molecules/PaginationBeta";
 import {NoItemsFound} from "@/components/organisms/NotItemnsFound";
 import {Dispatch, SetStateAction, useEffect} from "react";
-import {usePathname} from "next/navigation";
 import {getOfertaFormativaArquivadasByMeiliSearch} from "@/services/ofertas/getDataMeilliSearchOfertaEmExecucao";
 
 interface FormacoesEmExecucaoProps{
@@ -28,8 +26,6 @@ interface FormacoesEmExecucaoProps{
     showAlert: boolean
     setShowAlert: Dispatch<SetStateAction<boolean>>,
     setLoading: Dispatch<SetStateAction<boolean>>,
-    selectedItems: string[],
-    handleSelectCard: (documentId: string) => void
     page: number,
     searchParams: {
         [p: string]: string | string[] | undefined
@@ -42,15 +38,9 @@ export function FormacoesEmExecucao({
     setLoading,
     ofertaArquivadas,
     setOfertaArquivadas,
-    handleLogin,
-    showAlert,
-    setShowAlert,
-    selectedItems,
-    handleSelectCard,
     page,
     searchParams,
 }: FormacoesEmExecucaoProps){
-    const pathname = usePathname();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -98,10 +88,6 @@ export function FormacoesEmExecucao({
         fetchData();
     }, [searchParams, page]);
 
-    console.log("========================");
-    console.log({ofertaArquivadas: ofertaArquivadas});
-    console.log("========================");
-
     return(
         <div className="w-full h-full overflow-hidden">
             <SearchCard configs={formattedConfigs}/>
@@ -117,10 +103,8 @@ export function FormacoesEmExecucao({
                             {ofertaArquivadas?.hits.map(item => (
                                 <CardFormacaoItem
                                     key={item?.documentId}
-                                    isSelect={true}
+                                    isSelect={false}
                                     item={item}
-                                    onSelect={handleSelectCard}
-                                    selectedItems={selectedItems}
                                 />
                             ))}
                         </div>
