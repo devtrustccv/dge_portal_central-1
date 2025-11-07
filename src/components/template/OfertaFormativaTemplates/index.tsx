@@ -1,19 +1,17 @@
 'use client'
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SidebarFilter } from "@/components/molecules/FiltersBeta";
 import { SaibaMais } from "@/components/atoms/saiba-mais";
-import {
-    CardFormacaoItem
-} from "@/components/organisms/OfertaFormativas/components/features/CoreComponent";
-import { SearchCard } from "@/components/molecules/SearchCard";
-import { Pagination } from "@/components/molecules/PaginationBeta";
-import { NoItemsFound } from "@/components/organisms/NotItemnsFound";
-import CardSkeleton from "../OfertaEmpregoTemplate/CardSkeleton";
-import { getOfertaFormativaByMeiliSearch } from "@/services/ofertas/getDataMeilliSearchOferta";
 import { IPageListaServicoData } from "@/services/page-list-oferta/type";
-import {CardInfo} from "@/components/organisms/OfertaFormativas/components/features/CardInfo";
-import {usePathname} from "next/navigation";
 import {setCookie} from "nookies";
+import {
+    Tabs,
+    TabsList,
+    TabsTrigger,
+    TabsContent
+} from "@/components/atoms/tabs";
+import {CandidaturasAbertas} from "@/components/template/OfertaFormativaTemplates/components/CandidaturasAbertas";
+import {FormacoesEmExecucao} from "@/components/template/OfertaFormativaTemplates/components/FormacoesEmExecucao";
 
 export interface IPageOfertaFormativaData extends IPageListaServicoData {
     searchParams: { [key: string]: string | string[] | undefined };
@@ -31,57 +29,16 @@ export function ListaOfertaFormativaTemplates({
         page: number;
         perPage: number;
     }>({ hits: [], total: 0, page: 1, perPage: 3 });
-    const pathname = usePathname();
+    const [ofertaArquivadas, setOfertaArquivadas] = useState<{
+        hits: any[];
+        total: number;
+        page: number;
+        perPage: number;
+    }>({ hits: [], total: 0, page: 1, perPage: 3 });
     const [selectedItems, setSelectedItems] = useState<string[]>([]);
     const [showAlert, setShowAlert] = useState(false);
 
     const page = searchParams?.page ? Number(searchParams.page) : 1;
-
-    useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-
-            const searchQuery = String(searchParams?.search || "");
-            const entidade = searchParams?.denominacao_entidade ? String(searchParams.denominacao_entidade) : undefined;
-            const nivel = searchParams?.nivel ? String(searchParams.nivel) : undefined;
-            const familia = searchParams?.familia ? String(searchParams.familia) : undefined;
-            const concelho = searchParams?.ilha ? String(searchParams.ilha) : undefined;
-            const modalidade = searchParams?.modalidade ? String(searchParams.modalidade) : undefined;
-            const periodo_formacao = searchParams?.periodo_formacao ? String(searchParams.periodo_formacao) : undefined;
-            const saida_profissional = searchParams?.saidas_profissionais ? String(searchParams.saidas_profissionais) : undefined;
-            const data_inicio = searchParams?.inicio_candidatura ? String(searchParams.inicio_candidatura) : undefined;
-            const data_fim = searchParams?.fim_candidatura ? String(searchParams.fim_candidatura) : undefined;
-
-            const filterObject = {
-                entidade,
-                concelho,
-                familia,
-                periodo_formacao,
-                nivel,
-                modalidade,
-                saida_profissional,
-                data_inicio,
-                data_fim,
-            };
-
-            try {
-                const result = await getOfertaFormativaByMeiliSearch({
-                    search: searchQuery,
-                    page,
-                    perPage: 10,
-                    filterObject
-                });
-
-                setOferta(result);
-            } catch (error) {
-                console.error("Erro ao buscar ofertas:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, [searchParams, page]);
 
     const handleLogin = () => {
         const redirectPath = `${process.env.NEXT_PUBLIC_SITE_URL}/ofertas-formativas/candidatura?cursos=${selectedItems?.join(",")}`;
@@ -139,59 +96,48 @@ export function ListaOfertaFormativaTemplates({
                         <SidebarFilter data={(formattedConfigs as any) ?? []}/>
                     </div>
                 )}
-
-                <div className="w-full h-full overflow-hidden">
-                    <SearchCard configs={formattedConfigs}/>
-
-                    {loading ? (
-                        <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-4 px-4">
-                            <CardSkeleton/>
-                            <CardSkeleton/>
-                        </div>
-                    ) : oferta.hits.length > 0 ? (
-                        <div>
-                            <div>
-                                <CardInfo
-                                    pathname={pathname}
-                                    handleLogin={handleLogin}
-                                    showAlert={showAlert}
-                                    setShowAlert={setShowAlert}
-                                    isSelect={true}
-                                    selectedItems={selectedItems}
-                                />
-                                <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
-                                    {oferta?.hits.map(item => (
-                                        <CardFormacaoItem
-                                            key={item?.documentId}
-                                            isSelect={true}
-                                            item={item}
-                                            onSelect={handleSelectCard}
-                                            selectedItems={selectedItems}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-
-                            {oferta.total > oferta.perPage && (
-                                <div
-                                    className="max-w-[350px] sm:max-w-full md:w-auto md:h-auto flex justify-center items-start">
-                                    <Pagination
-                                        searchParams={searchParams}
-                                        totalCountOfRegisters={oferta.total}
-                                        currentPage={page}
-                                        registerPerPage={oferta.perPage}
-                                    />
-                                </div>
-                            )}
-                        </div>
-                    ) : (
-                        <NoItemsFound
-                            title="Nenhuma oferta encontrada."
-                            description="Tenta pesquisar por outro termo."
+                <Tabs defaultValue="ativas" className="w-full">
+                    <TabsList className="grid w-full h-[44px] grid-cols-2 bg-[#EFF2F5] text-[#616E85]">
+                        <TabsTrigger value="ativas" className="w-full h-[36px] md:px-1 lg:px-4 text-md md:text-md lg:text-lg rounded-[13px] text-[#616E85] data-[state=active]:text-[#334155] data-[state=active]:bg-[#FFFFFF] whitespace-nowrap">
+                            Candidaturas Abertas
+                        </TabsTrigger>
+                        <TabsTrigger value="arquivada" className="w-full h-[36px] md:px-1 lg:px-4 text-md md:text-md lg:text-lg rounded-[13px] text-[#616E85] data-[state=active]:text-[#334155] data-[state=active]:bg-[#FFFFFF] whitespace-nowrap">
+                            Formações em Execução
+                        </TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="ativas">
+                        <CandidaturasAbertas
+                            formattedConfigs={formattedConfigs}
+                            loading={loading}
+                            setLoading={setLoading}
+                            oferta={oferta}
+                            setOferta={setOferta}
+                            handleLogin={handleLogin}
+                            showAlert={showAlert}
+                            setShowAlert={setShowAlert}
+                            selectedItems={selectedItems}
+                            handleSelectCard={handleSelectCard}
+                            page={page}
+                            searchParams={searchParams} pathname={""}
                         />
-                    )}
-
-                </div>
+                    </TabsContent>
+                    <TabsContent value="arquivada">
+                        <FormacoesEmExecucao
+                            formattedConfigs={formattedConfigs}
+                            loading={loading}
+                            setLoading={setLoading}
+                            ofertaArquivadas={ofertaArquivadas}
+                            setOfertaArquivadas={setOfertaArquivadas}
+                            handleLogin={handleLogin}
+                            showAlert={showAlert}
+                            setShowAlert={setShowAlert}
+                            selectedItems={selectedItems}
+                            handleSelectCard={handleSelectCard}
+                            page={page}
+                            searchParams={searchParams} pathname={""}
+                        />
+                    </TabsContent>
+                </Tabs>
             </div>
 
             <div className="mt-16">
