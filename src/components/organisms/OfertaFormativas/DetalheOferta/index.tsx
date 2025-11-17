@@ -14,9 +14,11 @@ import { useNavigation } from "@/context/NavigationContext";
 
 export function CourseDetails({
     data,
+    tab,
     pageInfoDetail
 }: {
     data: IOfertasFormativasData | undefined
+    tab: string
     pageInfoDetail: IPageInfoModal | undefined
 }) {
     const { hasSession } = useNavigation();
@@ -35,6 +37,10 @@ export function CourseDetails({
         window.location.href = loginUrl;
     };
 
+    console.log("========================");
+    console.log({tab: tab});
+    console.log("========================");
+
     return (
         <div className="mb-[333px]">
             <DetalhesOfertaFormativaProvider data={data?.nodes || []}>
@@ -50,19 +56,24 @@ export function CourseDetails({
                         ]}
                         image={image}
                     >
-                        <button
-                            onClick={() => {
-                                if (hasSession) {
-                                    router.push(`/ofertas-formativas/candidatura?cursos=${data?.nodes[0]?.referencia_formacao}`);
-                                } else {
-                                    handleLogin();
-                                }
-                            }}
-                            className="flex justify-center items-center w-[250px] md:w-[300px] mt-4 h-[20px] md:h-[40px] top-[184px] left-[1562px] rounded-[50px] border uppercase
+                        {tab === 'arquivada' ? (
+                           <></>
+                        ):(
+                            <button
+                                onClick={() => {
+                                    if (hasSession) {
+                                        router.push(`/ofertas-formativas/candidatura?cursos=${data?.nodes[0]?.referencia_formacao}`);
+                                    } else {
+                                        handleLogin();
+                                    }
+                                }}
+                                className="flex justify-center items-center w-[250px] md:w-[300px] mt-4 h-[20px] md:h-[40px] top-[184px] left-[1562px] rounded-[50px] border uppercase
                            border-white p-[20px_28px] md:p-[24px_32px] gap-[32px] bg-white/25 font-poppins font-semibold text-[14px] md:text-[16px] leading-[30px] tracking-[0%]"
-                        >
-                            realizar candidatura
-                        </button>
+                            >
+                                realizar candidatura
+                            </button>
+                        )}
+
                     </Banner>
                 ))}
                    <TrainingProgram dataFindId={data?.nodes} />

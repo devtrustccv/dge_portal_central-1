@@ -24,6 +24,7 @@ export default async function PageCourseDetails(props: {
     return (
         <div className="space-y-6">
             <CourseDetails
+                tab={tab}
                 pageInfoDetail={pageInfoDetail || undefined}
                 data={data || undefined}
             />
