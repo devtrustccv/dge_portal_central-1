@@ -3,14 +3,18 @@ import { getAllOfertaFormativaAtivas } from "@/services/ofertas/getDataDetailOfe
 import { getAllOfertaFormativaArquivadas } from "@/services/ofertas/getDataDetailOfertaArquivadas";
 import { getPageInfoDetail } from "@/services/page-detalhe-oferta/getPageOfertasDetalhes";
 
-export default async function PageCourseDetails({
-    params,
-    searchParams
-}: {
-    params: { slug: string };
-    searchParams: { [key: string]: string | string[] | undefined };
+type Params = Promise<{ slug: string }>
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
+
+export default async function PageCourseDetails(props: {
+    params: Params
+    searchParams: SearchParams
 }) {
+    const params = await props.params
+    const searchParams = await props.searchParams
+
     const slug = params.slug;
+
     const tab = (searchParams.tab as string) || "ativas";
 
     const pageInfoDetail = await getPageInfoDetail();
