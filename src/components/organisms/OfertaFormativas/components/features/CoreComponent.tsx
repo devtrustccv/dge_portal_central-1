@@ -2,6 +2,7 @@
 import {Card, CardContent, CardTitle} from "@/components/atoms/card";
 import Link from "next/link";
 import {CheckCircle, CalendarDays, MapPinHouse} from "lucide-react";
+import {useSearchParams} from "next/navigation";
 interface CardFormacaoItemProps {
     item: {
         documentId: string;
@@ -39,6 +40,9 @@ export function CardFormacaoItem({
      target = "_self",
 }: CardFormacaoItemProps) {
     const isSelected = useSlectProps ? isSelect: selectedItems?.includes(item?.referencia_formacao);
+
+    const searchParams = useSearchParams();
+    const tab = searchParams.get("tab") || "ativas";
 
     return (
         <Card
@@ -123,7 +127,7 @@ export function CardFormacaoItem({
 
                     <div className="flex flex-col justify-end items-end">
                         <Link
-                            href={`/ofertas-formativas/${item.slug}`}
+                            href={`/ofertas-formativas/${item.slug}?tab=${tab}`}
                             onClick={(e) => e.stopPropagation()}
                             target={target}
                             className="w-[100px] h-[25px] mt-1 md:w-[109px] md:h-[28px] bg-[#0454A0] text-white text-[12px] rounded-lg flex justify-center items-center"

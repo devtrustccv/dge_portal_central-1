@@ -1,19 +1,18 @@
 'use client'
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { SidebarFilter } from "@/components/molecules/FiltersBeta";
 import { SaibaMais } from "@/components/atoms/saiba-mais";
-import {
-    CardFormacaoItem
-} from "@/components/organisms/OfertaFormativas/components/features/CoreComponent";
-import { SearchCard } from "@/components/molecules/SearchCard";
-import { Pagination } from "@/components/molecules/PaginationBeta";
-import { NoItemsFound } from "@/components/organisms/NotItemnsFound";
-import CardSkeleton from "../OfertaEmpregoTemplate/CardSkeleton";
-import { getOfertaFormativaByMeiliSearch } from "@/services/ofertas/getDataMeilliSearchOferta";
 import { IPageListaServicoData } from "@/services/page-list-oferta/type";
-import {CardInfo} from "@/components/organisms/OfertaFormativas/components/features/CardInfo";
-import {usePathname} from "next/navigation";
-import {setCookie} from "nookies";
+import { setCookie } from "nookies";
+import {
+    Tabs,
+    TabsList,
+    TabsTrigger,
+    TabsContent
+} from "@/components/atoms/tabs";
+import { CandidaturasAbertas } from "@/components/template/OfertaFormativaTemplates/components/CandidaturasAbertas";
+import { FormacoesEmExecucao } from "@/components/template/OfertaFormativaTemplates/components/FormacoesEmExecucao";
 
 export interface IPageOfertaFormativaData extends IPageListaServicoData {
     searchParams: { [key: string]: string | string[] | undefined };
@@ -24,6 +23,13 @@ export function ListaOfertaFormativaTemplates({
   saiba_mais,
   searchParams,
 }: IPageOfertaFormativaData) {
+    const router = useRouter();
+    const params = useSearchParams();
+
+    const [activeTab, setActiveTab] = useState<string>(
+        (params.get("tab") as string) || "ativas"
+    );
+
     const [loading, setLoading] = useState(true);
     const [oferta, setOferta] = useState<{
         hits: any[];
@@ -31,57 +37,16 @@ export function ListaOfertaFormativaTemplates({
         page: number;
         perPage: number;
     }>({ hits: [], total: 0, page: 1, perPage: 3 });
-    const pathname = usePathname();
+    const [ofertaArquivadas, setOfertaArquivadas] = useState<{
+        hits: any[];
+        total: number;
+        page: number;
+        perPage: number;
+    }>({ hits: [], total: 0, page: 1, perPage: 3 });
     const [selectedItems, setSelectedItems] = useState<string[]>([]);
     const [showAlert, setShowAlert] = useState(false);
 
     const page = searchParams?.page ? Number(searchParams.page) : 1;
-
-    useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-
-            const searchQuery = String(searchParams?.search || "");
-            const entidade = searchParams?.denominacao_entidade ? String(searchParams.denominacao_entidade) : undefined;
-            const nivel = searchParams?.nivel ? String(searchParams.nivel) : undefined;
-            const familia = searchParams?.familia ? String(searchParams.familia) : undefined;
-            const concelho = searchParams?.ilha ? String(searchParams.ilha) : undefined;
-            const modalidade = searchParams?.modalidade ? String(searchParams.modalidade) : undefined;
-            const periodo_formacao = searchParams?.periodo_formacao ? String(searchParams.periodo_formacao) : undefined;
-            const saida_profissional = searchParams?.saidas_profissionais ? String(searchParams.saidas_profissionais) : undefined;
-            const data_inicio = searchParams?.inicio_candidatura ? String(searchParams.inicio_candidatura) : undefined;
-            const data_fim = searchParams?.fim_candidatura ? String(searchParams.fim_candidatura) : undefined;
-
-            const filterObject = {
-                entidade,
-                concelho,
-                familia,
-                periodo_formacao,
-                nivel,
-                modalidade,
-                saida_profissional,
-                data_inicio,
-                data_fim,
-            };
-
-            try {
-                const result = await getOfertaFormativaByMeiliSearch({
-                    search: searchQuery,
-                    page,
-                    perPage: 10,
-                    filterObject
-                });
-
-                setOferta(result);
-            } catch (error) {
-                console.error("Erro ao buscar ofertas:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, [searchParams, page]);
 
     const handleLogin = () => {
         const redirectPath = `${process.env.NEXT_PUBLIC_SITE_URL}/ofertas-formativas/candidatura?cursos=${selectedItems?.join(",")}`;
@@ -95,27 +60,17 @@ export function ListaOfertaFormativaTemplates({
         window.location.href = loginUrl;
     };
 
-    // Funçao para selecionar os cards
     const handleSelectCard = (documentId: string) => {
         if (selectedItems.includes(documentId)) {
             const updatedItems = selectedItems.filter(item => item !== documentId);
             setSelectedItems(updatedItems);
-
-            // Esconde o alerta se a quantidade de itens selecionados for menor que 3
-            if (showAlert && updatedItems.length < 3) {
-                setShowAlert(false);
-            }
+            if (showAlert && updatedItems.length < 3) setShowAlert(false);
         } else if (selectedItems.length < 3) {
-            // Adiciona o card se o número de itens selecionados for menor que 3
             setSelectedItems([...selectedItems, documentId]);
         } else {
-            // Exibe o alerta se tentar selecionar mais de 3 cards
             setShowAlert(true);
-            setTimeout(() => {
-                setShowAlert(false);
-            }, 10000); // O alerta será fechado após 10 segundos
+            setTimeout(() => setShowAlert(false), 10000);
         }
-
     };
 
     function capitalizeFirstLetter(str: string) {
@@ -131,6 +86,23 @@ export function ListaOfertaFormativaTemplates({
         }))
     }));
 
+    const handleTabChange = (value: string) => {
+        setActiveTab(value);
+        const newParams = new URLSearchParams(window.location.search);
+        newParams.set("tab", value);
+        router.replace(`?${newParams.toString()}`, { scroll: false });
+    };
+
+    useEffect(() => {
+        const currentTab = params.get("tab");
+        if (!currentTab) {
+            router.replace("?tab=ativas", { scroll: false });
+            setActiveTab("ativas");
+        } else if (currentTab !== activeTab) {
+            setActiveTab(currentTab);
+        }
+    }, [params]);
+
     return (
         <div className="container w-auto h-auto mt-16 flex flex-col justify-center">
             <div className="grid grid-cols-0 lg:grid-cols-[auto_1fr] gap-x-0 md:gap-x-12">
@@ -140,67 +112,61 @@ export function ListaOfertaFormativaTemplates({
                     </div>
                 )}
 
-                <div className="w-full h-full overflow-hidden">
-                    <SearchCard configs={formattedConfigs}/>
+                <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+                    <TabsList className="grid w-full h-[44px] grid-cols-2 bg-[#EFF2F5] text-[#616E85]">
+                        <TabsTrigger value="ativas" className="w-full h-[36px] md:px-1 lg:px-4 text-md lg:text-lg rounded-[13px]
+                         text-[#616E85] data-[state=active]:text-[#334155]
+                         data-[state=active]:bg-[#FFFFFF] whitespace-nowrap"
+                        >
+                            Candidaturas Abertas
+                        </TabsTrigger>
 
-                    {loading ? (
-                        <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-4 px-4">
-                            <CardSkeleton/>
-                            <CardSkeleton/>
-                        </div>
-                    ) : oferta.hits.length > 0 ? (
-                        <div>
-                            <div>
-                                <CardInfo
-                                    pathname={pathname}
-                                    handleLogin={handleLogin}
-                                    showAlert={showAlert}
-                                    setShowAlert={setShowAlert}
-                                    isSelect={true}
-                                    selectedItems={selectedItems}
-                                />
-                                <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
-                                    {oferta?.hits.map(item => (
-                                        <CardFormacaoItem
-                                            key={item?.documentId}
-                                            isSelect={true}
-                                            item={item}
-                                            onSelect={handleSelectCard}
-                                            selectedItems={selectedItems}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
+                        <TabsTrigger value="arquivada" className="w-full h-[36px] md:px-1 lg:px-4 text-md lg:text-lg rounded-[13px]
+                         text-[#616E85] data-[state=active]:text-[#334155]
+                         data-[state=active]:bg-[#FFFFFF] whitespace-nowrap"
+                        >
+                            Formações em Execução
+                        </TabsTrigger>
+                    </TabsList>
 
-                            {oferta.total > oferta.perPage && (
-                                <div
-                                    className="max-w-[350px] sm:max-w-full md:w-auto md:h-auto flex justify-center items-start">
-                                    <Pagination
-                                        searchParams={searchParams}
-                                        totalCountOfRegisters={oferta.total}
-                                        currentPage={page}
-                                        registerPerPage={oferta.perPage}
-                                    />
-                                </div>
-                            )}
-                        </div>
-                    ) : (
-                        <NoItemsFound
-                            title="Nenhuma oferta encontrada."
-                            description="Tenta pesquisar por outro termo."
+                    <TabsContent value="ativas">
+                        <CandidaturasAbertas
+                            formattedConfigs={formattedConfigs}
+                            loading={loading}
+                            setLoading={setLoading}
+                            oferta={oferta}
+                            setOferta={setOferta}
+                            handleLogin={handleLogin}
+                            showAlert={showAlert}
+                            setShowAlert={setShowAlert}
+                            selectedItems={selectedItems}
+                            handleSelectCard={handleSelectCard}
+                            page={page}
+                            searchParams={searchParams}
+                            pathname={""}
                         />
-                    )}
+                    </TabsContent>
 
-                </div>
+                    <TabsContent value="arquivada">
+                        <FormacoesEmExecucao
+                            formattedConfigs={formattedConfigs}
+                            loading={loading}
+                            setLoading={setLoading}
+                            ofertaArquivadas={ofertaArquivadas}
+                            setOfertaArquivadas={setOfertaArquivadas}
+                            handleLogin={handleLogin}
+                            showAlert={showAlert}
+                            setShowAlert={setShowAlert}
+                            page={page}
+                            searchParams={searchParams}
+                            pathname={""}
+                        />
+                    </TabsContent>
+                </Tabs>
             </div>
 
             <div className="mt-16">
-                {saiba_mais && (
-                    <SaibaMais
-                        title="Saiba Mais"
-                        data={saiba_mais}
-                    />
-                )}
+                {saiba_mais && <SaibaMais title="Saiba Mais" data={saiba_mais} />}
             </div>
         </div>
     );

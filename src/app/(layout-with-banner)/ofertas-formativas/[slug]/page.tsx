@@ -1,23 +1,21 @@
-import {CourseDetails} from "@/components/organisms/OfertaFormativas/DetalheOferta";
-import {getAllOfertaFormativa} from "@/services/ofertas/getDataDetailOferta";
-import {getPageInfoDetail} from "@/services/page-detalhe-oferta/getPageOfertasDetalhes";
+import { CourseDetails } from "@/components/organisms/OfertaFormativas/DetalheOferta";
+import { getAllOfertaFormativaAtivas } from "@/services/ofertas/getDataDetailOferta";
+import { getAllOfertaFormativaArquivadas } from "@/services/ofertas/getDataDetailOfertaArquivadas";
+import { getPageInfoDetail } from "@/services/page-detalhe-oferta/getPageOfertasDetalhes";
 
 export default async function PageCourseDetails({
-    params
-} : {
-    params: Promise<{ slug: string }>
+    params,
+    searchParams
+}: {
+    params: { slug: string };
+    searchParams: { [key: string]: string | string[] | undefined };
 }) {
-    const slug = ( await params).slug
+    const slug = params.slug;
+    const tab = (searchParams.tab as string) || "ativas";
 
     const pageInfoDetail = await getPageInfoDetail();
 
-    const data = await getAllOfertaFormativa(
-        {
-            "slug": {
-                "eq": slug
-            }
-        }
-    );
+    const data = tab === "arquivada" ? await getAllOfertaFormativaArquivadas({ slug: { eq: slug } }) : await getAllOfertaFormativaAtivas({ slug: { eq: slug } });
 
     return (
         <div className="space-y-6">

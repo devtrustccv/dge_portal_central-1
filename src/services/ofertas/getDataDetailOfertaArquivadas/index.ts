@@ -9,7 +9,7 @@ interface Props{
     pageCount?: number,
     total?: number
 }
-export async function getAllOfertaFormativaAtivas<T>(
+export async function getAllOfertaFormativaArquivadas<T>(
     filters?: ServiceFiltersInput<T>,
     pagination?: Props
 ) {
