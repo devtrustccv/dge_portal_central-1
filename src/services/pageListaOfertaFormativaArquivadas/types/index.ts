@@ -46,7 +46,7 @@ export interface IPageInfo {
 }
 
 export interface IListaOfertaFormativa {
-    listaOfertaFormativa: {
+    pageListaOfertaFormativaArquivada: {
         PageInfo: IPageInfo;
     };
 }

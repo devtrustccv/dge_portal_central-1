@@ -1,11 +1,12 @@
 import { gql } from "@apollo/client";
 
 export default gql`
-query ListaOfertaFormativa {
-  listaOfertaFormativa {
+query PageListaOfertaFormativaArquivada {
+  pageListaOfertaFormativaArquivada {
     PageInfo {
       id
       title
+      subtitle2
       subtitle
       headerImage {
         formats

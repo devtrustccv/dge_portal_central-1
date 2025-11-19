@@ -25,13 +25,14 @@ export function TrainingProgram({
                     { title: "Período de Candidatura", value: item?.data_inicio && item?.data_fim ? `De ${item.data_inicio} a ${item.data_fim}` : null },
                     { title: "Avaliação da Candidatura", value: item?.data_avalicao ?? null },
                     { title: "Comunicação dos Resultados", value: item?.data_resultado ?? null },
+                    { title: "Ilha", value: item?.ilha ?? null },
+                    { title: "Concelho", value: item?.concelho ?? null },
                 ].filter(info => info.value != null && info.value !== "");
 
                 return (
                     <div key={item?.documentId} className="py-10">
                         {item?.texto_informativo && (
-                            <div
-                                className="flex items-center w-full rounded-[32px] h-auto px-2 py-1 gap-4 border bg-[#61C3A81A] text-[#61C3A8]">
+                            <div className="flex items-center w-full rounded-[32px] h-auto px-2 py-1 gap-4 border bg-[#61C3A81A] text-[#61C3A8]">
                                 <CircleAlert size={30}/>
                                 <p title={item?.texto_informativo} className="text-xs line-clamp-3">
                                     {item?.texto_informativo}

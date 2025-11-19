@@ -103,7 +103,7 @@ export function FormacoesEmExecucao({
                             {ofertaArquivadas?.hits.map(item => (
                                 <CardFormacaoItem
                                     key={item?.documentId}
-                                    isSelect={false}
+                                    isSelect={true}
                                     item={item}
                                 />
                             ))}

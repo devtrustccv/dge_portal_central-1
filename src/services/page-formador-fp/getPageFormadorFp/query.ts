@@ -38,7 +38,6 @@ query PageFormadorDeFp {
         url
         external_link
       }
-      
     }
     
     session_doc_relev {
@@ -63,6 +62,4 @@ query PageFormadorDeFp {
     }
   }
 }
-
-
 `
