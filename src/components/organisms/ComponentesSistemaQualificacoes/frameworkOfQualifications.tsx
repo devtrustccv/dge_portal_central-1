@@ -50,7 +50,7 @@ export function FrameworkOfQualifications({ data }: { data: IGetCSNQ | null | un
                                     <SelectContent className="border-none">
                                         {data?.nivels_connection?.niveis?.map((item) => (
                                             <SelectItem key={item?.documentId} value={item?.documentId}>
-                                                {item?.title}
+                                               {item?.title}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
