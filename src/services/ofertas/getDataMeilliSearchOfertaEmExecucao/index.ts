@@ -86,7 +86,7 @@ export async function getOfertaFormativaArquivadasByMeiliSearch({
             }
         }
 
-        const searchResults = await meiliClient.index("ofertas-formativas-arquivado").search(search, {
+        const searchResults = await meiliClient.index("dge-oferta-formativa-arquivado").search(search, {
             filter,
             offset: (page - 1) * perPage,
             limit: perPage,
