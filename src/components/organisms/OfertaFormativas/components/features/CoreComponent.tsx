@@ -54,7 +54,7 @@ export function CardFormacaoItem({
                 ${isSelect ? 'cursor-pointer' : ''} ${isSelected ? 'border-2 border-green-500' : ''}`}
         >
             {
-                isSelect && (
+                (isSelect && tab === "ativas") && (
                     <div className="bg-red-400">
                         {isSelected ? (
                             <CheckCircle className="absolute top-2 right-2 text-green-500" size={24}/>

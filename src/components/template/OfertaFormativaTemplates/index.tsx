@@ -16,15 +16,19 @@ import { FormacoesEmExecucao } from "@/components/template/OfertaFormativaTempla
 
 export interface IPageOfertaFormativaData extends IPageListaServicoData {
     searchParams: { [key: string]: string | string[] | undefined };
+    data: IPageListaServicoData | null
+    dataArquivadas: IPageListaServicoData | null
 }
 
 export function ListaOfertaFormativaTemplates({
-  configs,
-  saiba_mais,
   searchParams,
+  data,
+  dataArquivadas
 }: IPageOfertaFormativaData) {
     const router = useRouter();
     const params = useSearchParams();
+
+   const status = params?.get("tab");
 
     const [activeTab, setActiveTab] = useState<string>(
         (params.get("tab") as string) || "ativas"
@@ -78,7 +82,7 @@ export function ListaOfertaFormativaTemplates({
         return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
     }
 
-    const formattedConfigs = configs?.map((group: any) => ({
+    const formattedConfigs = data?.configs?.map((group: any) => ({
         ...group,
         items: group.items.map((item: any) => ({
             ...item,
@@ -106,10 +110,23 @@ export function ListaOfertaFormativaTemplates({
     return (
         <div className="container w-auto h-auto mt-16 flex flex-col justify-center">
             <div className="grid grid-cols-0 lg:grid-cols-[auto_1fr] gap-x-0 md:gap-x-12">
-                {configs && (
-                    <div className="text-white hidden lg:block h-auto py-3">
-                        <SidebarFilter data={(formattedConfigs as any) ?? []}/>
-                    </div>
+                {status === 'ativas' ? (
+                    <>
+                        {data?.configs && (
+                            <div className="text-white hidden lg:block h-auto py-3">
+                                <SidebarFilter data={(formattedConfigs as any) ?? []}/>
+                            </div>
+                        )}
+
+                    </>
+                ):(
+                    <>
+                        {dataArquivadas?.configs && (
+                            <div className="text-white hidden lg:block h-auto py-3">
+                                <SidebarFilter data={(formattedConfigs as any) ?? []}/>
+                            </div>
+                        )}
+                    </>
                 )}
 
                 <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
@@ -166,7 +183,15 @@ export function ListaOfertaFormativaTemplates({
             </div>
 
             <div className="mt-16">
-                {saiba_mais && <SaibaMais title="Saiba Mais" data={saiba_mais} />}
+                {status === 'ativas' ? (
+                    <>
+                        {data?.saiba_mais && <SaibaMais title="Saiba Mais" data={data?.saiba_mais} />}
+                    </>
+                ):(
+                    <>
+                        {dataArquivadas?.saiba_mais && <SaibaMais title="Saiba Mais" data={data?.saiba_mais} />}
+                    </>
+                )}
             </div>
         </div>
     );
