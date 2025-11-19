@@ -26,8 +26,7 @@ export const metadata: Metadata = {
     default: "Kre +",
     template: "Kre + | %s",
   },
-  description:
-    "Kre + é a plataforma de formação, emprego e orientação profissional para jovens cabo-verdianos. Descobre novas oportunidades, simula a tua trajetória profissional e encontra recursos para construir o teu futuro.",
+  description: "Kre + é a plataforma de formação, emprego e orientação profissional para jovens cabo-verdianos. Descobre novas oportunidades, simula a tua trajetória profissional e encontra recursos para construir o teu futuro.",
   keywords: [
     "Kre +",
     "Kre Plus",
@@ -48,8 +47,7 @@ export const metadata: Metadata = {
   publisher: "Governo de Cabo Verde",
   openGraph: {
     title: "Kre + | Plataforma de Formação e Emprego de Cabo Verde",
-    description:
-      "Encontra oportunidades de formação, emprego, empreendedorismo e orientação profissional na plataforma Kre +, criada para apoiar a juventude cabo-verdiana.",
+    description: "Encontra oportunidades de formação, emprego, empreendedorismo e orientação profissional na plataforma Kre +, criada para apoiar a juventude cabo-verdiana.",
     url: process.env.NEXT_PUBLIC_URL ||"https://kremais.gov.cv",
     siteName: "Kre +",
     type: "website",
