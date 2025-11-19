@@ -11,7 +11,7 @@ import {
     DropdownMenuItem,
 } from "@/components/atoms/dropdown-menu";
 import Icon from "@/components/atoms/Icons";
-import { LogOut } from "lucide-react";
+import {KeyRound, LogOut} from "lucide-react";
 import { setCookie } from "nookies";
 import { usePathname, useSearchParams } from "next/navigation";
 import { logout } from "@/app/auth/actions";
@@ -74,6 +74,12 @@ export function AuthMenu() {
                     <DropdownMenuItem>
                         <Icon name="user" className="mr-2 h-4 w-4" />
                         <span>{user?.name || "Conta"}</span>
+                    </DropdownMenuItem>
+                </Link>
+                <Link href="https://portal-kremais.gov.cv/" target={'_blank'}>
+                    <DropdownMenuItem>
+                        <KeyRound className="mr-2 h-4 w-4" />
+                        <span>Area Reservada</span>
                     </DropdownMenuItem>
                 </Link>
                 <DropdownMenuSeparator />

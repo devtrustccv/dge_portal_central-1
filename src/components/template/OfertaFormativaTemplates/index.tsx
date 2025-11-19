@@ -45,6 +45,20 @@ export function ListaOfertaFormativaTemplates({
     }>({ hits: [], total: 0, page: 1, perPage: 3 });
     const [selectedItems, setSelectedItems] = useState<string[]>([]);
     const [showAlert, setShowAlert] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    // Detectar tamanho da tela e alternar entre Tabs e Select
+    useEffect(() => {
+        const checkScreenSize = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+
+        checkScreenSize();
+        window.addEventListener("resize", checkScreenSize);
+
+        return () => window.removeEventListener("resize", checkScreenSize);
+    }, []);
+
 
     const page = searchParams?.page ? Number(searchParams.page) : 1;
 
@@ -113,22 +127,41 @@ export function ListaOfertaFormativaTemplates({
                 )}
 
                 <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-                    <TabsList className="grid w-full h-[44px] grid-cols-2 bg-[#EFF2F5] text-[#616E85]">
-                        <TabsTrigger value="ativas" className="w-full h-[36px] md:px-1 lg:px-4 text-md lg:text-lg rounded-[13px]
-                         text-[#616E85] data-[state=active]:text-[#334155]
-                         data-[state=active]:bg-[#FFFFFF] whitespace-nowrap"
-                        >
-                            Candidaturas Abertas
-                        </TabsTrigger>
 
-                        <TabsTrigger value="arquivada" className="w-full h-[36px] md:px-1 lg:px-4 text-md lg:text-lg rounded-[13px]
-                         text-[#616E85] data-[state=active]:text-[#334155]
-                         data-[state=active]:bg-[#FFFFFF] whitespace-nowrap"
-                        >
-                            Formações em Execução
-                        </TabsTrigger>
-                    </TabsList>
+                    {isMobile ? (
+                        <div className="w-full mb-4">
+                            <select
+                                className="w-full h-[40px] bg-[#EFF2F5] rounded-xl px-3 text-[#334155]"
+                                value={activeTab}
+                                onChange={(e) => handleTabChange(e.target.value)}
+                            >
+                                <option value="ativas">Candidaturas Abertas</option>
+                                <option value="arquivada">Formações em Execução</option>
+                            </select>
+                        </div>
+                    ) : (
+                        <TabsList className="grid w-full h-[44px] grid-cols-2 bg-[#EFF2F5] text-[#616E85]">
+                            <TabsTrigger
+                                value="ativas"
+                                className="w-full h-[36px] md:px-1 lg:px-4 text-md lg:text-lg rounded-[13px]
+                                        text-[#616E85] data-[state=active]:text-[#334155]
+                                        data-[state=active]:bg-[#FFFFFF] whitespace-nowrap"
+                            >
+                                Candidaturas Abertas
+                            </TabsTrigger>
 
+                            <TabsTrigger
+                                value="arquivada"
+                                className="w-full h-[36px] md:px-1 lg:px-4 text-md lg:text-lg rounded-[13px]
+                                        text-[#616E85] data-[state=active]:text-[#334155]
+                                        data-[state=active]:bg-[#FFFFFF] whitespace-nowrap"
+                            >
+                                Formações em Execução
+                            </TabsTrigger>
+                        </TabsList>
+                    )}
+
+                    {/* TAB CONTENT */}
                     <TabsContent value="ativas">
                         <CandidaturasAbertas
                             formattedConfigs={formattedConfigs}
@@ -163,6 +196,7 @@ export function ListaOfertaFormativaTemplates({
                         />
                     </TabsContent>
                 </Tabs>
+
             </div>
 
             <div className="mt-16">
