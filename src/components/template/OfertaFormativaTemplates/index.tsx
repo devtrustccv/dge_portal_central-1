@@ -101,7 +101,7 @@ export function ListaOfertaFormativaTemplates({
         } else if (currentTab !== activeTab) {
             setActiveTab(currentTab);
         }
-    }, [params]);
+    }, [activeTab, params, router]);
 
     return (
         <div className="container w-auto h-auto mt-16 flex flex-col justify-center">
