@@ -25,7 +25,7 @@ export default async function PageOfertaFormativas({searchParams}: {
                     subTitle={data?.subtitle}
                     image={data?.headerImage?.formats?.medium?.url}
                 />
-                    <ListaOfertaFormativaTemplates searchParams={params || {}} data={data} dataArquivadas={dataArquivadas}/>
+                   <ListaOfertaFormativaTemplates searchParams={params || {}} data={params?.tab === 'ativas' ? data : dataArquivadas}/>
             </div>
         )
     } catch (error) {
