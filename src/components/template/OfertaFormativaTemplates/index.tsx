@@ -16,7 +16,7 @@ import { FormacoesEmExecucao } from "@/components/template/OfertaFormativaTempla
 
 export interface IPageOfertaFormativaData extends IPageListaServicoData {
     searchParams: { [key: string]: string | string[] | undefined };
-    data: IPageListaServicoData | null
+    data: any | null
 }
 
 export function ListaOfertaFormativaTemplates({
@@ -25,6 +25,7 @@ export function ListaOfertaFormativaTemplates({
 }: IPageOfertaFormativaData) {
     const router = useRouter();
     const params = useSearchParams();
+    //const [formattedConfigs, setFormattedConfigs] = useState<any>()
 
     const [activeTab, setActiveTab] = useState<string>(
         (params.get("tab") as string) || "ativas"
@@ -47,7 +48,6 @@ export function ListaOfertaFormativaTemplates({
     const [showAlert, setShowAlert] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
 
-    // Detectar tamanho da tela e alternar entre Tabs e Select
     useEffect(() => {
         const checkScreenSize = () => {
             setIsMobile(window.innerWidth < 768);
@@ -58,7 +58,6 @@ export function ListaOfertaFormativaTemplates({
 
         return () => window.removeEventListener("resize", checkScreenSize);
     }, []);
-
 
     const page = searchParams?.page ? Number(searchParams.page) : 1;
 
@@ -92,7 +91,7 @@ export function ListaOfertaFormativaTemplates({
         return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
     }
 
-    const formattedConfigs = data?.configs?.map((group: any) => ({
+    const formattedConfigs = data?.map((group: any) => ({
         ...group,
         items: group.items.map((item: any) => ({
             ...item,
@@ -120,9 +119,13 @@ export function ListaOfertaFormativaTemplates({
     return (
         <div className="container w-auto h-auto mt-16 flex flex-col justify-center">
             <div className="grid grid-cols-0 lg:grid-cols-[auto_1fr] gap-x-0 md:gap-x-12">
-                {data?.configs && (
-                    <div className="text-white hidden lg:block h-auto py-3">
-                        <SidebarFilter data={(formattedConfigs as any) ?? []}/>
+                {data && data.length > 0 ? (
+                    <div className="h-full text-white hidden lg:block py-3">
+                        <SidebarFilter data={(formattedConfigs as any) ?? {}}/>
+                    </div>
+                ):(
+                    <div className="h-[100px] flex justify-center items-center bg-[#2370BB] p-6 rounded-2xl">
+                        <p className='text-white'>Sem filtros no momento</p>
                     </div>
                 )}
 
