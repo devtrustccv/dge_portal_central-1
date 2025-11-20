@@ -13,21 +13,28 @@ export default async function PageOfertaFormativas({searchParams}: {
         const params = await searchParams;
 
         const data = await getPageListaOfertasFormativas();
-
         const dataArquivadas = await getPageListaOfertaFormativaArquivadas();
 
         if (!data) return notFound();
 
+        const isAtivas = params?.tab === 'ativas';
+        const configs = isAtivas ? data.configs : dataArquivadas?.configs;
+
+        const validConfigs = Array.isArray(configs) ? configs : undefined;
+
         return (
-            <div className="">
+            <div>
                 <Banner
-                    title={`${params?.tab === 'ativas' ? data?.title : dataArquivadas?.title}`}
+                    title={isAtivas ? data?.title : dataArquivadas?.title}
                     subTitle={data?.subtitle}
                     image={data?.headerImage?.formats?.medium?.url}
                 />
-                   <ListaOfertaFormativaTemplates searchParams={params || {}} data={params?.tab === 'ativas' ? data : dataArquivadas}/>
+                <ListaOfertaFormativaTemplates
+                    searchParams={params || {}}
+                    data={validConfigs}
+                />
             </div>
-        )
+        );
     } catch (error) {
         console.error("Error to get service:", error);
         return notFound();

@@ -123,14 +123,32 @@ export function SidebarFilter({
     [router, searchParams]
   );
 
-  const clearFilters = () => {
-    router.replace("?");
-    setTimeout(() => {
-      scrollToFilterElement()
-    }, 100);
-  };
+     /* const clearFilters = () => {
+        router.replace("?");
+        setTimeout(() => {
+          scrollToFilterElement()
+        }, 100);
+      };*/
 
-  const hasAnyFilter = Array.from(searchParams.keys()).length > 0;
+    const clearFilters = () => {
+        const params = new URLSearchParams(searchParams);
+
+        // Mantém apenas o tab atual
+        const tab = params.get("tab");
+
+        const newParams = new URLSearchParams();
+        if (tab) {
+            newParams.set("tab", tab);
+        }
+
+        router.replace(`?${newParams.toString()}`, { scroll: false });
+
+        setTimeout(() => {
+            scrollToFilterElement();
+        }, 100);
+    };
+
+    const hasAnyFilter = Array.from(searchParams.keys()).length > 0;
 
   const renderers: Record<
     "group" | "nested" | "select" | "date" | "checkbox" | "daterange",
