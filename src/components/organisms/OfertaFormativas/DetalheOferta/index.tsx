@@ -37,10 +37,6 @@ export function CourseDetails({
         window.location.href = loginUrl;
     };
 
-    console.log("========================");
-    console.log({tab: tab});
-    console.log("========================");
-
     return (
         <div className="mb-[333px]">
             <DetalhesOfertaFormativaProvider data={data?.nodes || []}>
@@ -76,7 +72,7 @@ export function CourseDetails({
 
                     </Banner>
                 ))}
-                   <TrainingProgram dataFindId={data?.nodes} />
+                   <TrainingProgram dataFindId={data?.nodes} tab={tab} />
                    <AccessConditions dataFindId={data?.nodes} />
                    <CriteriaForAcceptanceAndExit
                        title={'Critérios de Seleção'}
