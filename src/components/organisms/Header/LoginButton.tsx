@@ -23,6 +23,8 @@ export function AuthMenu() {
     const searchParams = useSearchParams();
     const path = usePathname();
 
+    const portal_url = process.env.KREMAIS_PORTAL_URL || "https://portal-kremais.gov.cv/";
+
     const handleLogin = () => {
         const redirectPath = `${process.env.NEXT_PUBLIC_SITE_URL}${path}${searchParams ? `?${searchParams.toString()}` : ""
             }`;
@@ -76,7 +78,7 @@ export function AuthMenu() {
                         <span>{user?.name || "Conta"}</span>
                     </DropdownMenuItem>
                 </Link>
-                <Link href="https://portal-kremais.gov.cv/" target={'_blank'}>
+                <Link href={portal_url} target={'_blank'}>
                     <DropdownMenuItem>
                         <KeyRound className="mr-2 h-4 w-4" />
                         <span>Area Reservada</span>

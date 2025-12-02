@@ -54,6 +54,7 @@ export function CandidaturasAbertas({
 
     useEffect(() => {
         const fetchData = async () => {
+
             setLoading(true);
 
             const searchQuery = String(searchParams?.search || "");
@@ -96,7 +97,7 @@ export function CandidaturasAbertas({
         };
 
         fetchData();
-    }, [searchParams, page]);
+    }, [searchParams, page, setLoading, setOferta]);
 
     return(
         <div className="w-full h-full overflow-hidden">
