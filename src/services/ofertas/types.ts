@@ -45,6 +45,10 @@ export interface IOfertaFormativa {
     data_inicio_formacao: string,
     data_fim_formacao: string,
 
+    numero_formandos: number,
+    periodo_estagio: string,
+    periodo_sala: string,
+
     detalhes_oferta: string;
     documentId: string;
     slug: string;

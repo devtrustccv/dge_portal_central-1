@@ -29,6 +29,10 @@ export function TrainingProgram({
                     { title: "Comunicação dos Resultados", value: tab === 'arquivada' ? null : item?.data_resultado },
                     { title: "Ilha", value: item?.ilha ?? null },
                     { title: "Concelho", value: item?.concelho ?? null },
+
+                    { title: "Numero de Formação", value: tab === 'ativas' ? null : item?.numero_formandos },
+                    { title: "Periodo de Estagio", value: tab === 'ativas' ? null : item?.periodo_estagio },
+                    { title: "Periodo em Sala", value: tab === 'ativas' ? null : item?.periodo_sala },
                 ].filter(info => info.value != null && info.value !== "");
 
                 return (
