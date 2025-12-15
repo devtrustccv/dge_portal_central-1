@@ -23,6 +23,10 @@ export function mapper(response: any): IOfertasFormativasData | null{
               data_inicio_formacao: item?.data_inicio_formacao,
               data_fim_formacao: item?.data_fim_formacao,
 
+              numero_formandos: item?.numero_formandos,
+              periodo_estagio: item?.periodo_estagio,
+              periodo_sala: item?.periodo_sala,
+
               detalhes_oferta: item.detalhes_oferta,
               documentId: item.documentId,
               slug: item.slug,

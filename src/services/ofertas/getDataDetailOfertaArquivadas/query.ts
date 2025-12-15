@@ -54,7 +54,10 @@ export default gql`
       criterio_selecao {
           id
           label
-        }
+      }
+      numero_formandos
+      periodo_estagio
+      periodo_sala
     }
     
     pageInfo {

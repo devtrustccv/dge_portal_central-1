@@ -3,9 +3,11 @@ import {CircleAlert} from "lucide-react";
 import InfoCard from "@/components/organisms/OfertaFormativas/DetalheOferta/features/CardInfo";
 
 export function TrainingProgram({
-    dataFindId
+    dataFindId,
+    tab
 }: {
     dataFindId: IOfertaFormativa[] | undefined
+    tab: string
 }) {
 
     return (
@@ -13,20 +15,24 @@ export function TrainingProgram({
             {dataFindId?.map(item => {
 
                 const infoItems = [
-                    { title: "Período de Formação", value: item?.periodo_formacao != null ? `${item.periodo_formacao}` : null },//Mês(es)
+                    { title: "Período de Formação", value: item?.periodo_formacao != null ? `${item.periodo_formacao}` : null },
                     { title: "Duração da Formação", value: `${item?.duracao ?? null } Mês(es)`},
                     { title: "Carga Horária", value: item?.carga_horaria != null ? `${item.carga_horaria} Horas` : null },
                     { title: "Modalidade", value: item?.modalidade ?? null },
-                    { title: "Número de Vagas", value: item?.numero_vagas ?? null },
+                    {title: "Número de Vagas", value: tab === 'arquivada' ?  null : item?.numero_vagas},
                     { title: "Taxa de Matricula", value: item?.valor_matricula ?? null },
                     { title: "Valor de Propina", value: item?.valor_propina != null ? `${item.valor_propina}$00 - Mensal` : null },
                     { title: "Data Início da Formação", value: item?.data_inicio_formacao ?? null },
                     { title: "Data Fim da Formação", value: item?.data_fim_formacao ?? null },
-                    { title: "Período de Candidatura", value: item?.data_inicio && item?.data_fim ? `De ${item.data_inicio} a ${item.data_fim}` : null },
-                    { title: "Avaliação da Candidatura", value: item?.data_avalicao ?? null },
-                    { title: "Comunicação dos Resultados", value: item?.data_resultado ?? null },
+                    { title: "Período de Candidatura", value: tab === 'arquivada' ? null : `De ${item.data_inicio} a ${item.data_fim}`},
+                    { title: "Avaliação da Candidatura", value: tab === 'arquivada' ? null : item?.data_avalicao },
+                    { title: "Comunicação dos Resultados", value: tab === 'arquivada' ? null : item?.data_resultado },
                     { title: "Ilha", value: item?.ilha ?? null },
                     { title: "Concelho", value: item?.concelho ?? null },
+
+                    { title: "Número de Formandos", value: tab === 'ativas' ? null : item?.numero_formandos },
+                    { title: "Periodo de Estagio", value: tab === 'ativas' ? null : item?.periodo_estagio },
+                    { title: "Periodo em Sala", value: tab === 'ativas' ? null : item?.periodo_sala },
                 ].filter(info => info.value != null && info.value !== "");
 
                 return (
