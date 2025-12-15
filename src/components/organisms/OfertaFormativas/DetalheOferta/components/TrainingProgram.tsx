@@ -30,7 +30,7 @@ export function TrainingProgram({
                     { title: "Ilha", value: item?.ilha ?? null },
                     { title: "Concelho", value: item?.concelho ?? null },
 
-                    { title: "Numero de Formandos", value: tab === 'ativas' ? null : item?.numero_formandos },
+                    { title: "Número de Formandos", value: tab === 'ativas' ? null : item?.numero_formandos },
                     { title: "Periodo de Estagio", value: tab === 'ativas' ? null : item?.periodo_estagio },
                     { title: "Periodo em Sala", value: tab === 'ativas' ? null : item?.periodo_sala },
                 ].filter(info => info.value != null && info.value !== "");
