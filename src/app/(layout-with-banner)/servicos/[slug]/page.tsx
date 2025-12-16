@@ -15,10 +15,12 @@ export default async function Page({
             "eq": slug
         }
     })
+
     if (!service) return notFound();
     const topicIds = service?.topicServices
         ?.map((ts) => ts.documentId)
         .join(",");
+
     const relatedServices = await getAllServices({
         "topic_services": {
             "documentId": {
@@ -36,6 +38,7 @@ export default async function Page({
     }, { page: 1, pageSize: 4 });
 
     const pageDetalheService = await pageDetalheServicosDigitais();
+
     return (
         <ServiceTemplate {...service} dataDetalhe={pageDetalheService} relatedServices={relatedServices?.nodes || []} />
     )
