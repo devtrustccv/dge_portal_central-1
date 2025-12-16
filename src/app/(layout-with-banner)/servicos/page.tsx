@@ -33,8 +33,7 @@ export default async function Servicos({
       topic_services,
     };
 
-    const [data, servicesByMeili, highlightedServices, filtersConfig] =
-      await Promise.all([
+    const [data, servicesByMeili, highlightedServices, filtersConfig] = await Promise.all([
         getPageListService(),
         getServicesByMeiliSearch({
           search: searchQuery,
