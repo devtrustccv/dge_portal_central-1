@@ -39,12 +39,6 @@ export function ServiceTemplate({
         setTimeout(() => setShowAlert(false), 3000);
     };
 
-    console.log("========================");
-    console.log({
-        publico: publico,
-        transacional: transacional,
-    });
-    console.log("========================");
     return (
     <main className="">
         {/* Alerta visível */}
@@ -93,7 +87,7 @@ export function ServiceTemplate({
                                 Realizar Pedido
                             </Button>
                             <div className="absolute bottom-full mb-2 w-max max-w-xs whitespace-normal hidden group-hover:block bg-gray-800 text-white text-xs px-2 py-1 rounded text-left">
-                             <p> ⚠️ Serviço não disponível publicamente, precisa de realizar o Login.</p>
+                             <p> ⚠️ (Registe-se ou faça login para utilizar o serviço).</p>
                             </div>
                         </div>
                     )

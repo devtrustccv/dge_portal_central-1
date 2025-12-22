@@ -17,6 +17,7 @@ export default async function Page({
     })
 
     if (!service) return notFound();
+
     const topicIds = service?.topicServices
         ?.map((ts) => ts.documentId)
         .join(",");
