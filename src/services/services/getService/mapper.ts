@@ -21,6 +21,8 @@ export const mapper = (data: any): IServiceItem | null => {
     slug: node.slug ?? "",
     title: node.title ?? "",
     url: node.url ?? "",
+    publico: node.publico ?? false,
+    transacional: node.transacional ?? false,
     url_externo: node.url_externo ?? "",
     avaliacao_media: node.avaliacao_media ?? 0,
     total_avaliacao: node.total_avaliacao ? Number(node.total_avaliacao) : 0,

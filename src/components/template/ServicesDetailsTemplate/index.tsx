@@ -9,19 +9,34 @@ import { ServiceQuestion } from "./ServiceQuestion";
 import {IPageDetalheServicoData} from "@/services/services/page-detalhe-servicos-digitais/type";
 import {useState} from "react";
 import Link from "next/link";
+import {useNavigation} from "@/context/NavigationContext";
 
 interface ServiceTemplaceProps extends IServiceItem {
     relatedServices: IServiceNode[],
     dataDetalhe: IPageDetalheServicoData | undefined | null
 }
-export function ServiceTemplate({ title, description, dataDetalhe, questions, relatedServices, documentId, avaliacao_media, total_avaliacao, url, url_externo }: ServiceTemplaceProps) {
+export function ServiceTemplate({
+    title,
+    description,
+    dataDetalhe,
+    questions,
+    relatedServices,
+    documentId,
+    avaliacao_media,
+    total_avaliacao,
+    url,
+    publico,
+    transacional,
+    url_externo
+}: ServiceTemplaceProps) {
     const imagem = dataDetalhe?.headerImage?.formats?.medium?.url;
+    const { hasSession } = useNavigation();
 
     const [showAlert, setShowAlert] = useState(false);
 
     const handleClick = () => {
         setShowAlert(true);
-        setTimeout(() => setShowAlert(false), 3000); // esconde após 3s
+        setTimeout(() => setShowAlert(false), 3000);
     };
 
     return (
@@ -38,8 +53,7 @@ export function ServiceTemplate({ title, description, dataDetalhe, questions, re
           image={imagem}
       >
         <div className="flex flex-col md:flex-row gap-4">
-          <Rating rating={avaliacao_media} totalReviews={total_avaliacao} />
-            {url ? (
+           {/* {url ? (
                 <Link href={url} target={`${url_externo ? '_blank' : '_self'}`}>
                     <Button  size={"lg"} variant={"secondary"} className="uppercase ">
                         Realizar Pedido
@@ -50,7 +64,35 @@ export function ServiceTemplate({ title, description, dataDetalhe, questions, re
                 <Button onClick={handleClick} size={"lg"} variant={"secondary"} className="uppercase ">
                     Realizar Pedido
                 </Button>
-            )}
+            )}*/}
+            <div className="flex flex-col md:flex-row gap-4">
+                <Rating rating={avaliacao_media} totalReviews={total_avaliacao} />
+                {transacional ? (
+                    publico || hasSession ? (
+                        url ? (
+                            <Link href={url} target={url_externo ? '_blank' : '_self'}>
+                                <Button size="lg" variant="secondary" className="uppercase">
+                                  Realizar Pedido
+                                </Button>
+                            </Link>
+                        ) : (
+                            <Button onClick={handleClick} size="lg" variant="secondary" className="uppercase">
+                              Realizar Pedido
+                            </Button>
+                        )
+                    ) : (
+                        // Se publico é false → botão desabilitado com tooltip
+                        <div className="relative group">
+                            <Button disabled size="lg" variant="secondary" className="uppercase cursor-not-allowed">
+                                Realizar Pedido
+                            </Button>
+                            <div className="absolute bottom-full mb-2 w-max max-w-xs whitespace-normal hidden group-hover:block bg-gray-800 text-white text-xs px-2 py-1 rounded text-left">
+                             <p> ⚠️ (Registe-se ou faça login para utilizar o serviço).</p>
+                            </div>
+                        </div>
+                    )
+                ) : (<></>) /* Se transacional é false → não mostrar botão */}
+            </div>
 
         </div>
       </Banner>

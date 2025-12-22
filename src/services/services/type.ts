@@ -57,6 +57,8 @@ export interface IServiceItem {
     description: string;
     url: string;
     url_externo: string;
+    publico: boolean;
+    transacional: boolean;
     questions: IServiceQuestion[];
     profile: IProfile | null;
     topicServices: ITopicService[];
