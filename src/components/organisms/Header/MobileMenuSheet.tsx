@@ -24,7 +24,7 @@ export function MobileMenuSheet({ menuGroups }: MobileMenuSheetProps) {
 
     const handleClick = () => {
         setShowAlert(true);
-        setTimeout(() => setShowAlert(false), 3000); // esconde após 3s
+        setTimeout(() => setShowAlert(false), 3000);
     };
 
     const [open, setOpen] = React.useState(false);
