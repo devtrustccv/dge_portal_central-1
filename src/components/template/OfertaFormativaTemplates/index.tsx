@@ -7,12 +7,12 @@ import { IPageListaServicoData } from "@/services/page-list-oferta/type";
 import { setCookie } from "nookies";
 import {
     Tabs,
-    TabsList,
-    TabsTrigger,
     TabsContent
 } from "@/components/atoms/tabs";
 import { CandidaturasAbertas } from "@/components/template/OfertaFormativaTemplates/components/CandidaturasAbertas";
 import { FormacoesEmExecucao } from "@/components/template/OfertaFormativaTemplates/components/FormacoesEmExecucao";
+import {OfertaTabsList} from "@/components/template/OfertaFormativaTemplates/components/OfertaTabsList";
+import {FormacoesPrevista} from "@/components/template/OfertaFormativaTemplates/components/FormacoesPrevista";
 
 export interface IPageOfertaFormativaData extends IPageListaServicoData {
     searchParams: { [key: string]: string | string[] | undefined };
@@ -32,6 +32,7 @@ export function ListaOfertaFormativaTemplates({
     );
 
     const [loading, setLoading] = useState(true);
+
     const [oferta, setOferta] = useState<{
         hits: any[];
         total: number;
@@ -44,6 +45,8 @@ export function ListaOfertaFormativaTemplates({
         page: number;
         perPage: number;
     }>({ hits: [], total: 0, page: 1, perPage: 3 });
+    const [ofertaFormacaoPrevista, setOfertaFormacaoPrevista] = useState<{ hits: any[]; total: number; page: number; perPage: number; }>({ hits: [], total: 0, page: 1, perPage: 3 });
+
     const [selectedItems, setSelectedItems] = useState<string[]>([]);
     const [showAlert, setShowAlert] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
@@ -130,7 +133,6 @@ export function ListaOfertaFormativaTemplates({
                 )}
 
                 <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-
                     {isMobile ? (
                         <div className="w-full mb-4">
                             <select
@@ -143,35 +145,18 @@ export function ListaOfertaFormativaTemplates({
                             </select>
                         </div>
                     ) : (
-                        <TabsList className="grid w-full h-[44px] grid-cols-2 bg-[#EFF2F5] text-[#616E85]">
-                            <TabsTrigger
-                                value="ativas"
-                                className="w-full h-[36px] md:px-1 lg:px-4 text-md lg:text-lg rounded-[13px]
-                                        text-[#616E85] data-[state=active]:text-[#334155]
-                                        data-[state=active]:bg-[#FFFFFF] whitespace-nowrap"
-                            >
-                                Candidaturas Abertas
-                            </TabsTrigger>
-
-                            <TabsTrigger
-                                value="arquivada"
-                                className="w-full h-[36px] md:px-1 lg:px-4 text-md lg:text-lg rounded-[13px]
-                                        text-[#616E85] data-[state=active]:text-[#334155]
-                                        data-[state=active]:bg-[#FFFFFF] whitespace-nowrap"
-                            >
-                                Formações em Execução
-                            </TabsTrigger>
-                        </TabsList>
+                        /* TabsList */
+                        <OfertaTabsList/>
                     )}
 
-                    {/* TAB CONTENT */}
+                    {/* TAB CONTENT ATIVAS */}
                     <TabsContent value="ativas">
                         <CandidaturasAbertas
+                            oferta={oferta}
+                            setOferta={setOferta}
                             formattedConfigs={formattedConfigs}
                             loading={loading}
                             setLoading={setLoading}
-                            oferta={oferta}
-                            setOferta={setOferta}
                             handleLogin={handleLogin}
                             showAlert={showAlert}
                             setShowAlert={setShowAlert}
@@ -183,6 +168,25 @@ export function ListaOfertaFormativaTemplates({
                         />
                     </TabsContent>
 
+                    {/* TAB CONTENT PREVISTAS */}
+                    <TabsContent value="formacao_prevista">
+                        <FormacoesPrevista
+                            ofertaFormacaoPrevista={ofertaFormacaoPrevista}
+                            setOfertaFormacaoPrevista={setOfertaFormacaoPrevista}
+                            formattedConfigs={formattedConfigs}
+                            loading={loading}
+                            setLoading={setLoading}
+                            handleLogin={handleLogin}
+                            showAlert={showAlert}
+                            setShowAlert={setShowAlert}
+                            selectedItems={selectedItems}
+                            page={page}
+                            searchParams={searchParams}
+                            pathname={""}
+                        />
+                    </TabsContent>
+
+                    {/* TAB CONTENT ARQUIVADAS */}
                     <TabsContent value="arquivada">
                         <FormacoesEmExecucao
                             formattedConfigs={formattedConfigs}

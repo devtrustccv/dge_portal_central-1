@@ -1,10 +1,11 @@
+import * as LucideIcons from "lucide-react";
 import {
     AlertDialog,
     AlertDialogDescription,
     AlertDialogHeader,
     AlertDialogTitle
 } from "@/components/atoms/alert-dialog";
-import {TriangleAlert} from "lucide-react";
+import {LucideIcon, TriangleAlert} from "lucide-react";
 
 export function AlertSelectItem({onClose}: { onClose: () => void }) {
     return (
@@ -24,6 +25,28 @@ export function AlertSelectItem({onClose}: { onClose: () => void }) {
                     </AlertDialogDescription>
                 </AlertDialogHeader>
             </AlertDialog>
+        </div>
+    );
+}
+
+
+export function Alert({
+    icon: Icon,
+    children
+                      }:{
+    icon?: LucideIcon;
+    children: React.ReactNode;
+}) {
+    return (
+        <div
+            className="flex w-full items-center min-h-[48px] rounded-[32px] p-4 mb-2 lg:mb-6
+              text-yellow-800 bg-yellow-100 border-l-[7px] border-yellow-500
+              shadow-sm animate-fade-in"
+        >
+            {Icon && <Icon className="w-5 h-5 mr-3 mt-[2px]" />}
+            <div className="text-[12px] text-black md:text-[11px] lg:text-sm font-[500]">
+                {children}
+            </div>
         </div>
     );
 }
