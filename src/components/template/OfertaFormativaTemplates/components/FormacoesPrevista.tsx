@@ -1,25 +1,25 @@
 import {SearchCard} from "@/components/molecules/SearchCard";
 import CardSkeleton from "@/components/template/OfertaEmpregoTemplate/CardSkeleton";
-import {CardInfo} from "@/components/organisms/OfertaFormativas/components/features/CardInfo";
 import {CardFormacaoItem} from "@/components/organisms/OfertaFormativas/components/features/CoreComponent";
 import {Pagination} from "@/components/molecules/PaginationBeta";
 import {NoItemsFound} from "@/components/organisms/NotItemnsFound";
 import {Dispatch, SetStateAction, useEffect} from "react";
+import {getOfertaFormativaPrevistaByMeiliSearch} from "@/services/ofertas/getDataMeilliSearchOfertaPrevista";
+import {CardInfo} from "@/components/organisms/OfertaFormativas/components/features/CardInfo";
 import {usePathname} from "next/navigation";
-import {getOfertaFormativaByMeiliSearch} from "@/services/ofertas/getDataMeilliSearchOfertaAbertas";
 import {Alert} from "@/components/template/OfertaFormativaTemplates/Alert";
 import {AlertTriangle} from "lucide-react";
 
-interface CandidaturasAbertasProps{
+interface FormacoesPrevistaProps{
     formattedConfigs: any
     loading: boolean
-    oferta: {
+    ofertaFormacaoPrevista: {
         hits: any[]
         total: number
         page: number
         perPage: number
     },
-    setOferta: Dispatch<SetStateAction<{
+    setOfertaFormacaoPrevista: Dispatch<SetStateAction<{
         hits: any[]
         total: number
         page: number
@@ -31,32 +31,28 @@ interface CandidaturasAbertasProps{
     setShowAlert: Dispatch<SetStateAction<boolean>>,
     setLoading: Dispatch<SetStateAction<boolean>>,
     selectedItems: string[],
-    handleSelectCard: (documentId: string) => void
     page: number,
     searchParams: {
         [p: string]: string | string[] | undefined
     }
 }
 
-export function CandidaturasAbertas({
+export function FormacoesPrevista({
+    ofertaFormacaoPrevista,
+    setOfertaFormacaoPrevista,
     formattedConfigs,
     loading,
     setLoading,
-    oferta,
-    setOferta,
+    page,
+    searchParams,
     handleLogin,
     showAlert,
     setShowAlert,
     selectedItems,
-    handleSelectCard,
-    page,
-    searchParams,
-}: CandidaturasAbertasProps){
+}: FormacoesPrevistaProps){
     const pathname = usePathname();
-
     useEffect(() => {
         const fetchData = async () => {
-
             setLoading(true);
 
             const searchQuery = String(searchParams?.search || "");
@@ -83,14 +79,14 @@ export function CandidaturasAbertas({
             };
 
             try {
-                const result = await getOfertaFormativaByMeiliSearch({
+                const result = await getOfertaFormativaPrevistaByMeiliSearch({
                     search: searchQuery,
                     page,
                     perPage: 10,
                     filterObject
                 });
 
-                setOferta(result);
+                setOfertaFormacaoPrevista(result);
             } catch (error) {
                 console.error("Erro ao buscar ofertas:", error);
             } finally {
@@ -99,7 +95,7 @@ export function CandidaturasAbertas({
         };
 
         fetchData();
-    }, [searchParams, page, setLoading, setOferta]);
+    }, [searchParams, page, setLoading, setOfertaFormacaoPrevista]);
 
     return(
         <div className="w-full h-full overflow-hidden">
@@ -109,48 +105,46 @@ export function CandidaturasAbertas({
                     <CardSkeleton/>
                     <CardSkeleton/>
                 </div>
-            ) : oferta.hits.length > 0 ? (
+            ) : ofertaFormacaoPrevista.hits.length > 0 ? (
                 <div>
+                    <CardInfo
+                        pathname={pathname}
+                        handleLogin={handleLogin}
+                        showAlert={showAlert}
+                        setShowAlert={setShowAlert}
+                        isSelect={true}
+                        selectedItems={selectedItems}
+                        alert={
+                            <Alert icon={AlertTriangle}>
+                                <p>
+                                    Apresentação das formações previstas para o ano de 2026.{" "}
+                                    <strong>
+                                        O período de candidaturas terá início no mês de maio
+                                    </strong>
+                                </p>
+                            </Alert>
+                        }
+                    />
                     <div>
-                        <CardInfo
-                            pathname={pathname}
-                            handleLogin={handleLogin}
-                            showAlert={showAlert}
-                            setShowAlert={setShowAlert}
-                            isSelect={true}
-                            selectedItems={selectedItems}
-                            alert={
-                                <Alert icon={AlertTriangle}>
-                                    <p>
-                                        <strong>
-                                            👉 Escolha até <span className="text-red-600">3 cursos</span>
-                                        </strong>{" "}
-                                        clicando nos seus nomes para submeter a candidatura.
-                                    </p>
-                                </Alert>
-                            }
-                        />
                         <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
-                            {oferta?.hits.map(item => (
+                            {ofertaFormacaoPrevista?.hits.map(item => (
                                 <CardFormacaoItem
                                     key={item?.documentId}
                                     isSelect={true}
                                     item={item}
-                                    onSelect={handleSelectCard}
-                                    selectedItems={selectedItems}
                                 />
                             ))}
                         </div>
                     </div>
 
-                    {oferta.total > oferta.perPage && (
+                    {ofertaFormacaoPrevista.total > ofertaFormacaoPrevista.perPage && (
                         <div
                             className="max-w-[350px] sm:max-w-full md:w-auto md:h-auto flex justify-center items-start">
                             <Pagination
                                 searchParams={searchParams}
-                                totalCountOfRegisters={oferta.total}
+                                totalCountOfRegisters={ofertaFormacaoPrevista.total}
                                 currentPage={page}
-                                registerPerPage={oferta.perPage}
+                                registerPerPage={ofertaFormacaoPrevista.perPage}
                             />
                         </div>
                     )}

@@ -3,12 +3,14 @@ import {useNavigation} from "@/context/NavigationContext";
 import {useRouter} from "next/navigation";
 import {AlertSelectItem} from "@/components/template/OfertaFormativaTemplates/Alert";
 interface InfoCardProps {
-    pathname: string,
-    handleLogin: () => void,
+    pathname?: string,
+    handleLogin?: () => void,
     showAlert?: boolean,
     setShowAlert?: (showAlert: boolean) => void,
-    isSelect: boolean,
+    isSelect?: boolean,
+    isButton?: boolean,
     selectedItems?: string[],
+    alert?: React.ReactNode;
 }
 export function CardInfo({
      pathname,
@@ -16,7 +18,9 @@ export function CardInfo({
      showAlert,
      setShowAlert,
      isSelect,
-     selectedItems
+     selectedItems,
+     alert,
+     isButton
  }: InfoCardProps) {
     const {hasSession} = useNavigation();
     const router = useRouter()
@@ -33,24 +37,16 @@ export function CardInfo({
                 <div className="flex flex-col md:flex-row justify-between items-center gap-4 mt-6 mb-3">
 
                     <>
-                        <div
-                            className="flex w-full items-center min-h-[48px] rounded-[32px] p-4 mb-2 lg:mb-6 text-yellow-800 bg-yellow-100 border-l-[7px] border-yellow-500 shadow-sm animate-fade-in"
-                        >
-                            <span className="text-xl mr-3 mt-[2px]">⚠️</span>
-                            <p className="text-[12px] text-black md:text-[11px] lg:text-sm font-[500]">
-                                <strong className="font-semibold">👉 Escolha até <span
-                                    className="text-red-600">3 cursos</span></strong>{' '}
-                                clicando nos seus nomes para poder submeter a sua candidatura.
-                            </p>
-                        </div>
+                        {alert}
 
                         {/* Botão sempre à direita */}
+                        {isButton && (
                             <Button
                                 onClick={() => {
                                     if (hasSession) {
                                         router.push(`${pathname}/candidatura?cursos=${selectedItems?.join(",")}`);
                                     } else {
-                                        handleLogin();
+                                        handleLogin?.();
                                     }
                                 }}
                                 disabled={!selectedItems?.length}
@@ -61,6 +57,7 @@ export function CardInfo({
                                     <span className="ml-2">({itemCount})</span>
                                 )}
                             </Button>
+                        )}
                     </>
                 </div>
             )}

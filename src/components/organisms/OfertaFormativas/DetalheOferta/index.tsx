@@ -46,10 +46,7 @@ export function CourseDetails({
                         title={pageInfoDetail?.pageInfo?.title}
                         subTitle={`${item?.formacao} - ${'Nível '+ item?.nivel}`}
                         subTitle2={`${item?.familia} - ${item?.denominacao_entidade}`}
-                        subTitle3={[
-                            { title: "Conselho", value:`${item.concelho}`},
-                            { title: "Ilha:", value:`${item.ilha}`}
-                        ]}
+                        subTitle3={tab === 'formacao_prevista' ? undefined : [{ title: "Conselho", value: item.concelho }, { title: "Ilha", value: item.ilha }]}
                         image={image}
                     >
                         {tab === 'arquivada' ? (
@@ -72,7 +69,7 @@ export function CourseDetails({
 
                     </Banner>
                 ))}
-                   <TrainingProgram dataFindId={data?.nodes} tab={tab} />
+                   <TrainingProgram dataFindId={data?.nodes} tab={tab}/>
                    <AccessConditions dataFindId={data?.nodes} />
                    <CriteriaForAcceptanceAndExit
                        title={'Critérios de Seleção'}

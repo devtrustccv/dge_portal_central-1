@@ -36,7 +36,7 @@ export function VerifyAuthenticity({
         if (value !== undefined && value !== searchTerm) {
             setSearchTerm(value);
         }
-    }, [value]);
+    }, [value, searchTerm]);
 
     return (
         <section className="relative pt-16 lg:pt-6 md:container overflow-hidden mx-auto mt-10 bg-[#F8FAFC] lg:rounded-[40px] flex flex-col lg:flex-row items-center justify-between">

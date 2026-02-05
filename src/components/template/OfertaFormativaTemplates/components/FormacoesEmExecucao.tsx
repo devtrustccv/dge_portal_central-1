@@ -86,7 +86,7 @@ export function FormacoesEmExecucao({
         };
 
         fetchData();
-    }, [searchParams, page]);
+    }, [searchParams, page, setLoading, setOfertaArquivadas]);
 
     return(
         <div className="w-full h-full overflow-hidden">

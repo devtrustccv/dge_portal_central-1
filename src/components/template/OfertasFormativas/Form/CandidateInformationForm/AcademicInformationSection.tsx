@@ -65,7 +65,7 @@ export function AcademicInformationSection({
         file: null,
       });
     }
-  }, []);
+  }, [editing, formacoes.length, setValue]);
 
   const handleAddClick = () => {
     setEditing(true);
