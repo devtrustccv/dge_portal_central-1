@@ -23,7 +23,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({ slidesData }) => {
     useEffect(() => {
         const interval = setInterval(goToNextSlide, 6000);
         return () => clearInterval(interval);
-    }, [currentSlide, totalSlides]);
+    }, [currentSlide, totalSlides, goToNextSlide]);
 
     return (
         <section className="overflow-hidden bg-[#F8FAFC]" key="herobanner">
