@@ -1,7 +1,7 @@
 'use client';
 import {Card, CardContent, CardTitle} from "@/components/atoms/card";
 import Link from "next/link";
-import {CheckCircle, CalendarDays, MapPinHouse} from "lucide-react";
+import {CheckCircle, CalendarDays, MapPinHouse, Signal, FileBadge} from "lucide-react";
 import {useSearchParams} from "next/navigation";
 interface CardFormacaoItemProps {
     item: {
@@ -18,6 +18,7 @@ interface CardFormacaoItemProps {
         ilha?: string;
         concelho?: string;
         nivel?: string;
+        modalidade?: string;
         referencia_formacao: string;
     };
     isSelect?: boolean;
@@ -101,27 +102,37 @@ export function CardFormacaoItem({
 
                     {(isSelect || showAllInfo ) && (
                         <div className="flex flex-wrap gap-3 text-[12px] text-[#616E85] mt-2">
-                            {item?.duracao !== "0" && (
+                            {item?.duracao && (
                                 <p className="flex gap-1">
                                     <CalendarDays size={17}/>
                                     <span>
-                                        {item.duracao
-                                            ? `${item.duracao} ${item.duracao.length === 1 ? "Mês" : "Meses"}`
-                                            : "Duração indefinida"}
+                                        {item.duracao ? `${item.duracao} ${item.duracao.length === 1 ? "Mês" : "Meses"}` : "Duração indefinida"}
                                     </span>
                                 </p>
                             )}
+                            {item?.nivel && tab === "formacao_prevista" && (
+                                <p className="flex gap-1">
+                                    <Signal size={17} />
+                                    <span>
+                                     Nível: {item.nivel}
+                                    </span>
+                                </p>
+                            )}
+                            {item?.modalidade && tab === "formacao_prevista" && (
+                                <p className="flex gap-1">
+                                    <FileBadge size={17} />
+                                    <span>
+                                     Modalidade: {item.modalidade}
+                                    </span>
+                                </p>
+                            )}
+
                             {item?.concelho && (
                                 <p className="flex gap-1">
                                     <MapPinHouse size={17}/>
                                     <span>{`${item.concelho} | ${item.ilha}`}</span>
                                 </p>
                             )}
-                           {/* {item?.ilha && (
-                                <p className="flex gap-1">
-                                    <span>{item.ilha}</span>
-                                </p>
-                            )}*/}
                         </div>
                     )}
 

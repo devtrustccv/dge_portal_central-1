@@ -1,3 +1,4 @@
+
 import {IPageListaServicoData} from "@/services/page-list-oferta/type";
 export const mapper = (data: any): IPageListaServicoData | null => {
     if (!data || !data.pageListaOfertaFormativaArquivada) return null;
