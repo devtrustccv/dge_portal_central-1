@@ -118,6 +118,7 @@ export function CandidaturasAbertas({
                             showAlert={showAlert}
                             setShowAlert={setShowAlert}
                             isSelect={true}
+                            isButton={true}
                             selectedItems={selectedItems}
                             alert={
                                 <Alert icon={AlertTriangle}>
