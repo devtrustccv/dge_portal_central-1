@@ -1,16 +1,16 @@
 import {IPageListaServicoData} from "@/services/page-list-oferta/type";
 export const mapper = (data: any): IPageListaServicoData | null => {
-    if (!data || !data.pageListaOfertaFormativaArquivada) return null;
+    if (!data || !data.pageListaOfertaFormativasPrevista) return null;
 
     return {
-        configs: data.pageListaOfertaFormativaArquivada.PageInfo.configs || {},
+        configs: data.pageListaOfertaFormativasPrevista.PageInfo.configs || {},
         headerImage: {
-            formats: data.pageListaOfertaFormativaArquivada.PageInfo.headerImage?.formats || {},
-            url: data.pageListaOfertaFormativaArquivada.PageInfo.headerImage?.url || "",
+            formats: data.pageListaOfertaFormativasPrevista.PageInfo.headerImage?.formats || {},
+            url: data.pageListaOfertaFormativasPrevista.PageInfo.headerImage?.url || "",
         },
-        title: data.pageListaOfertaFormativaArquivada.PageInfo.title || "",
-        subtitle: data.pageListaOfertaFormativaArquivada.PageInfo.subtitle || "",
-        description: data.pageListaOfertaFormativaArquivada.PageInfo.description || "",
-        saiba_mais: data.pageListaOfertaFormativaArquivada.SaibaMais || [],
+        title: data.pageListaOfertaFormativasPrevista.PageInfo.title || "",
+        subtitle: data.pageListaOfertaFormativasPrevista.PageInfo.subtitle || "",
+        description: data.pageListaOfertaFormativasPrevista.PageInfo.description || "",
+        saiba_mais: data.pageListaOfertaFormativasPrevista.SaibaMais || [],
     };
 };

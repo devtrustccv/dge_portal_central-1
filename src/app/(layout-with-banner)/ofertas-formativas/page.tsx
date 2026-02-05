@@ -5,7 +5,7 @@ import {getPageListaOfertasFormativas} from "@/services/page-list-oferta/getPage
 import {getPageListaOfertaFormativaArquivadas} from "@/services/pageListaOfertaFormativaArquivadas";
 import {getPageListaOfertaFormativaPrevista} from "@/services/pageListaOfertasFormativaPrevista";
 export const dynamic = "force-dynamic";
-type TabType = 'ativas' | 'formacao_prevista' | 'arquivadas';
+type TabType = 'ativas' | 'formacao_prevista' | 'arquivada';
 
 export default async function PageOfertaFormativas({searchParams}: {
     searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
@@ -23,12 +23,12 @@ export default async function PageOfertaFormativas({searchParams}: {
 
         const titleByTab: Record<TabType, string | undefined> = {
             ativas: data?.title,
-            arquivadas: dataArquivadas?.title,
+            arquivada: dataArquivadas?.title,
             formacao_prevista: dataPrevista?.title,
         };
         const configsByTab: Record<TabType, unknown> = {
             ativas: data?.configs,
-            arquivadas: dataArquivadas?.configs,
+            arquivada: dataArquivadas?.configs,
             formacao_prevista: dataPrevista?.configs,
         };
 
@@ -40,6 +40,7 @@ export default async function PageOfertaFormativas({searchParams}: {
 *///
 
         const rawConfigs = configsByTab[tab];
+
         const validConfigs = Array.isArray(rawConfigs) ? rawConfigs : undefined;
 
         return (
