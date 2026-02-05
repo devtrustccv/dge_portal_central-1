@@ -93,7 +93,7 @@ export default function CandidaturaPage({
       setOriginalFormacoes(candidaturaDetalhe.infosAcademicas || []);
       setStep(0);
     }
-  }, [candidaturaDetalhe?.candidato.id]);
+  }, [candidaturaDetalhe?.candidato.id, cursos, candidaturaDetalhe, isEditing, methods, user]);
 
   useEffect(() => {
     if (ref.current) {

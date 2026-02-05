@@ -95,7 +95,7 @@ export function FormacoesPrevista({
         };
 
         fetchData();
-    }, [searchParams, page]);
+    }, [searchParams, page, setLoading, setOfertaFormacaoPrevista]);
 
     return(
         <div className="w-full h-full overflow-hidden">
