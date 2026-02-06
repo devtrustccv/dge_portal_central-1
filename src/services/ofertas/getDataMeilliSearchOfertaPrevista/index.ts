@@ -93,8 +93,8 @@ export async function getOfertaFormativaPrevistaByMeiliSearch({
         });
 
         return {
-            hits: searchResults.hits,
-            total: searchResults.estimatedTotalHits,
+            hits: searchResults?.hits,
+            total: searchResults?.estimatedTotalHits,
             page,
             perPage,
         };

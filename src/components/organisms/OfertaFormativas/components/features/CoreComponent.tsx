@@ -100,38 +100,45 @@ export function CardFormacaoItem({
                         />
                     </div>
 
-                    {(isSelect || showAllInfo ) && (
+                    {(isSelect || showAllInfo) && (
                         <div className="flex flex-wrap gap-3 text-[12px] text-[#616E85] mt-2">
-                            {item?.duracao && (
-                                <p className="flex gap-1">
-                                    <CalendarDays size={17}/>
-                                    <span>
-                                        {item.duracao ? `${item.duracao} ${item.duracao.length === 1 ? "Mês" : "Meses"}` : "Duração indefinida"}
-                                    </span>
-                                </p>
-                            )}
-                            {item?.nivel && tab === "formacao_prevista" && (
-                                <p className="flex gap-1">
-                                    <Signal size={17} />
-                                    <span>
-                                     Nível: {item.nivel}
-                                    </span>
-                                </p>
-                            )}
-                            {item?.modalidade && tab === "formacao_prevista" && (
-                                <p className="flex gap-1">
-                                    <FileBadge size={17} />
-                                    <span>
-                                     Modalidade: {item.modalidade}
-                                    </span>
-                                </p>
-                            )}
 
-                            {item?.concelho && (
-                                <p className="flex gap-1">
-                                    <MapPinHouse size={17}/>
-                                    <span>{`${item.concelho} | ${item.ilha}`}</span>
-                                </p>
+                            {tab === "formacao_prevista" ? (
+                                <>
+                                    {item?.nivel && (
+                                        <p className="flex gap-1">
+                                            <Signal size={17} />
+                                            <span>Nível: {item.nivel}</span>
+                                        </p>
+                                    )}
+
+                                    {item?.modalidade && (
+                                        <p className="flex gap-1">
+                                            <FileBadge size={17} />
+                                            <span>Modalidade: {item.modalidade}</span>
+                                        </p>
+                                    )}
+                                </>
+                            ) : (
+                                <>
+                                    {item?.duracao && (
+                                        <p className="flex gap-1">
+                                            <CalendarDays size={17} />
+                                            <span>
+                            {item.duracao
+                                ? `${item.duracao} ${item.duracao.length === 1 ? "Mês" : "Meses"}`
+                                : "Duração indefinida"}
+                        </span>
+                                        </p>
+                                    )}
+
+                                    {item?.concelho && (
+                                        <p className="flex gap-1">
+                                            <MapPinHouse size={17} />
+                                            <span>{`${item.concelho} | ${item.ilha}`}</span>
+                                        </p>
+                                    )}
+                                </>
                             )}
                         </div>
                     )}
