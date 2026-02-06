@@ -125,10 +125,10 @@ export function CardFormacaoItem({
                                         <p className="flex gap-1">
                                             <CalendarDays size={17} />
                                             <span>
-                            {item.duracao
-                                ? `${item.duracao} ${item.duracao.length === 1 ? "Mês" : "Meses"}`
-                                : "Duração indefinida"}
-                        </span>
+                                            {item.duracao
+                                                ? `${item.duracao} ${item.duracao.length === 1 ? "Mês" : "Meses"}`
+                                                : "Duração indefinida"}
+                                            </span>
                                         </p>
                                     )}
 
