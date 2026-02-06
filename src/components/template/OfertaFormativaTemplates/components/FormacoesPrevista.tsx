@@ -97,6 +97,9 @@ export function FormacoesPrevista({
         fetchData();
     }, [searchParams, page, setLoading, setOfertaFormacaoPrevista]);
 
+    console.log("========================");
+    console.log({ofertaFormacaoPrevista: ofertaFormacaoPrevista});
+    console.log("========================");
     return(
         <div className="w-full h-full overflow-hidden">
             <SearchCard configs={formattedConfigs}/>

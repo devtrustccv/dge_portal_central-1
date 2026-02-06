@@ -39,13 +39,20 @@ export function ListaOfertaFormativaTemplates({
         page: number;
         perPage: number;
     }>({ hits: [], total: 0, page: 1, perPage: 3 });
+
+    const [ofertaFormacaoPrevista, setOfertaFormacaoPrevista] = useState<{
+        hits: any[];
+        total: number;
+        page: number;
+        perPage: number;
+    }>({ hits: [], total: 0, page: 1, perPage: 3 });
+
     const [ofertaArquivadas, setOfertaArquivadas] = useState<{
         hits: any[];
         total: number;
         page: number;
         perPage: number;
     }>({ hits: [], total: 0, page: 1, perPage: 3 });
-    const [ofertaFormacaoPrevista, setOfertaFormacaoPrevista] = useState<{ hits: any[]; total: number; page: number; perPage: number; }>({ hits: [], total: 0, page: 1, perPage: 3 });
 
     const [selectedItems, setSelectedItems] = useState<string[]>([]);
     const [showAlert, setShowAlert] = useState(false);
@@ -118,6 +125,7 @@ export function ListaOfertaFormativaTemplates({
             setActiveTab(currentTab);
         }
     }, [activeTab, params, router]);
+
     const date = new Date();
     return (
         <div className="container w-auto h-auto mt-16 flex flex-col justify-center">
