@@ -118,7 +118,7 @@ export function ListaOfertaFormativaTemplates({
             setActiveTab(currentTab);
         }
     }, [activeTab, params, router]);
-
+    const date = new Date();
     return (
         <div className="container w-auto h-auto mt-16 flex flex-col justify-center">
             <div className="grid grid-cols-0 lg:grid-cols-[auto_1fr] gap-x-0 md:gap-x-12">
@@ -141,6 +141,7 @@ export function ListaOfertaFormativaTemplates({
                                 onChange={(e) => handleTabChange(e.target.value)}
                             >
                                 <option value="ativas">Candidaturas Abertas</option>
+                                <option value="formacao_prevista">Formações Prevista para {date?.getFullYear()}</option>
                                 <option value="arquivada">Formações em Execução</option>
                             </select>
                         </div>
