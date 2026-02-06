@@ -49,7 +49,7 @@ export function CourseDetails({
                         subTitle3={tab === 'formacao_prevista' ? undefined : [{ title: "Conselho", value: item.concelho }, { title: "Ilha", value: item.ilha }]}
                         image={image}
                     >
-                        {tab === 'arquivada' ? (
+                        {tab === 'arquivada' || tab === "formacao_prevista" ? (
                            <></>
                         ):(
                             <button
