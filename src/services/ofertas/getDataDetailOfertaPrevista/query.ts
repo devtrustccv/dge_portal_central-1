@@ -1,8 +1,8 @@
 import {gql} from "@apollo/client";
 
 export default gql`
- query CmsOfertasFormativasPrevistas_connection {
-  cmsOfertasFormativasPrevistas_connection {
+  query CmsOfertasFormativasPrevistas_connection($filters: OfertasFormativasPrevistaFiltersInput) {
+  cmsOfertasFormativasPrevistas_connection(filters: $filters) {
     nodes {
        formacao
         denominacao_entidade
@@ -67,5 +67,4 @@ export default gql`
     }
   }
 }
-`
-;
+`;
