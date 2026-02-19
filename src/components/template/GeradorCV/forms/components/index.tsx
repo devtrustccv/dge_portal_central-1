@@ -1,0 +1,172 @@
+"use client"
+
+import React, {useState} from "react"
+import {Activity, Award, FileText, FolderOpen, Handshake, School} from "lucide-react"
+
+// Componentes de Seleção (Cards)
+import {CVPreviewLayout} from "@/components/template/GeradorCV/forms/components/CVPreviewLayout";
+import {ModalCustomization} from "@/components/template/GeradorCV/forms/components/ModalCustomization";
+
+export type Capitalization = "normal" | "uppercase"
+export type LayoutType = "one" | "two" | "mix"
+export type PersonalStyle = "left" | "center" | "right" | "sidebar"
+
+interface LayoutsColumnsProps {
+    formData: any
+    capitalization?: Capitalization
+}
+
+export function LayoutsColumns(props: LayoutsColumnsProps) {
+    const {formData, capitalization = "normal"} = props;
+    const [open, setOpen] = useState<boolean>(false);
+
+    // Estados de Controle
+    const [headingStyle, setHeadingStyle] = useState<1 | 2 | 3 | 4>(1)
+    const [layoutType, setLayoutType] = useState<LayoutType>("one")
+    const [personalStyle, setPersonalStyle] = useState<PersonalStyle>("sidebar")
+
+    // --- Lógica de Estilização de Títulos ---
+    const headingClass = (base: string) => {
+        let style = ""
+        switch (headingStyle) {
+            case 1:
+                style = "flex justify-start items-center gap-1 text-blue-600 border-b-4 border-gray-500 mb-2";
+                break
+            case 2:
+                style = "bg-[#f3f3f3] flex gap-2 justify-center items-center mb-2 p-1";
+                break
+            case 3:
+                style = "flex justify-start items-center px-2 gap-1 border border-gray-500 rounded-full mb-2";
+                break
+            case 4:
+                style = "flex justify-center items-center gap-1 border-b-2 border-t-2 border-gray-500 mb-2";
+                break
+        }
+        const caps = capitalization === "uppercase" ? "uppercase" : ""
+        return `${base} ${style} ${caps}`
+    }
+
+    const renderSectionHeading = (icon: React.ReactNode, title: string) => (
+        <div className={headingClass("")}>
+            {icon}
+            <h3 className={'font-bold text-[#626262]'}>{title}</h3>
+        </div>
+    )
+
+    const isMix = layoutType === "mix"
+    const mainColSpan = layoutType === "one" ? "w-full" : layoutType === "two" ? "grid grid-cols-2 gap-6" : "w-full"
+    const flexCols = layoutType === "one" ? "flex" : layoutType === "two" ? "flex gap-7" : "grid-cols-3"
+
+    // Classes de alinhamento para os estilos de topo (Header)
+    const getAlignment = () => {
+        if (personalStyle === 'center') return "text-center items-center justify-center";
+        if (personalStyle === 'right') return "text-right items-end justify-end ml-auto";
+        return "text-left items-start justify-start";
+    }
+
+    return (
+        <>
+            {/* === PAINEL DE CONFIGURAÇÃO (OS CARDS) === */}
+            <ModalCustomization
+                open={open}
+                setOpen={setOpen}
+                headingStyle={headingStyle}
+                setHeadingStyle={setHeadingStyle}
+                layoutType={layoutType}
+                setLayoutType={setLayoutType}
+                personalStyle={personalStyle}
+                setPersonalStyle={setPersonalStyle}
+            />
+
+            <div className="flex flex-col gap-8 w-full max-w-5xl mx-auto">
+
+                {/* === ÁREA DE VISUALIZAÇÃO DO CV === */}
+                <div
+                    id="cv-preview"
+                    className={`${flexCols} gap-4 p-4 ${isMix ? "flex gap-7" : ""} ${personalStyle === 'sidebar' ? 'flex-row' : 'flex-col'}`}>
+                    <CVPreviewLayout
+                        formData={formData}
+                        personalStyle={personalStyle}
+                        getAlignment={getAlignment}
+                    />
+
+                    {/* === Coluna principal (alterável conforme layout) === */}
+                    <div className={`${mainColSpan} ${isMix ? "grid grid-cols-2 gap-4" : ""}`}>
+
+                        {formData.summary && (
+                            <div className={isMix ? "col-span-2 bg-[#f3f3f3] p-2 rounded" : ""}>
+                                {renderSectionHeading(<FileText className='w-4 h-4'/>, "Resumo Profissional")}
+                                <p>{formData.summary}</p>
+                            </div>
+                        )}
+
+                        {formData.experience.length > 0 && (
+                            <div className={isMix ? "col-span-2 bg-[#f3f3f3] p-2 rounded" : ""}>
+                                {renderSectionHeading(<Activity className='w-4 h-4'/>, "Experiência")}
+                                {formData.experience.map((exp: any, i: number) => (
+                                    <div key={i} className="text-sm mb-2">
+                                        <p className="font-semibold">{exp.cargo} - {exp.empresa}</p>
+                                        <p>{exp.local} | {exp.dataInicio} a {exp.dataFim}</p>
+                                        <p>{exp.descricao}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {formData.education.length > 0 && (
+                            <div className={isMix ? "col-span-1 bg-[#f3f3f3] p-2 rounded" : ""}>
+                                {renderSectionHeading(<School className='w-4 h-4'/>, "Formação Académica")}
+                                {formData.education.map((edu: any, i: number) => (
+                                    <div key={i} className="text-sm mb-2">
+                                        <p className="font-semibold">{edu.curso} - {edu.instituicao}</p>
+                                        <p>{edu.dataInicio} a {edu.dataFim}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {formData.projects.length > 0 && (
+                            <div className={isMix ? "col-span-1 bg-[#f3f3f3] p-2 rounded" : ""}>
+                                {renderSectionHeading(<FolderOpen className='w-4 h-4'/>, "Projetos")}
+                                {formData.projects.map((p: any, i: number) => (
+                                    <div key={i} className="text-sm mb-2">
+                                        <p className="font-semibold">{p.nome}</p>
+                                        <p>{p.descricao}</p>
+                                        {p.link &&
+                                            <a href={p.link} target="_blank"
+                                               className="text-blue-600 underline">{p.link}</a>}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {formData.certificates.length > 0 && (
+                            <div className={isMix ? "col-span-1 bg-[#f3f3f3] p-2 rounded" : ""}>
+                                {renderSectionHeading(<Award className='w-4 h-4'/>, "Certificados")}
+                                {formData.certificates.map((c: any, i: number) => (
+                                    <div key={i} className="text-sm mb-2">
+                                        <p className="font-semibold">{c.nome}</p>
+                                        <p>{c.entidade} - {c.dataInicio} a {c.dataConclusao}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {formData.references.length > 0 && (
+                            <div className={isMix ? "col-span-2 bg-[#f3f3f3] p-2 rounded" : ""}>
+                                {renderSectionHeading(<Handshake className='w-4 h-4'/>, "Referências")}
+                                {formData.references.map((r: any, i: number) => (
+                                    <div key={i} className="text-sm mb-2">
+                                        <p className="font-semibold">{r.nome} - {r.empresa}</p>
+                                        <p>{r.cargo} | {r.email} | {r.telefone}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+        </>
+    )
+}
