@@ -49,7 +49,7 @@ export function CourseDetails({
                         subTitle3={tab === 'formacao_prevista' ? undefined : [{ title: "Conselho", value: item.concelho }, { title: "Ilha", value: item.ilha }]}
                         image={image}
                     >
-                        {tab === 'arquivada' ? (
+                        {tab === 'arquivada' || tab === "formacao_prevista" ? (
                            <></>
                         ):(
                             <button
@@ -61,7 +61,7 @@ export function CourseDetails({
                                     }
                                 }}
                                 className="flex justify-center items-center w-[250px] md:w-[300px] mt-4 h-[20px] md:h-[40px] top-[184px] left-[1562px] rounded-[50px] border uppercase
-                           border-white p-[20px_28px] md:p-[24px_32px] gap-[32px] bg-white/25 font-poppins font-semibold text-[14px] md:text-[16px] leading-[30px] tracking-[0%]"
+                                border-white p-[20px_28px] md:p-[24px_32px] gap-[32px] bg-white/25 font-poppins font-semibold text-[14px] md:text-[16px] leading-[30px] tracking-[0%]"
                             >
                                 realizar candidatura
                             </button>

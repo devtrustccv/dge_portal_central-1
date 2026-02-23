@@ -14,36 +14,53 @@ export function TrainingProgram({
         <div className="container grid grid-cols-1 gap-10">
             {dataFindId?.map(item => {
 
-                const infoItems = [
+               /* const infoItems = [
 
                     { title: "Período de Formação", value: item?.periodo_formacao != null ? `${item.periodo_formacao}` : null },
-                    {
-                        title: "Duração da Formação",
-                        value: tab === 'formacao_prevista' ? null : `${item?.duracao ?? null} Mês(es)`
-                    },
+                    {title: "Duração da Formação", value: tab === 'formacao_prevista' ? null : `${item?.duracao ?? null} Mês(es)`},
                     { title: "Carga Horária", value: item?.carga_horaria != null ? `${item.carga_horaria} Horas` : null },
                     { title: "Modalidade", value: item?.modalidade ?? null },
                     {title: "Número de Vagas", value: tab === 'arquivada' ?  null : item?.numero_vagas},
                     { title: "Taxa de Matricula", value: item?.valor_matricula ?? null },
                     { title: "Valor de Propina", value: item?.valor_propina != null ? `${item.valor_propina}$00 - Mensal` : null },
-                    {
-                        title: tab === 'formacao_prevista' ? 'Início previsto da formação' : 'Data Início da Formação',
-                        value: item?.data_inicio_formacao ?? null
-                    },
+                    {title: tab === 'formacao_prevista' ? 'Início previsto da formação' : 'Data Início da Formação', value: item?.data_inicio_formacao ?? null},
                     { title: "Data Fim da Formação", value: item?.data_fim_formacao ?? null },
-                    {
-                        title: tab === 'formacao_prevista' ? 'Data prevista para a candidatura' : 'Período de Candidatura',
-                        value: tab === 'formacao_prevista' ? item?.data_inicio : `De ${item?.data_inicio} a ${item?.data_fim}`
-                    },
+                    {title: tab === 'formacao_prevista' ? 'Data prevista para a candidatura' : 'Período de Candidatura', value: tab === 'formacao_prevista' ? item?.data_inicio : `De ${item?.data_inicio} a ${item?.data_fim}`},
                     { title: "Avaliação da Candidatura", value: tab === 'arquivada' ? null : item?.data_avalicao },
                     { title: "Comunicação dos Resultados", value: tab === 'arquivada' ? null : item?.data_resultado },
                     { title: "Ilha", value: item?.ilha ?? null },
                     { title: "Concelho", value: item?.concelho ?? null },
-
                     { title: "Número de Formandos", value: tab === 'ativas' ? null : item?.numero_formandos },
                     { title: "Periodo de Estagio", value: tab === 'ativas' ? null : item?.periodo_estagio },
                     { title: "Periodo em Sala", value: tab === 'ativas' ? null : item?.periodo_sala },
-                ].filter(info => info.value != null && info.value !== "");
+                ].filter(info => info.value != null && info.value !== "");*/
+                const infoItems = tab === 'formacao_prevista'
+                    ? [
+                        { title: "Carga Horária", value: item?.carga_horaria != null ? `${item.carga_horaria} Horas` : null },
+                        { title: "Modalidade", value: item?.modalidade ?? null },
+                        { title: "Número de Vagas", value: item?.numero_vagas ?? null },
+                        { title: "Início previsto da formação", value: item?.data_inicio_formacao ?? null },
+                        { title: "Data prevista para a candidatura", value: item?.data_inicio ?? null },
+                    ].filter(info => info.value != null && info.value !== "")
+                    : [
+                        { title: "Período de Formação", value: item?.periodo_formacao ?? null },
+                        { title: "Duração da Formação", value: `${item?.duracao ?? ""} Mês(es)` },
+                        { title: "Carga Horária", value: item?.carga_horaria != null ? `${item.carga_horaria} Horas` : null },
+                        { title: "Modalidade", value: item?.modalidade ?? null },
+                        { title: "Número de Vagas", value: item?.numero_vagas ?? null },
+                        { title: "Taxa de Matricula", value: item?.valor_matricula ?? null },
+                        { title: "Valor de Propina", value: item?.valor_propina != null ? `${item.valor_propina}$00 - Mensal` : null },
+                        { title: "Data Início da Formação", value: item?.data_inicio_formacao ?? null },
+                        { title: "Data Fim da Formação", value: item?.data_fim_formacao ?? null },
+                        { title: "Período de Candidatura", value: `De ${item?.data_inicio} a ${item?.data_fim}` },
+                        { title: "Avaliação da Candidatura", value: item?.data_avalicao ?? null },
+                        { title: "Comunicação dos Resultados", value: item?.data_resultado ?? null },
+                        { title: "Ilha", value: item?.ilha ?? null },
+                        { title: "Concelho", value: item?.concelho ?? null },
+                        { title: "Número de Formandos", value: item?.numero_formandos ?? null },
+                        { title: "Período de Estágio", value: item?.periodo_estagio ?? null },
+                        { title: "Período em Sala", value: item?.periodo_sala ?? null },
+                    ].filter(info => info.value != null && info.value !== "");
 
                 return (
                     <div key={item?.documentId} className="py-10">

@@ -17,7 +17,7 @@ export default async function PageOfertaFormativas({searchParams}: {
         const dataPrevista = await getPageListaOfertaFormativaPrevista();
         const dataArquivadas = await getPageListaOfertaFormativaArquivadas();
 
-        if (!data) return notFound();
+        if (!data || !dataArquivadas || !dataPrevista) return
 
         const tab = (params?.tab as TabType) ?? 'ativas';
 
@@ -31,13 +31,11 @@ export default async function PageOfertaFormativas({searchParams}: {
             arquivada: dataArquivadas?.configs,
             formacao_prevista: dataPrevista?.configs,
         };
-
-        /*const subTitleByTab: Record<TabType, string | undefined> = {
+        const subTitleByTab: Record<TabType, string | undefined> = {
             ativas: data?.subtitle,
-            arquivadas: dataArquivadas?.subtitle,
+            arquivada: dataArquivadas?.subtitle,
             formacao_prevista: dataPrevista?.subtitle,
         };
-*///
 
         const rawConfigs = configsByTab[tab];
 
@@ -47,7 +45,7 @@ export default async function PageOfertaFormativas({searchParams}: {
             <div>
                 <Banner
                     title={titleByTab[tab]}
-                    subTitle={data?.subtitle}
+                    subTitle={subTitleByTab[tab]}
                     image={data?.headerImage?.formats?.medium?.url}
                 />
                 <ListaOfertaFormativaTemplates

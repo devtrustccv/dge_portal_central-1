@@ -51,6 +51,7 @@ export function FormacoesPrevista({
     selectedItems,
 }: FormacoesPrevistaProps){
     const pathname = usePathname();
+
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
@@ -105,7 +106,7 @@ export function FormacoesPrevista({
                     <CardSkeleton/>
                     <CardSkeleton/>
                 </div>
-            ) : ofertaFormacaoPrevista.hits.length > 0 ? (
+            ) : ofertaFormacaoPrevista?.hits.length > 0 ? (
                 <div>
                     <CardInfo
                         pathname={pathname}
@@ -137,14 +138,14 @@ export function FormacoesPrevista({
                         </div>
                     </div>
 
-                    {ofertaFormacaoPrevista.total > ofertaFormacaoPrevista.perPage && (
+                    {ofertaFormacaoPrevista?.total > ofertaFormacaoPrevista?.perPage && (
                         <div
                             className="max-w-[350px] sm:max-w-full md:w-auto md:h-auto flex justify-center items-start">
                             <Pagination
                                 searchParams={searchParams}
-                                totalCountOfRegisters={ofertaFormacaoPrevista.total}
+                                totalCountOfRegisters={ofertaFormacaoPrevista?.total}
                                 currentPage={page}
-                                registerPerPage={ofertaFormacaoPrevista.perPage}
+                                registerPerPage={ofertaFormacaoPrevista?.perPage}
                             />
                         </div>
                     )}

@@ -39,13 +39,20 @@ export function ListaOfertaFormativaTemplates({
         page: number;
         perPage: number;
     }>({ hits: [], total: 0, page: 1, perPage: 3 });
+
+    const [ofertaFormacaoPrevista, setOfertaFormacaoPrevista] = useState<{
+        hits: any[];
+        total: number;
+        page: number;
+        perPage: number;
+    }>({ hits: [], total: 0, page: 1, perPage: 3 });
+
     const [ofertaArquivadas, setOfertaArquivadas] = useState<{
         hits: any[];
         total: number;
         page: number;
         perPage: number;
     }>({ hits: [], total: 0, page: 1, perPage: 3 });
-    const [ofertaFormacaoPrevista, setOfertaFormacaoPrevista] = useState<{ hits: any[]; total: number; page: number; perPage: number; }>({ hits: [], total: 0, page: 1, perPage: 3 });
 
     const [selectedItems, setSelectedItems] = useState<string[]>([]);
     const [showAlert, setShowAlert] = useState(false);
@@ -119,6 +126,7 @@ export function ListaOfertaFormativaTemplates({
         }
     }, [activeTab, params, router]);
 
+    const date = new Date();
     return (
         <div className="container w-auto h-auto mt-16 flex flex-col justify-center">
             <div className="grid grid-cols-0 lg:grid-cols-[auto_1fr] gap-x-0 md:gap-x-12">
@@ -141,6 +149,7 @@ export function ListaOfertaFormativaTemplates({
                                 onChange={(e) => handleTabChange(e.target.value)}
                             >
                                 <option value="ativas">Candidaturas Abertas</option>
+                                <option value="formacao_prevista">Formações Prevista para {date?.getFullYear()}</option>
                                 <option value="arquivada">Formações em Execução</option>
                             </select>
                         </div>

@@ -9,13 +9,13 @@ export function mapper(response: any): IPageInfoModal | null {
 
     return {
         pageInfo: {
-            title: data.title,
-            subtitle: data.subtitle,
-            subtitle2: data.subtitle2,
-            description: data.description,
+            title: data?.title || '',
+            subtitle: data?.subtitle || '',
+            subtitle2: data?.subtitle2 || '',
+            description: data?.description || '',
             headerImage: {
-                formats: data?.headerImage?.formats,
-                url: data?.headerImage?.url,
+                formats: data?.headerImage?.formats || '',
+                url: data?.headerImage?.url || '',
             },
         },
     }
