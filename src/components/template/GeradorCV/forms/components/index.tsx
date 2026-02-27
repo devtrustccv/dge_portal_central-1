@@ -47,9 +47,11 @@ export function LayoutsColumns(props: LayoutsColumnsProps) {
     }
 
     const renderSectionHeading = (icon: React.ReactNode, title: string) => (
-        <div className={headingClass("")}>
+        <div className={headingClass("flex justify-start items-center gap-1")}>
             {icon}
-            <h3 className={'font-bold text-[#626262]'}>{title}</h3>
+            <h3 className={`font-bold text-[#626262] pdf-title-adjust live-preview-title`}>
+                {title}
+            </h3>
         </div>
     )
 

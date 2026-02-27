@@ -208,6 +208,8 @@ export function CertificatesForm({ data, onChange, onNext, onBack }: Certificate
 import {useEffect, useState} from "react"
 import {Label} from "@/components/atoms/label"
 import {Input} from "@/components/atoms/input"
+import {Trash2} from "lucide-react";
+import {AlertConfirmacao} from "@/app/(layout-with-banner)/gerador-cv/AlertConfirmacao";
 
 export type Certificate = {
     nome: string
@@ -225,6 +227,9 @@ type CertificatesFormProps = {
 
 export function CertificatesForm({data, onChange, onNext, onBack}: CertificatesFormProps) {
     const [certificates, setCertificates] = useState<Certificate[]>([])
+    const [open, setOpen] = useState(false)
+    const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
+
     const [errors, setErrors] = useState<Array<{
         nome: boolean
         entidade: boolean
@@ -305,77 +310,99 @@ export function CertificatesForm({data, onChange, onNext, onBack}: CertificatesF
             {certificates.map((cert, index) => {
                 const isExpanded = expandedIndex === index
                 return (
-                    <div key={index} className="border rounded overflow-hidden">
+                    <div key={index}>
+                        <div className="border rounded overflow-hidden">
 
-                        {/* HEADER COLAPSADO */}
-                        <div
-                            className="bg-gray-100 p-4 cursor-pointer flex justify-between items-center"
-                            onClick={() => setExpandedIndex(isExpanded ? null : index)}
-                        >
-                            <div>
-                                <p className="font-semibold">
-                                    {cert.nome || "Nome do Certificado"} -
-                                    <span
-                                        className="text-sm font-medium text-gray-500">
+                            <div className='bg-gray-100 flex justify-between'>
+                                {/* HEADER COLAPSADO */}
+                                <div
+                                    className="w-full p-4 cursor-pointer flex justify-between items-center"
+                                    onClick={() => setExpandedIndex(isExpanded ? null : index)}
+                                >
+                                    <div>
+                                        <p className="font-semibold">
+                                            {cert.nome || "Nome do Certificado"} -
+                                            <span
+                                                className="text-sm font-medium text-gray-500">
                                         {cert.entidade || "Entidade não definida"}
                                     </span>
-                                </p>
+                                        </p>
+                                    </div>
+                                    <span className="text-sm">{isExpanded ? "▲" : "▼"}</span>
+                                </div>
+
+                                <div className='flex justify-center items-center px-1'>
+                                    <button
+                                        type="button"
+                                        className="text-red-500 hover:underline"
+                                        //onClick={() => removeExperience(index)}
+                                        onClick={() => {
+                                            setSelectedIndex(index)
+                                            setOpen(true)
+                                        }}
+                                    >
+                                        <Trash2 className="w-4 h-4"/>
+                                    </button>
+                                </div>
                             </div>
-                            <span className="text-sm">{isExpanded ? "▲" : "▼"}</span>
+
+                            {/* CONTEÚDO EXPANDIDO */}
+                            {isExpanded && (
+                                <div className="space-y-2 p-4">
+                                    <div>
+                                        <Label>Nome do Curso/Certificado*</Label>
+                                        <Input
+                                            value={cert.nome}
+                                            onChange={(e) => handleChange(index, "nome", e.target.value)}
+                                            placeholder="Ex: Curso de UX Design"
+                                            className={errors[index]?.nome ? "border-red-500" : ""}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <Label>Entidade Emissora*</Label>
+                                        <Input
+                                            value={cert.entidade}
+                                            onChange={(e) => handleChange(index, "entidade", e.target.value)}
+                                            placeholder="Ex: Coursera, Udemy"
+                                            className={errors[index]?.entidade ? "border-red-500" : ""}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <Label>Data de Início*</Label>
+                                        <Input
+                                            type="date"
+                                            value={cert.dataInicio}
+                                            onChange={(e) => handleChange(index, "dataInicio", e.target.value)}
+                                            className={errors[index]?.dataInicio ? "border-red-500" : ""}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <Label>Data de Conclusão</Label>
+                                        <Input
+                                            type="date"
+                                            value={cert.dataConclusao}
+                                            onChange={(e) => handleChange(index, "dataConclusao", e.target.value)}
+                                            className={errors[index]?.dataConclusao ? "border-red-500" : ""}
+                                        />
+                                    </div>
+                                </div>
+                            )}
                         </div>
-
-                        {/* CONTEÚDO EXPANDIDO */}
-                        {isExpanded && (
-                            <div className="space-y-2 p-4">
-                                <div>
-                                    <Label>Nome do Curso/Certificado*</Label>
-                                    <Input
-                                        value={cert.nome}
-                                        onChange={(e) => handleChange(index, "nome", e.target.value)}
-                                        placeholder="Ex: Curso de UX Design"
-                                        className={errors[index]?.nome ? "border-red-500" : ""}
-                                    />
-                                </div>
-
-                                <div>
-                                    <Label>Entidade Emissora*</Label>
-                                    <Input
-                                        value={cert.entidade}
-                                        onChange={(e) => handleChange(index, "entidade", e.target.value)}
-                                        placeholder="Ex: Coursera, Udemy"
-                                        className={errors[index]?.entidade ? "border-red-500" : ""}
-                                    />
-                                </div>
-
-                                <div>
-                                    <Label>Data de Início*</Label>
-                                    <Input
-                                        type="date"
-                                        value={cert.dataInicio}
-                                        onChange={(e) => handleChange(index, "dataInicio", e.target.value)}
-                                        className={errors[index]?.dataInicio ? "border-red-500" : ""}
-                                    />
-                                </div>
-
-                                <div>
-                                    <Label>Data de Conclusão</Label>
-                                    <Input
-                                        type="date"
-                                        value={cert.dataConclusao}
-                                        onChange={(e) => handleChange(index, "dataConclusao", e.target.value)}
-                                        className={errors[index]?.dataConclusao ? "border-red-500" : ""}
-                                    />
-                                </div>
-
-                                <button
-                                    type="button"
-                                    onClick={() => removeCertificate(index)}
-                                    className="text-red-600 text-sm hover:underline"
-                                >
-                                    Remover
-                                </button>
-                            </div>
-                        )}
+                        <AlertConfirmacao
+                            open={open}
+                            setOpen={setOpen}
+                            title={'Deseja remover este certificado?'}
+                            onConfirm={async () => {
+                                if (selectedIndex !== null) {
+                                    removeCertificate(selectedIndex)
+                                    setSelectedIndex(null)
+                                }
+                                setOpen(false)
+                            }}
+                        />
                     </div>
                 )
             })}
