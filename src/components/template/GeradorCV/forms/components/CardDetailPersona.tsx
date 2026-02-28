@@ -1,3 +1,4 @@
+/*
 "use client"
 
 import React from 'react'
@@ -25,18 +26,18 @@ export function CardDetailPersona(props: CardDetailPersonaStyleSelectorProps) {
 
             <div className="flex flex-wrap gap-6">
 
-                {/* STYLE: SIDEBAR (O SEU PADRÃO) */}
+                {/!* STYLE: SIDEBAR (O SEU PADRÃO) *!/}
                 <div className='flex flex-col justify-center items-center gap-3'>
                     <div
                         onClick={() => onChange?.('sidebar')}
                         className={`${base} ${value === 'sidebar' ? active : inactive}`}
                     >
-                        {/* Miniatura representando a coluna lateral cinza */}
+                        {/!* Miniatura representando a coluna lateral cinza *!/}
                         <div className="w-full h-full flex gap-1 border border-gray-200 rounded overflow-hidden">
                             <div
                                 className="w-1/3 bg-gray-100 flex flex-col items-center p-1 gap-1 border-r border-gray-200">
                                 <div className="w-4 h-4 bg-gray-400 rounded-full mt-1"/>
-                                {/* Foto */}
+                                {/!* Foto *!/}
                                 <div className="h-[2px] w-full bg-gray-300 rounded"/>
                                 <div className="h-[2px] w-2/3 bg-gray-300 rounded"/>
                             </div>
@@ -52,7 +53,7 @@ export function CardDetailPersona(props: CardDetailPersonaStyleSelectorProps) {
                         (Padrão)</p>
                 </div>
 
-                {/* STYLE: LEFT */}
+                {/!* STYLE: LEFT *!/}
                 <div className='flex flex-col justify-center items-center gap-3'>
                     <div
                         onClick={() => onChange?.('left')}
@@ -67,7 +68,7 @@ export function CardDetailPersona(props: CardDetailPersonaStyleSelectorProps) {
                     <p className={`text-sm font-semibold ${value === 'left' ? 'text-purple-600' : 'text-gray-500'}`}>Esquerda</p>
                 </div>
 
-                {/* STYLE: CENTER */}
+                {/!* STYLE: CENTER *!/}
                 <div className='flex flex-col justify-center items-center gap-3'>
                     <div
                         onClick={() => onChange?.('center')}
@@ -82,7 +83,7 @@ export function CardDetailPersona(props: CardDetailPersonaStyleSelectorProps) {
                     <p className={`text-sm font-semibold ${value === 'center' ? 'text-purple-600' : 'text-gray-500'}`}>Centro</p>
                 </div>
 
-                {/* STYLE: RIGHT */}
+                {/!* STYLE: RIGHT *!/}
                 <div className='flex flex-col justify-center items-center gap-3'>
                     <div
                         onClick={() => onChange?.('right')}
@@ -97,6 +98,66 @@ export function CardDetailPersona(props: CardDetailPersonaStyleSelectorProps) {
                     <p className={`text-sm font-semibold ${value === 'right' ? 'text-purple-600' : 'text-gray-500'}`}>Direita</p>
                 </div>
 
+            </div>
+        </div>
+    )
+}*/
+
+"use client"
+
+import React from "react"
+import {AlignCenter, AlignLeft, AlignRight, PanelLeft} from "lucide-react"
+import {PersonalStyle} from "@/components/template/GeradorCV/forms/components/index";
+
+interface CardDetailPersonaProps {
+    value: PersonalStyle
+    onChange: React.Dispatch<React.SetStateAction<PersonalStyle>>
+}
+
+export function CardDetailPersona({value, onChange}: CardDetailPersonaProps) {
+    const options: { id: PersonalStyle; label: string; icon: React.ReactNode }[] = [
+        {
+            id: "sidebar",
+            label: "Sidebar",
+            icon: <PanelLeft className="w-8 h-8"/>,
+        },
+        {
+            id: "left",
+            label: "Esquerda",
+            icon: <AlignLeft className="w-8 h-8"/>,
+        },
+        {
+            id: "center",
+            label: "Centro",
+            icon: <AlignCenter className="w-8 h-8"/>,
+        },
+        {
+            id: "right",
+            label: "Direita",
+            icon: <AlignRight className="w-8 h-8"/>,
+        },
+    ]
+
+    return (
+        <div className="space-y-3">
+            <h4 className="font-semibold text-gray-700">Posição dos Dados Pessoais</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {options.map((option) => (
+                    <button
+                        key={option.id}
+                        onClick={() => onChange(option.id)}
+                        className={`p-4 rounded-lg border-2 transition-all ${
+                            value === option.id
+                                ? "border-indigo-500 bg-indigo-50"
+                                : "border-gray-200 hover:border-gray-300"
+                        }`}
+                    >
+                        <div className="flex flex-col items-center gap-2 text-gray-600">
+                            {option.icon}
+                            <span className="text-xs">{option.label}</span>
+                        </div>
+                    </button>
+                ))}
             </div>
         </div>
     )
