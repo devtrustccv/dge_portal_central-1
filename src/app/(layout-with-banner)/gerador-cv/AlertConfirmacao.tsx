@@ -1,34 +1,34 @@
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle
-} from "@/components/atoms/alert-dialog";
+import {Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle,} from "@/components/atoms/dialog";
+import {Button} from "@/components/atoms/button";
 
-interface AlertConfirmacaoProps {
+interface DialogConfirmacaoProps {
     open?: boolean;
     setOpen?: (open: boolean) => void;
     onConfirm?: () => Promise<void>;
-    title?: string
+    title?: string;
 }
 
-export function AlertConfirmacao({open, setOpen, onConfirm, title}: AlertConfirmacaoProps) {
+export function AlertConfirmacao({open, setOpen, onConfirm, title}: DialogConfirmacaoProps) {
     return (
-        <AlertDialog open={open} onOpenChange={setOpen}>
-            <AlertDialogContent>
-                <AlertDialogHeader>
-                    <AlertDialogTitle>
-                        {title}
-                    </AlertDialogTitle>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                    <AlertDialogAction onClick={onConfirm}>Confirmar</AlertDialogAction>
-                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>{title}</DialogTitle>
+                </DialogHeader>
+                <DialogFooter className="flex justify-end gap-2">
+                    <Button variant="secondary" onClick={() => setOpen?.(false)}>
+                        Cancelar
+                    </Button>
+                    <Button
+                        onClick={async () => {
+                            if (onConfirm) await onConfirm();
+                            setOpen?.(false);
+                        }}
+                    >
+                        Confirmar
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     );
 }
