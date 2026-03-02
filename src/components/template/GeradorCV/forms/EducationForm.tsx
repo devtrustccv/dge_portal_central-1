@@ -6,17 +6,10 @@ import {Textarea} from "@/components/atoms/textarea"
 import {useEffect, useState} from "react"
 import {Trash2} from "lucide-react";
 import {AlertConfirmacao} from "@/app/(layout-with-banner)/gerador-cv/AlertConfirmacao";
-
-type Education = {
-    instituicao: string
-    curso: string
-    dataInicio: string
-    dataFim: string
-    observacoes: string
-}
+import {Education} from "@/services/ofertas/getAllOfertas/type";
 
 type EducationFormProps = {
-    data: Education[]
+    data: Education[] | undefined
     onChange: (data: Education[]) => void
     onNext?: () => void
     onBack?: () => void
@@ -109,7 +102,7 @@ export function EducationForm({data, onChange, onNext, onBack}: EducationFormPro
             instituicao: !edu.instituicao.trim(),
             curso: !edu.curso.trim(),
             dataInicio: !edu.dataInicio || !isValidDate(edu.dataInicio),
-            dataFim: edu.dataFim ? (!isValidDate(edu.dataFim) || new Date(edu.dataFim) < new Date(edu.dataInicio)) : false
+            dataFim: edu.dataFim ? (!isValidDate(edu.dataFim) || new Date(edu.dataFim) < new Date(edu.dataInicio || "")) : false
         }))
 
         setErrors(newErrors)

@@ -6,19 +6,10 @@ import {Textarea} from "@/components/atoms/textarea"
 import {useEffect, useState} from "react"
 import {Trash2} from "lucide-react";
 import {AlertConfirmacao} from "@/app/(layout-with-banner)/gerador-cv/AlertConfirmacao";
-
-
-type Experience = {
-    cargo: string
-    empresa: string
-    local: string
-    dataInicio: string
-    dataFim: string
-    descricao: string
-}
+import {Experience} from "@/services/ofertas/getAllOfertas/type";
 
 type ExperienceFormProps = {
-    data: Experience[]
+    data: Experience[] | undefined
     onChange: (data: Experience[]) => void
     onNext?: () => void
     onBack?: () => void
@@ -137,9 +128,9 @@ export function ExperienceForm({
                 dataInicio: !exp.dataInicio || !isValidDate(exp.dataInicio),
                 dataFim: exp.dataFim
                     ? (!isValidDate(exp.dataFim) ||
-                        new Date(exp.dataFim) < new Date(exp.dataInicio))
+                        new Date(exp.dataFim) < new Date(exp?.dataInicio || ""))
                     : false,
-                descricao: exp.descricao.length > 1000
+                descricao: (exp?.descricao?.length || 0) > 1000
             }
 
             if (Object.values(error).some(Boolean)) {
@@ -168,7 +159,7 @@ export function ExperienceForm({
                 const isExpanded = expandedIndex === index
 
                 return (
-                    <>
+                    <div key={index}>
                         <div key={index}>
                             <div className="border rounded overflow-hidden">
 
@@ -277,11 +268,11 @@ export function ExperienceForm({
                                                 }
                                                 className={errors[index]?.descricao ? "border-red-500" : ""}
                                             />
-                                            <div className={`text-sm ${exp.descricao.length > 1000
+                                            <div className={`text-sm ${(exp?.descricao?.length || 0) > 1000
                                                 ? "text-red-500"
                                                 : "text-gray-500"
                                             }`}>
-                                                {exp.descricao.length}/1000 caracteres
+                                                {(exp.descricao?.length || 0)}/1000 caracteres
                                             </div>
                                         </div>
                                     </div>
@@ -289,7 +280,7 @@ export function ExperienceForm({
                             </div>
 
                         </div>
-                    </>
+                    </div>
                 )
             })}
             <AlertConfirmacao

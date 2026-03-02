@@ -5,6 +5,7 @@ import {Input} from "@/components/atoms/input"
 import {useEffect, useState} from "react"
 import {AlertConfirmacao} from "@/app/(layout-with-banner)/gerador-cv/AlertConfirmacao";
 import {Trash2} from "lucide-react";
+import {Idioma} from "@/services/ofertas/getAllOfertas/type";
 
 export type Language = {
     idioma: string
@@ -12,7 +13,7 @@ export type Language = {
 }
 
 type LanguageFormProps = {
-    data: Language[]
+    data: Idioma[] | undefined
     onChange: (data: Language[]) => void
     onNext?: () => void
     onBack?: () => void

@@ -7,7 +7,7 @@ import {Trash2} from "lucide-react";
 import {AlertConfirmacao} from "@/app/(layout-with-banner)/gerador-cv/AlertConfirmacao";
 
 type SkillsFormProps = {
-    data: string[]
+    data: string[] | undefined
     onChange: (data: string[]) => void
     onNext?: () => void
     onBack?: () => void
