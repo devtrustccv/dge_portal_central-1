@@ -5,7 +5,7 @@ import {Input} from "@/components/atoms/input"
 import {useEffect, useState} from "react"
 import {AlertConfirmacao} from "@/app/(layout-with-banner)/gerador-cv/AlertConfirmacao";
 import {Trash2} from "lucide-react";
-import {Idioma} from "@/services/ofertas/getAllOfertas/type";
+import {Idioma} from "@/services/get-curriculo-cv/type";
 
 export type Language = {
     idioma: string

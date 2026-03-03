@@ -3,7 +3,7 @@
 import {Label} from "@/components/atoms/label"
 import {Input} from "@/components/atoms/input"
 import {useEffect, useState} from "react"
-import {Personal} from "@/services/ofertas/getAllOfertas/type";
+import {Personal} from "@/services/get-curriculo-cv/type";
 
 type PersonalDataFormProps = {
     data: Personal | undefined

@@ -5,7 +5,7 @@ import {Label} from "@/components/atoms/label"
 import {Input} from "@/components/atoms/input"
 import {Trash2} from "lucide-react";
 import {AlertConfirmacao} from "@/app/(layout-with-banner)/gerador-cv/AlertConfirmacao";
-import {Certificate} from "@/services/ofertas/getAllOfertas/type";
+import {Certificate} from "@/services/get-curriculo-cv/type";
 
 type CertificatesFormProps = {
     data: Certificate[] | undefined
@@ -19,9 +19,6 @@ export function CertificatesForm({data, onChange, onNext, onBack}: CertificatesF
     const [open, setOpen] = useState(false)
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
 
-    console.log("========================");
-    console.log({CertificatesForm: data});
-    console.log("========================");
     const [errors, setErrors] = useState<Array<{
         nome: boolean
         entidade: boolean
