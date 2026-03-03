@@ -115,7 +115,7 @@ export default function CVGeneratorTemplate({data}: CVGeneratorTemplateProps) {
         try {
             // Aqui chamaria updateCV(formData)
             setIsDirty(false)
-            toast.success("Currículo atualizado com sucesso!")
+            toast.info("Serviço temporariamente indisponivel!")
         } catch (error) {
             console.error("Erro ao atualizar CV:", error)
             toast.error("Erro inesperado ao atualizar.")
