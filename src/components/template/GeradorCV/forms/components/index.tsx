@@ -181,7 +181,7 @@ import {Activity, Award, Eye, FileText, FolderOpen, Handshake, School} from "luc
 import {CVPreviewLayout} from "@/components/template/GeradorCV/forms/components/CVPreviewLayout"
 import {ModalCustomization} from "@/components/template/GeradorCV/forms/components/ModalCustomization"
 import {MobilePreviewModal} from "@/components/template/GeradorCV/componente/MobilePreviewModal";
-import {CurriculoCv} from "@/services/ofertas/getAllOfertas/type";
+import {CurriculoCv} from "@/services/get-curriculo-cv/type";
 
 export type Capitalization = "normal" | "uppercase"
 export type LayoutType = "one" | "two" | "mix"

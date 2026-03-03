@@ -1,6 +1,6 @@
 import {Brain, Globe, Linkedin, Mail, MapPin, Phone} from "lucide-react"
 import React from "react"
-import {CurriculoCv} from "@/services/ofertas/getAllOfertas/type";
+import {CurriculoCv} from "@/services/get-curriculo-cv/type";
 
 interface CVPreviewLayoutProps {
     formData: any
@@ -21,7 +21,12 @@ export function CVPreviewLayout(props: CVPreviewLayoutProps) {
             ? formData.idiomas : (data?.[0]?.content?.idiomas && data[0].content.idiomas.length > 0)
                 ? data[0].content.idiomas : [];
 
-    const personal = formData.personal || data?.[0]?.content?.personal || {}
+    const personal = data?.[0]?.content?.personal ?? formData?.personal;
+
+    const hasPersonal = personal && Object.values(personal).some((v) => v && v !== "");
+    console.log("========================");
+    console.log({personal: personal});
+    console.log("========================");
     return (
         <>
             {personalStyle === "sidebar" ? (
@@ -38,43 +43,55 @@ export function CVPreviewLayout(props: CVPreviewLayoutProps) {
                     )}
 
 
-                    {personal && (
+                    {hasPersonal && (
                         <div className="text-center">
-                            <h2 className="text-lg font-semibold">{formData.nome}</h2>
 
-                            <div className="flex gap-2 items-center mt-4 mb-2">
-                                <div className="border border-gray-500 rounded-full p-1">
-                                    <Mail className="w-4 h-4"/>
+                            {personal?.nome && (
+                                <h2 className="text-lg font-semibold">{personal.nome}</h2>
+                            )}
+
+                            {personal?.email && (
+                                <div className="flex gap-2 items-center mt-4 mb-2">
+                                    <div className="border border-gray-500 rounded-full p-1">
+                                        <Mail className="w-4 h-4"/>
+                                    </div>
+                                    <p className="text-sm">{personal.email}</p>
                                 </div>
-                                <p className="text-sm">{personal.email}</p>
-                            </div>
+                            )}
 
-                            <div className="flex gap-2 items-center mb-2">
-                                <div className="border border-gray-500 rounded-full p-1">
-                                    <Phone className="w-4 h-4"/>
+                            {personal?.telefone && (
+                                <div className="flex gap-2 items-center mb-2">
+                                    <div className="border border-gray-500 rounded-full p-1">
+                                        <Phone className="w-4 h-4"/>
+                                    </div>
+                                    <p className="text-sm">{personal.telefone}</p>
                                 </div>
-                                <p className="text-sm">{personal.telefone}</p>
-                            </div>
+                            )}
 
-                            <div className="flex gap-2 items-center mb-2">
-                                <div className="border border-gray-500 rounded-full p-1">
-                                    <MapPin className="w-4 h-4"/>
+                            {personal?.endereco && (
+                                <div className="flex gap-2 items-center mb-2">
+                                    <div className="border border-gray-500 rounded-full p-1">
+                                        <MapPin className="w-4 h-4"/>
+                                    </div>
+                                    <p className="text-sm">{personal.endereco}</p>
                                 </div>
-                                <p className="text-sm">{personal.endereco}</p>
-                            </div>
+                            )}
 
-                            {personal.socialMidia && (
+                            {personal?.socialMidia && (
                                 <div className="flex gap-2 items-center mb-2">
                                     <div className="border border-gray-500 rounded-full p-1">
                                         <Linkedin className="w-4 h-4"/>
                                     </div>
-                                    <a href={personal.socialMidia}
-                                       className="text-sm underline"
-                                       target="_blank">
+                                    <a
+                                        href={personal.socialMidia}
+                                        className="text-sm underline"
+                                        target="_blank"
+                                    >
                                         LinkedIn
                                     </a>
                                 </div>
                             )}
+
                         </div>
                     )}
 
