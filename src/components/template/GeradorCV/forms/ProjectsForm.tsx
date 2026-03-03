@@ -3,15 +3,10 @@
 import {useEffect, useState} from "react"
 import {Trash2} from "lucide-react";
 import {AlertConfirmacao} from "@/app/(layout-with-banner)/gerador-cv/AlertConfirmacao";
-
-export type Project = {
-    nome: string
-    descricao: string
-    link: string
-}
+import {Project} from "@/services/ofertas/getAllOfertas/type";
 
 type ProjectsFormProps = {
-    data: Project[]
+    data: Project[] | undefined
     onChange: (data: Project[]) => void
     onNext?: () => void
     onBack?: () => void
@@ -84,8 +79,8 @@ export function ProjectsForm({data, onChange, onNext, onBack}: ProjectsFormProps
 
         const newErrors = projects.map(proj => ({
             nome: !proj.nome.trim(),
-            descricao: !proj.descricao.trim(),
-            link: !isValidUrl(proj.link)
+            descricao: !proj.descricao?.trim(),
+            link: !isValidUrl(proj?.link || "#")
         }))
 
         setErrors(newErrors)

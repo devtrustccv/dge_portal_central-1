@@ -3,17 +3,10 @@
 import {Label} from "@/components/atoms/label"
 import {Input} from "@/components/atoms/input"
 import {useEffect, useState} from "react"
-
+import {Personal} from "@/services/ofertas/getAllOfertas/type";
 
 type PersonalDataFormProps = {
-    data: {
-        nome?: string
-        socialMidia?: string
-        email?: string
-        telefone?: string
-        endereco?: string
-        foto?: string
-    }
+    data: Personal | undefined
     onChange: (data: any) => void
     onNext?: () => void
     onBack?: () => void
@@ -29,6 +22,9 @@ export function PersonalDataForm({data, onChange, onNext, onBack}: PersonalDataF
         foto: ""
     })
 
+    // Guarda os dados da API sem sobrescrever formState
+    const [defaultData, setDefaultData] = useState<typeof formState | null>(null)
+
     const [errors, setErrors] = useState({
         nome: false,
         email: false,
@@ -36,15 +32,18 @@ export function PersonalDataForm({data, onChange, onNext, onBack}: PersonalDataF
         endereco: false
     })
 
+    // Atualiza apenas defaultData com valores da API
     useEffect(() => {
-        setFormState({
-            nome: data?.nome || "",
-            socialMidia: data?.socialMidia || "",
-            email: data?.email || "",
-            telefone: data?.telefone || "",
-            endereco: data?.endereco || "",
-            foto: data?.foto || ""
-        })
+        if (data) {
+            setDefaultData({
+                nome: data.nome || "",
+                socialMidia: data.socialMidia || "",
+                email: data.email || "",
+                telefone: data.telefone || "",
+                endereco: data.endereco || "",
+                foto: data.foto || ""
+            })
+        }
     }, [data])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,7 +52,7 @@ export function PersonalDataForm({data, onChange, onNext, onBack}: PersonalDataF
         setFormState(updated)
         onChange(updated)
 
-        // Clear error when user types
+        // Limpa erro ao digitar
         if (errors[id as keyof typeof errors] && value.trim()) {
             setErrors(prev => ({...prev, [id]: false}))
         }
@@ -61,20 +60,18 @@ export function PersonalDataForm({data, onChange, onNext, onBack}: PersonalDataF
 
     const validateForm = () => {
         const newErrors = {
-            nome: !formState.nome.trim(),
-            email: !formState.email.trim(),
-            telefone: !formState.telefone.trim(),
-            endereco: !formState.endereco.trim()
+            nome: !(formState.nome || defaultData?.nome)?.trim(),
+            email: !(formState.email || defaultData?.email)?.trim(),
+            telefone: !(formState.telefone || defaultData?.telefone)?.trim(),
+            endereco: !(formState.endereco || defaultData?.endereco)?.trim()
         }
 
         setErrors(newErrors)
-
         return !Object.values(newErrors).some(error => error)
     }
 
     const handleNext = (e: React.FormEvent) => {
         e.preventDefault()
-
         if (validateForm() && onNext) {
             onNext()
         }
@@ -102,17 +99,21 @@ export function PersonalDataForm({data, onChange, onNext, onBack}: PersonalDataF
                         }
                     }}
                 />
-                {formState.foto && (
-                    <img src={formState.foto} alt="Foto de perfil"
-                         className="mt-2 h-24 w-24 object-cover rounded-full"/>
+                {(formState.foto || defaultData?.foto) && (
+                    <img
+                        src={defaultData?.foto || formState.foto}
+                        alt="Foto de perfil"
+                        className="mt-2 h-24 w-24 object-cover rounded-full"
+                    />
                 )}
+
                 <Label htmlFor="nome">Nome Completo*</Label>
                 <Input
-                    required={true}
+                    required
                     id="nome"
                     type="text"
                     placeholder="Digite seu nome completo"
-                    value={formState.nome}
+                    value={defaultData?.nome || formState.nome}
                     onChange={handleChange}
                     className={errors.nome ? "border-red-500" : ""}
                 />
@@ -122,11 +123,11 @@ export function PersonalDataForm({data, onChange, onNext, onBack}: PersonalDataF
             <div>
                 <Label htmlFor="email">Email*</Label>
                 <Input
-                    required={true}
+                    required
                     id="email"
                     type="email"
                     placeholder="exemplo@email.com"
-                    value={formState.email}
+                    value={defaultData?.email || formState.email}
                     onChange={handleChange}
                     className={errors.email ? "border-red-500" : ""}
                 />
@@ -139,7 +140,7 @@ export function PersonalDataForm({data, onChange, onNext, onBack}: PersonalDataF
                     id="telefone"
                     type="tel"
                     placeholder="+238 900 0000"
-                    value={formState.telefone}
+                    value={defaultData?.telefone || formState.telefone}
                     onChange={handleChange}
                     className={errors.telefone ? "border-red-500" : ""}
                 />
@@ -152,7 +153,7 @@ export function PersonalDataForm({data, onChange, onNext, onBack}: PersonalDataF
                     id="endereco"
                     type="text"
                     placeholder="Cidade, Bairro, Rua..."
-                    value={formState.endereco}
+                    value={defaultData?.endereco || formState.endereco}
                     onChange={handleChange}
                     className={errors.endereco ? "border-red-500" : ""}
                 />
@@ -160,12 +161,12 @@ export function PersonalDataForm({data, onChange, onNext, onBack}: PersonalDataF
             </div>
 
             <div>
-                <Label htmlFor="socialMidia">LinkedLin / Website Pessoal</Label>
+                <Label htmlFor="socialMidia">LinkedIn / Website Pessoal</Label>
                 <Input
                     id="socialMidia"
                     type="text"
                     placeholder="http://"
-                    value={formState.socialMidia}
+                    value={defaultData?.socialMidia || formState.socialMidia}
                     onChange={handleChange}
                 />
             </div>
@@ -184,7 +185,10 @@ export function PersonalDataForm({data, onChange, onNext, onBack}: PersonalDataF
                     <button
                         type="submit"
                         className="bg-[#2BB071] text-white px-4 py-2 rounded hover:bg-[#23995F] disabled:opacity-50"
-                        disabled={!formState.nome || !formState.email || !formState.telefone || !formState.endereco}
+                        disabled={!(formState.nome || defaultData?.nome) ||
+                            !(formState.email || defaultData?.email) ||
+                            !(formState.telefone || defaultData?.telefone) ||
+                            !(formState.endereco || defaultData?.endereco)}
                     >
                         Avançar
                     </button>

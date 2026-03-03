@@ -1,17 +1,17 @@
 "use client"
 
-import { Label } from "@/components/atoms/label"
-import { Textarea } from "@/components/atoms/textarea"
-import { useEffect, useState } from "react"
+import {Label} from "@/components/atoms/label"
+import {Textarea} from "@/components/atoms/textarea"
+import {useEffect, useState} from "react"
 
 type SummaryFormProps = {
-    data: string
+    data: string | undefined
     onChange: (data: string) => void
     onNext?: () => void
     onBack?: () => void
 }
 
-export function SummaryForm({ data, onChange, onNext, onBack }: SummaryFormProps) {
+export function SummaryForm({data, onChange, onNext, onBack}: SummaryFormProps) {
     const [summary, setSummary] = useState("")
 
     useEffect(() => {

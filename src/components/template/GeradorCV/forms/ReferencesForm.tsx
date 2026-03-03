@@ -3,17 +3,10 @@
 import {useEffect, useState} from "react"
 import {Trash2} from "lucide-react";
 import {AlertConfirmacao} from "@/app/(layout-with-banner)/gerador-cv/AlertConfirmacao";
-
-export type Reference = {
-    nome: string
-    empresa: string
-    cargo: string
-    telefone: string
-    email: string
-}
+import {Reference} from "@/services/ofertas/getAllOfertas/type";
 
 type Props = {
-    data: Reference[]
+    data: Reference[] | undefined
     onChange: (data: Reference[]) => void
     onNext?: () => void
     onBack?: () => void
