@@ -111,7 +111,7 @@ export default function CVGeneratorTemplate({data}: CVGeneratorTemplateProps) {
     }
 
     // Função para atualizar CV
-    const handleUpdateCV = async (formData: any) => {
+    const handleUpdateCV = async () => {
         try {
             // Aqui chamaria updateCV(formData)
             setIsDirty(false)
@@ -125,7 +125,7 @@ export default function CVGeneratorTemplate({data}: CVGeneratorTemplateProps) {
     // Decide se salva ou atualiza
     const handleSaveOrUpdate = async () => {
         if (hasSavedCV) {
-            await handleUpdateCV(formData)
+            await handleUpdateCV()
         } else {
             await handleSaveCV(formData)
         }
