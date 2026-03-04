@@ -24,9 +24,7 @@ export function CVPreviewLayout(props: CVPreviewLayoutProps) {
     const personal = data?.[0]?.content?.personal ?? formData?.personal;
 
     const hasPersonal = personal && Object.values(personal).some((v) => v && v !== "");
-    console.log("========================");
-    console.log({personal: personal});
-    console.log("========================");
+
     return (
         <>
             {personalStyle === "sidebar" ? (
