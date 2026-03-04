@@ -6,7 +6,7 @@ import {Textarea} from "@/components/atoms/textarea"
 import {useEffect, useState} from "react"
 import {Trash2} from "lucide-react";
 import {AlertConfirmacao} from "@/app/(layout-with-banner)/gerador-cv/AlertConfirmacao";
-import {Experience} from "@/services/ofertas/getAllOfertas/type";
+import {Experience} from "@/services/get-curriculo-cv/type";
 
 type ExperienceFormProps = {
     data: Experience[] | undefined

@@ -1,4 +1,4 @@
-import {CurriculoCv} from "@/services/ofertas/getAllOfertas/type";
+import {CurriculoCv} from "@/services/get-curriculo-cv/type";
 
 export function mapper(response: any): CurriculoCv[] {
     const cvs = response?.cmsCurriculoCvs || [];

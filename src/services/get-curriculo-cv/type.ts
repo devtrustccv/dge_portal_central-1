@@ -1,3 +1,20 @@
+export type FilterOperators<T> = {
+    eq?: T
+    ne?: T
+    contains?: T
+    startsWith?: T
+    endsWith?: T
+}
+
+export type ServiceFiltersInput<T> = {
+    [K in keyof T]?: FilterOperators<T[K]>
+}
+
+export interface CurriculoFilters {
+    email: string
+}
+
+
 export interface Idioma {
     idioma: string;
     nivel: string;
