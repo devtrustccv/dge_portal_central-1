@@ -30,7 +30,7 @@ export const saveCV = async (data: any) => {
 export const updateCV = async (data: any) => {
 
     try {
-        const response = await fetch("/api/save-cv", {
+        const response = await fetch("/api/update-cv", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -39,19 +39,19 @@ export const updateCV = async (data: any) => {
         });
 
         const responseData = await response.json().catch(err => {
-            console.error("saveCV → erro ao parsear JSON:", err);
+            console.error("updateCV → erro ao parsear JSON:", err);
             return null;
         });
 
 
         if (!response.ok) {
-            throw new Error(responseData?.error || "Erro ao salvar CV (HTTP " + response.status + ")");
+            throw new Error(responseData?.error || "Erro ao atualizar CV (HTTP " + response.status + ")");
         }
 
         return responseData;
 
     } catch (err) {
-        console.error("saveCV → catch geral:", err);
+        console.error("updateCV → catch geral:", err);
         throw err;
     }
 };

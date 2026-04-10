@@ -12,5 +12,5 @@ export default async function CVGeneratorPage() {
         }
     });
 
-    return <CVGeneratorTemplate data={data}/>
+    return <CVGeneratorTemplate data={data} ownerEmail={userData?.email || ""}/>
 }

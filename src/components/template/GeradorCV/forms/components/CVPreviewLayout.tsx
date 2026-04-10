@@ -1,29 +1,17 @@
 import {Brain, Globe, Linkedin, Mail, MapPin, Phone} from "lucide-react"
 import React from "react"
-import {CurriculoCv} from "@/services/get-curriculo-cv/type";
 
 interface CVPreviewLayoutProps {
     formData: any
     personalStyle: string
     getAlignment: () => string
-    data: CurriculoCv[] | null
 }
 
 export function CVPreviewLayout(props: CVPreviewLayoutProps) {
-    const {formData, personalStyle, getAlignment, data} = props
-    const skillsToRender =
-        (formData.skills && formData.skills.length > 0)
-            ? formData.skills : (data?.[0]?.content?.skills && data[0].content.skills.length > 0)
-                ? data[0].content.skills : [];
+    const {formData, personalStyle, getAlignment} = props
+    const personal = formData?.personal
 
-    const idiomaToRender =
-        (formData.idiomas && formData.idiomas.length > 0)
-            ? formData.idiomas : (data?.[0]?.content?.idiomas && data[0].content.idiomas.length > 0)
-                ? data[0].content.idiomas : [];
-
-    const personal = data?.[0]?.content?.personal ?? formData?.personal;
-
-    const hasPersonal = personal && Object.values(personal).some((v) => v && v !== "");
+    const hasPersonal = personal && Object.values(personal).some((v) => v && v !== "")
 
     return (
         <>
@@ -93,27 +81,23 @@ export function CVPreviewLayout(props: CVPreviewLayoutProps) {
                         </div>
                     )}
 
-                    {((data?.[0]?.content?.skills && data[0].content.skills.length > 0 || formData.skills && formData.skills.length > 0)) && (
-                        <>
-                            {skillsToRender?.length > 0 && (
-                                <div>
-                                    <div className="flex gap-2 items-center mb-2">
-                                        <div className="border border-gray-500 rounded-full p-1">
-                                            <Brain className="w-4 h-4 text-gray-500"/>
-                                        </div>
-                                        <h3 className="font-bold">Competências</h3>
-                                    </div>
-                                    <ul className="list-disc list-inside text-sm">
-                                        {skillsToRender.map((skill: any, i: number) => (
-                                            <li key={i}>{skill}</li>
-                                        ))}
-                                    </ul>
+                    {formData.skills.length > 0 && (
+                        <div>
+                            <div className="flex gap-2 items-center mb-2">
+                                <div className="border border-gray-500 rounded-full p-1">
+                                    <Brain className="w-4 h-4 text-gray-500"/>
                                 </div>
-                            )}
-                        </>
+                                <h3 className="font-bold">Competências</h3>
+                            </div>
+                            <ul className="list-disc list-inside text-sm">
+                                {formData.skills.map((skill: any, i: number) => (
+                                    <li key={i}>{skill}</li>
+                                ))}
+                            </ul>
+                        </div>
                     )}
 
-                    {((data?.[0]?.content?.idiomas && data[0].content.idiomas.length > 0) || formData.idiomas && formData.idiomas.length > 0) && (
+                    {formData.idiomas.length > 0 && (
                         <div>
                             <div className="flex gap-2 items-center mb-2">
                                 <div className="border border-gray-500 rounded-full p-1">
@@ -122,7 +106,7 @@ export function CVPreviewLayout(props: CVPreviewLayoutProps) {
                                 <h3 className="font-bold">Idiomas</h3>
                             </div>
                             <ul className="list-disc list-inside text-sm">
-                                {idiomaToRender.map((idioma: any, i: number) => (
+                                {formData.idiomas.map((idioma: any, i: number) => (
                                     <li key={i}>
                                         {idioma.idioma} - {idioma.nivel}
                                     </li>
@@ -137,27 +121,24 @@ export function CVPreviewLayout(props: CVPreviewLayoutProps) {
                     <div
                         className={`flex gap-8 items-center ${personalStyle === "right" ? "flex-row-reverse" : "flex-row"} ${personalStyle === "center" ? "flex-col" : ""}`}
                     >
-                        {data?.[0]?.content.personal.foto || formData.personal.foto && (
+                        {personal?.foto && (
                             <img
-                                src={data?.[0]?.content.personal.foto || formData.personal.foto}
+                                src={personal.foto}
                                 alt="Foto"
                                 className="w-28 h-28 rounded-full object-cover border-4 border-gray-50 shadow-md"
                             />
                         )}
                         <div className={`flex flex-col ${getAlignment()}`}>
-                            <h1 className="text-4xl font-extrabold text-gray-900">{data?.[0].content.personal.nome || formData.personal.nome}</h1>
+                            <h1 className="text-4xl font-extrabold text-gray-900">{personal?.nome}</h1>
                             <div className={`flex flex-wrap gap-x-6 gap-y-2 mt-4 text-gray-600 ${getAlignment()}`}>
                                 <span className="flex items-center gap-1.5">
-                                    <Mail
-                                        className="w-4 h-4 text-blue-600"/> {data?.[0].content.personal.email || formData.personal.email}
+                                    <Mail className="w-4 h-4 text-blue-600"/> {personal?.email}
                                 </span>
                                 <span className="flex items-center gap-1.5">
-                                    <Phone
-                                        className="w-4 h-4 text-blue-600"/> {data?.[0].content.personal.telefone || formData.personal.telefone}
+                                    <Phone className="w-4 h-4 text-blue-600"/> {personal?.telefone}
                                 </span>
                                 <span className="flex items-center gap-1.5">
-                                    <MapPin
-                                        className="w-4 h-4 text-blue-600"/> {data?.[0].content.personal.endereco || formData.personal.endereco}
+                                    <MapPin className="w-4 h-4 text-blue-600"/> {personal?.endereco}
                                 </span>
                             </div>
                         </div>

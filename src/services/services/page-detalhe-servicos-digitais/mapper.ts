@@ -1,8 +1,9 @@
 import {IPageDetalheServicoData} from "@/services/services/page-detalhe-servicos-digitais/type";
 
-export const mapper = (response: any): IPageDetalheServicoData | undefined => {
+export const mapper = (response: any): IPageDetalheServicoData | null => {
+    if (!response?.pageDetalhesServico?.PageInfo) return null;
 
-    const data = response?.pageDetalhesServico
+    const data = response.pageDetalhesServico;
 
     return {
         configs: data.PageInfo.configs || {},
@@ -15,4 +16,3 @@ export const mapper = (response: any): IPageDetalheServicoData | undefined => {
         description: data.PageInfo.description || "",
     };
 };
-

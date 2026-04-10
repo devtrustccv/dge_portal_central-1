@@ -1,6 +1,6 @@
 import query from "./query";
-import { mapper } from "./mapper";
-import { ServiceFiltersInput } from "../type";
+import {mapper} from "./mapper";
+import {ServiceFiltersInput} from "../type";
 
 export async function getService<T>(filters?: ServiceFiltersInput<T>) {
     try {
@@ -34,6 +34,7 @@ export async function getService<T>(filters?: ServiceFiltersInput<T>) {
                 tags: tag,
             },
         });
+
         if (!res.ok) {
             throw new Error(`Failed to fetch: ${res.status}`);
         }
