@@ -3,7 +3,7 @@
 import {Label} from "@/components/atoms/label"
 import {Input} from "@/components/atoms/input"
 import {useEffect, useState} from "react"
-import {Personal} from "@/services/get-curriculo-cv/type";
+import {Personal} from "@/services/get-curriculo-cv/type"
 
 type PersonalDataFormProps = {
     data: Personal | undefined
@@ -22,9 +22,6 @@ export function PersonalDataForm({data, onChange, onNext, onBack}: PersonalDataF
         foto: ""
     })
 
-    // Guarda os dados da API sem sobrescrever formState
-    const [defaultData, setDefaultData] = useState<typeof formState | null>(null)
-
     const [errors, setErrors] = useState({
         nome: false,
         email: false,
@@ -32,18 +29,15 @@ export function PersonalDataForm({data, onChange, onNext, onBack}: PersonalDataF
         endereco: false
     })
 
-    // Atualiza apenas defaultData com valores da API
     useEffect(() => {
-        if (data) {
-            setDefaultData({
-                nome: data.nome || "",
-                socialMidia: data.socialMidia || "",
-                email: data.email || "",
-                telefone: data.telefone || "",
-                endereco: data.endereco || "",
-                foto: data.foto || ""
-            })
-        }
+        setFormState({
+            nome: data?.nome || "",
+            socialMidia: data?.socialMidia || "",
+            email: data?.email || "",
+            telefone: data?.telefone || "",
+            endereco: data?.endereco || "",
+            foto: data?.foto || ""
+        })
     }, [data])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,10 +54,10 @@ export function PersonalDataForm({data, onChange, onNext, onBack}: PersonalDataF
 
     const validateForm = () => {
         const newErrors = {
-            nome: !(formState.nome || defaultData?.nome)?.trim(),
-            email: !(formState.email || defaultData?.email)?.trim(),
-            telefone: !(formState.telefone || defaultData?.telefone)?.trim(),
-            endereco: !(formState.endereco || defaultData?.endereco)?.trim()
+            nome: !formState.nome.trim(),
+            email: !formState.email.trim(),
+            telefone: !formState.telefone.trim(),
+            endereco: !formState.endereco.trim()
         }
 
         setErrors(newErrors)
@@ -99,9 +93,9 @@ export function PersonalDataForm({data, onChange, onNext, onBack}: PersonalDataF
                         }
                     }}
                 />
-                {(formState.foto || defaultData?.foto) && (
+                {formState.foto && (
                     <img
-                        src={defaultData?.foto || formState.foto}
+                        src={formState.foto}
                         alt="Foto de perfil"
                         className="mt-2 h-24 w-24 object-cover rounded-full"
                     />
@@ -113,7 +107,7 @@ export function PersonalDataForm({data, onChange, onNext, onBack}: PersonalDataF
                     id="nome"
                     type="text"
                     placeholder="Digite seu nome completo"
-                    value={defaultData?.nome || formState.nome}
+                    value={formState.nome}
                     onChange={handleChange}
                     className={errors.nome ? "border-red-500" : ""}
                 />
@@ -127,7 +121,7 @@ export function PersonalDataForm({data, onChange, onNext, onBack}: PersonalDataF
                     id="email"
                     type="email"
                     placeholder="exemplo@email.com"
-                    value={defaultData?.email || formState.email}
+                    value={formState.email}
                     onChange={handleChange}
                     className={errors.email ? "border-red-500" : ""}
                 />
@@ -140,7 +134,7 @@ export function PersonalDataForm({data, onChange, onNext, onBack}: PersonalDataF
                     id="telefone"
                     type="tel"
                     placeholder="+238 900 0000"
-                    value={defaultData?.telefone || formState.telefone}
+                    value={formState.telefone}
                     onChange={handleChange}
                     className={errors.telefone ? "border-red-500" : ""}
                 />
@@ -153,7 +147,7 @@ export function PersonalDataForm({data, onChange, onNext, onBack}: PersonalDataF
                     id="endereco"
                     type="text"
                     placeholder="Cidade, Bairro, Rua..."
-                    value={defaultData?.endereco || formState.endereco}
+                    value={formState.endereco}
                     onChange={handleChange}
                     className={errors.endereco ? "border-red-500" : ""}
                 />
@@ -166,7 +160,7 @@ export function PersonalDataForm({data, onChange, onNext, onBack}: PersonalDataF
                     id="socialMidia"
                     type="text"
                     placeholder="http://"
-                    value={defaultData?.socialMidia || formState.socialMidia}
+                    value={formState.socialMidia}
                     onChange={handleChange}
                 />
             </div>
@@ -185,10 +179,7 @@ export function PersonalDataForm({data, onChange, onNext, onBack}: PersonalDataF
                     <button
                         type="submit"
                         className="bg-[#2BB071] text-white px-4 py-2 rounded hover:bg-[#23995F] disabled:opacity-50"
-                        disabled={!(formState.nome || defaultData?.nome) ||
-                            !(formState.email || defaultData?.email) ||
-                            !(formState.telefone || defaultData?.telefone) ||
-                            !(formState.endereco || defaultData?.endereco)}
+                        disabled={!formState.nome || !formState.email || !formState.telefone || !formState.endereco}
                     >
                         Avançar
                     </button>

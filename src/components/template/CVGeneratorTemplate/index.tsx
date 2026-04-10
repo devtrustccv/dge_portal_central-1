@@ -14,57 +14,103 @@ import {SummaryForm} from "@/components/template/GeradorCV/forms/SummaryForm"
 import {PersonalDataForm} from "@/components/template/GeradorCV/forms/PersonalDataForm"
 import {logDownloadCV} from "@/services/logDownloadCV"
 import {useNavigation} from "@/context/NavigationContext"
-import {saveCV} from "@/services/post-save-cv"
+import {saveCV, updateCV} from "@/services/post-save-cv"
 import {toast} from "sonner"
-import {CurriculoCv} from "@/services/get-curriculo-cv/type"
+import {CurriculoContent, CurriculoCv} from "@/services/get-curriculo-cv/type"
+import {useRouter} from "next/navigation";
 
-const STORAGE_KEY = "cv_form_data"
+const EMPTY_FORM_DATA: CurriculoContent = {
+    personal: {
+        nome: "",
+        email: "",
+        telefone: "",
+        endereco: "",
+        socialMidia: "",
+        foto: ""
+    },
+    summary: "",
+    experience: [],
+    education: [],
+    skills: [],
+    idiomas: [],
+    references: [],
+    projects: [],
+    certificates: []
+}
+
+const normalizeCVContent = (content?: Partial<CurriculoContent> | null): CurriculoContent => ({
+    personal: {
+        nome: content?.personal?.nome || "",
+        email: content?.personal?.email || "",
+        telefone: content?.personal?.telefone || "",
+        endereco: content?.personal?.endereco || "",
+        socialMidia: typeof content?.personal?.socialMidia === "string" ? content.personal.socialMidia : "",
+        foto: content?.personal?.foto || ""
+    },
+    summary: content?.summary || "",
+    experience: content?.experience || [],
+    education: content?.education || [],
+    skills: content?.skills || [],
+    idiomas: content?.idiomas || [],
+    references: content?.references || [],
+    projects: content?.projects || [],
+    certificates: content?.certificates || []
+})
 
 interface CVGeneratorTemplateProps {
     data: CurriculoCv[] | null
+    ownerEmail: string
 }
 
-export default function CVGeneratorTemplate({data}: CVGeneratorTemplateProps) {
+export default function CVGeneratorTemplate({data, ownerEmail}: CVGeneratorTemplateProps) {
     const {hasSession} = useNavigation()
     const [openSection, setOpenSection] = useState<string | null>("personal")
     const [isDirty, setIsDirty] = useState(false)
-    const [formData, setFormData] = useState({
-        personal: {
-            nome: "",
-            email: "",
-            telefone: "",
-            endereco: "",
-            socialMidia: "",
-            foto: ""
-        },
-        summary: "",
-        experience: [],
-        education: [],
-        skills: [],
-        idiomas: [],
-        references: [],
-        projects: [],
-        certificates: []
-    })
+    const [hasHydrated, setHasHydrated] = useState(false)
+    const [initialData, setInitialData] = useState<CurriculoContent>(EMPTY_FORM_DATA)
+    const [formData, setFormData] = useState<CurriculoContent>(EMPTY_FORM_DATA)
+    const storageKey = `cv_form_data:${ownerEmail || "anonymous"}`
 
+    const router = useRouter();
     // Flag para saber se já existe CV no backend
     const hasSavedCV = !!data?.[0]?.content && Object.keys(data[0].content).length > 0
 
-    // Carrega dados do localStorage
+    // Se já existe CV salvo no backend, a API é a fonte inicial.
+    // O rascunho local só é usado quando ainda não existe CV salvo.
     useEffect(() => {
-        const storedData = localStorage.getItem(STORAGE_KEY)
-        if (storedData) setFormData(JSON.parse(storedData))
-    }, [])
+        const apiData = normalizeCVContent(data?.[0]?.content)
+        const storedData = localStorage.getItem(storageKey)
+
+        let nextFormData = apiData
+
+        if (!hasSavedCV && storedData) {
+            try {
+                nextFormData = normalizeCVContent(JSON.parse(storedData))
+            } catch (error) {
+                console.error("Erro ao ler rascunho do currículo:", error)
+                localStorage.removeItem(storageKey)
+            }
+        }
+
+        setInitialData(apiData)
+        setFormData(nextFormData)
+        setHasHydrated(true)
+    }, [data, hasSavedCV, storageKey])
+
+    // Calcula alteração real entre o estado atual e o conteúdo salvo.
+    useEffect(() => {
+        if (!hasHydrated) return
+        setIsDirty(JSON.stringify(normalizeCVContent(formData)) !== JSON.stringify(normalizeCVContent(initialData)))
+    }, [formData, initialData, hasHydrated])
 
     // Salva automaticamente no localStorage
     useEffect(() => {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(formData))
-    }, [formData])
+        if (!hasHydrated) return
+        localStorage.setItem(storageKey, JSON.stringify(formData))
+    }, [formData, hasHydrated, storageKey])
 
-    // Atualiza dados e marca como “dirty”
-    const updateFormData = (section: string, data: any) => {
-        setFormData(prev => ({...prev, [section]: data}))
-        setIsDirty(true)
+    const updateFormData = <K extends keyof CurriculoContent>(section: K, value: CurriculoContent[K]) => {
+        setFormData(prev => ({...prev, [section]: value}))
     }
 
     // Download PDF
@@ -101,24 +147,34 @@ export default function CVGeneratorTemplate({data}: CVGeneratorTemplateProps) {
     const handleSaveCV = async (formData: any) => {
         if (!formData) return
         try {
-            await saveCV(formData)
+            await saveCV({
+                ownerEmail,
+                content: formData
+            })
+            setInitialData(normalizeCVContent(formData))
             setIsDirty(false)
             toast.success("Currículo salvo com sucesso!")
+            router.refresh();
         } catch (error) {
             console.error("Erro ao salvar CV:", error)
-            toast.error("Erro inesperado ao salvar.")
+            toast.error(error instanceof Error ? error.message : "Erro inesperado ao salvar.")
         }
     }
 
     // Função para atualizar CV
     const handleUpdateCV = async () => {
         try {
-            // Aqui chamaria updateCV(formData)
+            await updateCV({
+                ownerEmail,
+                content: formData
+            })
+            setInitialData(normalizeCVContent(formData))
             setIsDirty(false)
-            toast.info("Serviço temporariamente indisponivel!")
+            toast.success("Currículo atualizado com sucesso!")
+            router.refresh();
         } catch (error) {
             console.error("Erro ao atualizar CV:", error)
-            toast.error("Erro inesperado ao atualizar.")
+            toast.error(error instanceof Error ? error.message : "Erro inesperado ao atualizar.")
         }
     }
 
@@ -136,63 +192,63 @@ export default function CVGeneratorTemplate({data}: CVGeneratorTemplateProps) {
             key: "personal",
             title: "Dados Pessoais",
             icon: User,
-            component: <PersonalDataForm data={data?.[0]?.content?.personal || formData.personal}
+            component: <PersonalDataForm data={formData.personal}
                                          onChange={d => updateFormData("personal", d)}/>
         },
         {
             key: "summary",
             title: "Resumo Profissional",
             icon: FileText,
-            component: <SummaryForm data={data?.[0]?.content?.summary || formData.summary}
+            component: <SummaryForm data={formData.summary}
                                     onChange={d => updateFormData("summary", d)}/>
         },
         {
             key: "experience",
             title: "Experiência",
             icon: Briefcase,
-            component: <ExperienceForm data={data?.[0]?.content?.experience || formData.experience}
+            component: <ExperienceForm data={formData.experience}
                                        onChange={d => updateFormData("experience", d)}/>
         },
         {
             key: "education",
             title: "Formação Académica",
             icon: GraduationCap,
-            component: <EducationForm data={data?.[0]?.content?.education || formData.education}
+            component: <EducationForm data={formData.education}
                                       onChange={d => updateFormData("education", d)}/>
         },
         {
             key: "skills",
             title: "Competências",
             icon: Brain,
-            component: <SkillsForm data={data?.[0]?.content?.skills || formData.skills}
+            component: <SkillsForm data={formData.skills}
                                    onChange={d => updateFormData("skills", d)}/>
         },
         {
             key: "idiomas",
             title: "Idiomas",
             icon: Languages,
-            component: <LanguageForm data={data?.[0]?.content?.idiomas || formData.idiomas}
+            component: <LanguageForm data={formData.idiomas}
                                      onChange={d => updateFormData("idiomas", d)}/>
         },
         {
             key: "certificates",
             title: "Certificados",
             icon: Award,
-            component: <CertificatesForm data={data?.[0]?.content?.certificates || formData.certificates}
+            component: <CertificatesForm data={formData.certificates}
                                          onChange={d => updateFormData("certificates", d)}/>
         },
         {
             key: "references",
             title: "Referências",
             icon: Handshake,
-            component: <ReferencesForm data={data?.[0]?.content?.references || formData.references}
+            component: <ReferencesForm data={formData.references}
                                        onChange={d => updateFormData("references", d)}/>
         },
         {
             key: "projects",
             title: "Projetos",
             icon: FolderOpen,
-            component: <ProjectsForm data={data?.[0]?.content?.projects || formData.projects}
+            component: <ProjectsForm data={formData.projects}
                                      onChange={d => updateFormData("projects", d)}/>
         }
     ]
@@ -244,7 +300,7 @@ export default function CVGeneratorTemplate({data}: CVGeneratorTemplateProps) {
                                         : "bg-gray-400 text-white cursor-not-allowed"
                                 }`}
                             >
-                                {hasSavedCV ? "Atualizar Curriculo" : "Guardar Curriculo"}
+                                {hasSavedCV ? "Atualizar" : "Guardar"}
                             </button>
                         ) : (
                             <div className="relative group">
@@ -269,7 +325,6 @@ export default function CVGeneratorTemplate({data}: CVGeneratorTemplateProps) {
                 {/* PREVIEW DO CV (desktop) */}
                 <div className="hidden md:block w-full md:w-1/2 bg-white rounded-lg shadow overflow-hidden">
                     <LayoutsColumns
-                        data={data}
                         formData={formData}
                         capitalization="uppercase"
                         onDownload={handleDownloadPDF}
@@ -280,7 +335,6 @@ export default function CVGeneratorTemplate({data}: CVGeneratorTemplateProps) {
             {/* PREVIEW MOBILE */}
             <div className="md:hidden">
                 <LayoutsColumns
-                    data={data}
                     formData={formData}
                     capitalization="uppercase"
                     onDownload={handleDownloadPDF}

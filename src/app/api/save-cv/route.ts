@@ -3,19 +3,28 @@ import {NextResponse} from "next/server";
 const CMS_URL = process.env.CMS_URL;
 
 export async function POST(req: Request) {
-
+    const COLLECTION_PATH = "/api/cms-curriculo-cvs"
     try {
         const body = await req.json();
+        const ownerEmail = body?.ownerEmail;
+        const content = body?.content || body;
 
-        const response = await fetch(`${CMS_URL}/api/cms-curriculo-cvs`, {
+        if (!ownerEmail) {
+            return NextResponse.json(
+                {error: "ownerEmail é obrigatório para guardar o currículo"},
+                {status: 400}
+            );
+        }
+
+        const response = await fetch(`${CMS_URL}${COLLECTION_PATH}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
                 data: {
-                    email: body.personal?.email,
-                    content: body
+                    email: ownerEmail,
+                    content
                 }
             }),
         });

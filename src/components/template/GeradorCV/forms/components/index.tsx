@@ -180,8 +180,7 @@ import {Activity, Award, Eye, FileText, FolderOpen, Handshake, School} from "luc
 
 import {CVPreviewLayout} from "@/components/template/GeradorCV/forms/components/CVPreviewLayout"
 import {ModalCustomization} from "@/components/template/GeradorCV/forms/components/ModalCustomization"
-import {MobilePreviewModal} from "@/components/template/GeradorCV/componente/MobilePreviewModal";
-import {CurriculoCv} from "@/services/get-curriculo-cv/type";
+import {MobilePreviewModal} from "@/components/template/GeradorCV/componente/MobilePreviewModal"
 
 export type Capitalization = "normal" | "uppercase"
 export type LayoutType = "one" | "two" | "mix"
@@ -191,11 +190,10 @@ interface LayoutsColumnsProps {
     formData: any
     capitalization?: Capitalization
     onDownload?: () => void
-    data: CurriculoCv[] | null
 }
 
 export function LayoutsColumns(props: LayoutsColumnsProps) {
-    const {formData, capitalization = "normal", onDownload, data} = props
+    const {formData, capitalization = "normal", onDownload} = props
     const [open, setOpen] = useState<boolean>(false)
     const [showMobilePreview, setShowMobilePreview] = useState<boolean>(false)
 
@@ -203,26 +201,6 @@ export function LayoutsColumns(props: LayoutsColumnsProps) {
     const [headingStyle, setHeadingStyle] = useState<1 | 2 | 3 | 4>(1)
     const [layoutType, setLayoutType] = useState<LayoutType>("one")
     const [personalStyle, setPersonalStyle] = useState<PersonalStyle>("sidebar")
-
-    const experienceToRender = (formData.experience && formData.experience.length > 0)
-        ? formData.experience : (data?.[0]?.content?.experience && data[0].content.experience.length > 0)
-            ? data[0].content.experience : [];
-
-    const educationToRender = (formData.education && formData.education.length > 0)
-        ? formData.education : (data?.[0]?.content?.education && data[0].content.education.length > 0)
-            ? data[0].content.education : [];
-
-    const projectoToRender = (formData.projects && formData.projects.length > 0)
-        ? formData.projects : (data?.[0]?.content?.projects && data[0].content.projects.length > 0)
-            ? data[0].content.projects : [];
-
-    const certificadoToRender = (formData.certificates && formData.certificates.length > 0)
-        ? formData.certificates : (data?.[0]?.content?.certificates && data[0].content.certificates.length > 0)
-            ? data[0].content.certificates : [];
-
-    const referenciaToRender = (formData.references && formData.references.length > 0)
-        ? formData.references : (data?.[0]?.content?.references && data[0].content.references.length > 0)
-            ? data[0].content.references : [];
 
     // --- Lógica de Estilização de Títulos ---
     const headingClass = (base: string) => {
@@ -274,23 +252,23 @@ export function LayoutsColumns(props: LayoutsColumnsProps) {
         <div id="cv-preview"
              className={`${flexCols} gap-4 p-4 ${isMix ? "flex gap-7" : ""} ${personalStyle === "sidebar" ? "flex-row" : "flex-col"}`}
         >
-            <CVPreviewLayout data={data} formData={formData} personalStyle={personalStyle} getAlignment={getAlignment}/>
+            <CVPreviewLayout formData={formData} personalStyle={personalStyle} getAlignment={getAlignment}/>
 
             {/* === Coluna principal (alterável conforme layout) === */}
             <div className={`${mainColSpan} ${isMix ? "grid grid-cols-2 gap-4" : ""}`}>
 
-                {(formData.summary || data?.[0]?.content?.summary) && (
+                {formData.summary && (
                     <div className={isMix ? "col-span-2 bg-[#f3f3f3] p-2 rounded" : ""}>
                         {renderSectionHeading(<FileText className="w-4 h-4"/>, "Resumo Profissional")}
-                        <p>{formData.summary || data?.[0]?.content?.summary}</p>
+                        <p>{formData.summary}</p>
                     </div>
                 )}
 
-                {experienceToRender.length > 0 && (
+                {formData.experience.length > 0 && (
                     <div className="mt-5">
                         <div className={isMix ? "col-span-2 bg-[#f3f3f3] p-2 rounded" : ""}>
                             {renderSectionHeading(<Activity className="w-4 h-4"/>, "Experiência")}
-                            {experienceToRender.map((exp: any, i: number) => (
+                            {formData.experience.map((exp: any, i: number) => (
                                 <div key={i} className="text-sm mb-2">
                                     <p className="font-semibold">
                                         {exp.cargo} - {exp.empresa}
@@ -305,11 +283,11 @@ export function LayoutsColumns(props: LayoutsColumnsProps) {
                     </div>
                 )}
 
-                {educationToRender.length > 0 && (
+                {formData.education.length > 0 && (
                     <div className="mt-5">
                         <div className={isMix ? "col-span-2 bg-[#f3f3f3] p-2 rounded" : ""}>
                             {renderSectionHeading(<School className="w-4 h-4"/>, "Formação Académica")}
-                            {educationToRender.map((edu: any, i: number) => (
+                            {formData.education.map((edu: any, i: number) => (
                                 <div key={i} className="text-sm mb-2">
                                     <p className="font-semibold">
                                         {edu.curso} - {edu.instituicao}
@@ -323,11 +301,11 @@ export function LayoutsColumns(props: LayoutsColumnsProps) {
                     </div>
                 )}
 
-                {projectoToRender.length > 0 && (
+                {formData.projects.length > 0 && (
                     <div className="mt-5">
                         <div className={isMix ? "col-span-2 bg-[#f3f3f3] p-2 rounded" : ""}>
                             {renderSectionHeading(<FolderOpen className="w-4 h-4"/>, "Projectos")}
-                            {projectoToRender.map((p: any, i: number) => (
+                            {formData.projects.map((p: any, i: number) => (
                                 <div key={i} className="text-sm mb-2">
                                     <p className="font-semibold">{p.nome}</p>
                                     <p>{p.descricao}</p>
@@ -342,11 +320,11 @@ export function LayoutsColumns(props: LayoutsColumnsProps) {
                     </div>
                 )}
 
-                {certificadoToRender.length > 0 && (
+                {formData.certificates.length > 0 && (
                     <div className="mt-5">
                         <div className={isMix ? "col-span-2 bg-[#f3f3f3] p-2 rounded" : ""}>
                             {renderSectionHeading(<Award className="w-4 h-4"/>, "Certificados")}
-                            {certificadoToRender.map((c: any, i: number) => (
+                            {formData.certificates.map((c: any, i: number) => (
                                 <div key={i} className="text-sm mb-2">
                                     <p className="font-semibold">{c.nome}</p>
                                     <p>
@@ -358,11 +336,11 @@ export function LayoutsColumns(props: LayoutsColumnsProps) {
                     </div>
                 )}
 
-                {referenciaToRender.length > 0 && (
+                {formData.references.length > 0 && (
                     <div className="mt-5">
                         <div className={isMix ? "col-span-2 bg-[#f3f3f3] p-2 rounded" : ""}>
                             {renderSectionHeading(<Handshake className="w-4 h-4"/>, "Referências")}
-                            {referenciaToRender.map((r: any, i: number) => (
+                            {formData.references.map((r: any, i: number) => (
                                 <div key={i} className="text-sm mb-2">
                                     <p className="font-semibold">
                                         {r.nome} - {r.empresa}
@@ -425,4 +403,3 @@ export function LayoutsColumns(props: LayoutsColumnsProps) {
         </>
     )
 }
-
