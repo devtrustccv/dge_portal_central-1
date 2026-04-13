@@ -1,4 +1,4 @@
-import {Brain, Globe, Linkedin, Mail, MapPin, Phone} from "lucide-react"
+import {Globe, Linkedin, Mail, MapPin, Phone} from "lucide-react"
 import React from "react"
 
 interface CVPreviewLayoutProps {
@@ -80,23 +80,6 @@ export function CVPreviewLayout(props: CVPreviewLayoutProps) {
 
                         </div>
                     )}
-
-                    {formData.skills.length > 0 && (
-                        <div>
-                            <div className="flex gap-2 items-center mb-2">
-                                <div className="border border-gray-500 rounded-full p-1">
-                                    <Brain className="w-4 h-4 text-gray-500"/>
-                                </div>
-                                <h3 className="font-bold">Competências</h3>
-                            </div>
-                            <ul className="list-disc list-inside text-sm">
-                                {formData.skills.map((skill: any, i: number) => (
-                                    <li key={i}>{skill}</li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
-
                     {formData.idiomas.length > 0 && (
                         <div>
                             <div className="flex gap-2 items-center mb-2">
