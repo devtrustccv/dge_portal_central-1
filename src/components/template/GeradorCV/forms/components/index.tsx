@@ -317,9 +317,11 @@ export function LayoutsColumns(props: LayoutsColumnsProps) {
                     <div className="mt-5">
                         <div className={isMix ? "col-span-2 bg-[#f3f3f3] p-2 rounded" : ""}>
                             {renderSectionHeading(<Brain className="w-4 h-4"/>, "Competências")}
-                            <ul className="list-disc list-inside text-sm">
+                            <ul className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm md:grid-cols-4">
                                 {formData.skills.map((skill: any, i: number) => (
-                                    <li key={i}>{skill}</li>
+                                    <li key={i} className="min-w-0 break-words rounded bg-gray-50 px-2 py-1">
+                                        {skill}
+                                    </li>
                                 ))}
                             </ul>
                         </div>
