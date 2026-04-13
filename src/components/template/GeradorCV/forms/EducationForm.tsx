@@ -2,11 +2,11 @@
 
 import {Label} from "@/components/atoms/label"
 import {Input} from "@/components/atoms/input"
-import {Textarea} from "@/components/atoms/textarea"
 import {useEffect, useState} from "react"
 import {Trash2} from "lucide-react";
 import {AlertConfirmacao} from "@/app/(layout-with-banner)/gerador-cv/AlertConfirmacao";
 import {Education} from "@/services/get-curriculo-cv/type";
+import {RichTextEditor} from "@/components/atoms/rich-text-editor";
 
 type EducationFormProps = {
     data: Education[] | undefined
@@ -202,9 +202,10 @@ export function EducationForm({data, onChange, onNext, onBack}: EducationFormPro
 
                                     <div>
                                         <Label>Observações</Label>
-                                        <Textarea
-                                            value={edu.observacoes}
-                                            onChange={(e) => handleChange(index, "observacoes", e.target.value)}
+                                        <RichTextEditor
+                                            value={edu.observacoes || ""}
+                                            onChange={(value) => handleChange(index, "observacoes", value)}
+                                            minHeightClassName="min-h-[120px]"
                                         />
                                     </div>
                                 </div>

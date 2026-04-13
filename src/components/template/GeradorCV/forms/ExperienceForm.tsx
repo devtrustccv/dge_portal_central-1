@@ -2,11 +2,12 @@
 
 import {Label} from "@/components/atoms/label"
 import {Input} from "@/components/atoms/input"
-import {Textarea} from "@/components/atoms/textarea"
 import {useEffect, useState} from "react"
 import {Trash2} from "lucide-react";
 import {AlertConfirmacao} from "@/app/(layout-with-banner)/gerador-cv/AlertConfirmacao";
 import {Experience} from "@/services/get-curriculo-cv/type";
+import {RichTextEditor} from "@/components/atoms/rich-text-editor";
+import {getRichTextTextLength} from "@/lib/rich-text";
 
 type ExperienceFormProps = {
     data: Experience[] | undefined
@@ -70,7 +71,7 @@ export function ExperienceForm({
             setErrors(newErrors)
         }
 
-        if (field === "descricao" && value.length > 1000) {
+        if (field === "descricao" && getRichTextTextLength(value) > 1000) {
             const newErrors = [...errors]
             newErrors[index] = {...newErrors[index], descricao: true}
             setErrors(newErrors)
@@ -130,7 +131,7 @@ export function ExperienceForm({
                     ? (!isValidDate(exp.dataFim) ||
                         new Date(exp.dataFim) < new Date(exp?.dataInicio || ""))
                     : false,
-                descricao: (exp?.descricao?.length || 0) > 1000
+                descricao: getRichTextTextLength(exp?.descricao) > 1000
             }
 
             if (Object.values(error).some(Boolean)) {
@@ -261,18 +262,16 @@ export function ExperienceForm({
 
                                         <div>
                                             <Label>Principais Atividades</Label>
-                                            <Textarea
-                                                value={exp.descricao}
-                                                onChange={(e) =>
-                                                    handleChange(index, "descricao", e.target.value)
-                                                }
+                                            <RichTextEditor
+                                                value={exp.descricao || ""}
+                                                onChange={(value) => handleChange(index, "descricao", value)}
                                                 className={errors[index]?.descricao ? "border-red-500" : ""}
                                             />
-                                            <div className={`text-sm ${(exp?.descricao?.length || 0) > 1000
+                                            <div className={`text-sm ${getRichTextTextLength(exp?.descricao) > 1000
                                                 ? "text-red-500"
                                                 : "text-gray-500"
                                             }`}>
-                                                {(exp.descricao?.length || 0)}/1000 caracteres
+                                                {getRichTextTextLength(exp.descricao)}/1000 caracteres
                                             </div>
                                         </div>
                                     </div>
@@ -327,4 +326,3 @@ export function ExperienceForm({
         </form>
     )
 }
-

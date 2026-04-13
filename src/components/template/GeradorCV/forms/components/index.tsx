@@ -176,15 +176,27 @@ export function LayoutsColumns(props: LayoutsColumnsProps) {
 "use client"
 
 import React, {useState} from "react"
-import {Activity, Award, Eye, FileText, FolderOpen, Handshake, School} from "lucide-react"
+import {Activity, Award, Brain, Eye, FileText, FolderOpen, Handshake, School} from "lucide-react"
 
 import {CVPreviewLayout} from "@/components/template/GeradorCV/forms/components/CVPreviewLayout"
 import {ModalCustomization} from "@/components/template/GeradorCV/forms/components/ModalCustomization"
 import {MobilePreviewModal} from "@/components/template/GeradorCV/componente/MobilePreviewModal"
+import {normalizeRichTextValue} from "@/lib/rich-text"
 
 export type Capitalization = "normal" | "uppercase"
 export type LayoutType = "one" | "two" | "mix"
 export type PersonalStyle = "left" | "center" | "right" | "sidebar"
+
+function RichTextPreview({value}: { value?: string }) {
+    if (!value) return null
+
+    return (
+        <div
+            className="text-editor"
+            dangerouslySetInnerHTML={{__html: normalizeRichTextValue(value)}}
+        />
+    )
+}
 
 interface LayoutsColumnsProps {
     formData: any
@@ -260,7 +272,7 @@ export function LayoutsColumns(props: LayoutsColumnsProps) {
                 {formData.summary && (
                     <div className={isMix ? "col-span-2 bg-[#f3f3f3] p-2 rounded" : ""}>
                         {renderSectionHeading(<FileText className="w-4 h-4"/>, "Resumo Profissional")}
-                        <p>{formData.summary}</p>
+                        <RichTextPreview value={formData.summary}/>
                     </div>
                 )}
 
@@ -276,7 +288,7 @@ export function LayoutsColumns(props: LayoutsColumnsProps) {
                                     <p>
                                         {exp.local} | {exp.dataInicio} a {exp.dataFim}
                                     </p>
-                                    <p>{exp.descricao}</p>
+                                    <RichTextPreview value={exp.descricao}/>
                                 </div>
                             ))}
                         </div>
@@ -301,14 +313,29 @@ export function LayoutsColumns(props: LayoutsColumnsProps) {
                     </div>
                 )}
 
+                {formData.skills.length > 0 && (
+                    <div className="mt-5">
+                        <div className={isMix ? "col-span-2 bg-[#f3f3f3] p-2 rounded" : ""}>
+                            {renderSectionHeading(<Brain className="w-4 h-4"/>, "Competências")}
+                            <ul className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm md:grid-cols-4">
+                                {formData.skills.map((skill: any, i: number) => (
+                                    <li key={i} className="min-w-0 break-words rounded bg-gray-50 px-2 py-1">
+                                        {skill}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                )}
+
                 {formData.projects.length > 0 && (
                     <div className="mt-5">
                         <div className={isMix ? "col-span-2 bg-[#f3f3f3] p-2 rounded" : ""}>
                             {renderSectionHeading(<FolderOpen className="w-4 h-4"/>, "Projectos")}
-                            {formData.projects.map((p: any, i: number) => (
+                                {formData.projects.map((p: any, i: number) => (
                                 <div key={i} className="text-sm mb-2">
                                     <p className="font-semibold">{p.nome}</p>
-                                    <p>{p.descricao}</p>
+                                    <RichTextPreview value={p.descricao}/>
                                     {p.link && (
                                         <a href={p.link} target="_blank" className="text-blue-600 underline">
                                             {p.link}

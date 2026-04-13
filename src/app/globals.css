@@ -156,6 +156,37 @@ body {
 
 
 @layer components {
+  .rich-text-editor:empty:before {
+    content: attr(data-placeholder);
+    @apply text-muted-foreground;
+  }
+
+  .rich-text-editor p {
+    @apply my-2 leading-relaxed;
+  }
+
+  .rich-text-editor ul {
+    @apply my-2 list-inside list-disc;
+  }
+
+  .rich-text-editor ol {
+    @apply my-2 list-inside list-decimal;
+  }
+
+  .rich-text-editor b,
+  .rich-text-editor strong {
+    @apply font-bold;
+  }
+
+  .rich-text-editor i,
+  .rich-text-editor em {
+    @apply italic;
+  }
+
+  .rich-text-editor u {
+    text-decoration: underline;
+  }
+
   .text-editor {
     @apply prose prose-gray max-w-none;
   }

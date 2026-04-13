@@ -4,6 +4,8 @@ import {useEffect, useState} from "react"
 import {Trash2} from "lucide-react";
 import {AlertConfirmacao} from "@/app/(layout-with-banner)/gerador-cv/AlertConfirmacao";
 import {Project} from "@/services/get-curriculo-cv/type";
+import {RichTextEditor} from "@/components/atoms/rich-text-editor";
+import {isRichTextEmpty} from "@/lib/rich-text";
 
 type ProjectsFormProps = {
     data: Project[] | undefined
@@ -79,7 +81,7 @@ export function ProjectsForm({data, onChange, onNext, onBack}: ProjectsFormProps
 
         const newErrors = projects.map(proj => ({
             nome: !proj.nome.trim(),
-            descricao: !proj.descricao?.trim(),
+            descricao: isRichTextEmpty(proj.descricao),
             link: !isValidUrl(proj?.link || "#")
         }))
 
@@ -145,11 +147,11 @@ export function ProjectsForm({data, onChange, onNext, onBack}: ProjectsFormProps
 
                                     <div>
                                         <label className="block font-medium">Descrição*</label>
-                                        <textarea
-                                            value={proj.descricao}
-                                            onChange={(e) => handleChange(index, "descricao", e.target.value)}
-                                            className={`w-full border rounded px-3 py-2 ${errors[index]?.descricao ? "border-red-500" : ""}`}
-                                            rows={3}
+                                        <RichTextEditor
+                                            value={proj.descricao || ""}
+                                            onChange={(value) => handleChange(index, "descricao", value)}
+                                            className={errors[index]?.descricao ? "border-red-500" : ""}
+                                            minHeightClassName="min-h-[120px]"
                                         />
                                         {errors[index]?.descricao && (
                                             <p className="text-red-500 text-sm mt-1">Este campo é obrigatório</p>
