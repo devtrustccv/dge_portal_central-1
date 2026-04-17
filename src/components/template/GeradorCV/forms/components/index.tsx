@@ -56,6 +56,22 @@ export function LayoutsColumns(props: LayoutsColumnsProps) {
         </div>
     )
 
+    const renderDateRange = (start?: string, end?: string) => (
+        <>
+            {start}
+            {start ? " a " : ""}
+            {end}
+        </>
+    )
+
+    const renderLabelWithDates = (label?: string, start?: string, end?: string, separator = " - ") => (
+        <>
+            {label}
+            {(start || end) ? separator : ""}
+            {renderDateRange(start, end)}
+        </>
+    )
+
     const isMix = layoutType === "mix"
     const mainColSpan = layoutType === "one" ? "w-full" : layoutType === "two" ? "grid grid-cols-2 gap-6" : "w-full"
     const flexCols = layoutType === "one" ? "flex" : layoutType === "two" ? "flex gap-7" : "grid-cols-3"
@@ -108,7 +124,7 @@ export function LayoutsColumns(props: LayoutsColumnsProps) {
                                 {formData.experience.map((exp: any, i: number) => (
                                     <div key={i} className="text-sm mb-2">
                                         <p className="font-semibold">{exp.cargo} - {exp.empresa}</p>
-                                        <p>{exp.local} | {exp.dataInicio} a {exp.dataFim}</p>
+                                        <p>{renderLabelWithDates(exp.local, exp.dataInicio, exp.dataFim, " | ")}</p>
                                         <p>{exp.descricao}</p>
                                     </div>
                                 ))}
@@ -121,7 +137,7 @@ export function LayoutsColumns(props: LayoutsColumnsProps) {
                                 {formData.education.map((edu: any, i: number) => (
                                     <div key={i} className="text-sm mb-2">
                                         <p className="font-semibold">{edu.curso} - {edu.instituicao}</p>
-                                        <p>{edu.dataInicio} a {edu.dataFim}</p>
+                                        <p>{renderDateRange(edu.dataInicio, edu.dataFim)}</p>
                                     </div>
                                 ))}
                             </div>
@@ -148,7 +164,7 @@ export function LayoutsColumns(props: LayoutsColumnsProps) {
                                 {formData.certificates.map((c: any, i: number) => (
                                     <div key={i} className="text-sm mb-2">
                                         <p className="font-semibold">{c.nome}</p>
-                                        <p>{c.entidade} - {c.dataInicio} a {c.dataConclusao}</p>
+                                        <p>{renderLabelWithDates(c.entidade, c.dataInicio, c.dataConclusao)}</p>
                                     </div>
                                 ))}
                             </div>
@@ -242,6 +258,22 @@ export function LayoutsColumns(props: LayoutsColumnsProps) {
         </div>
     )
 
+    const renderDateRange = (start?: string, end?: string) => (
+        <>
+            {start}
+            {start ? " a " : ""}
+            {end}
+        </>
+    )
+
+    const renderLabelWithDates = (label?: string, start?: string, end?: string, separator = " - ") => (
+        <>
+            {label}
+            {(start || end) ? separator : ""}
+            {renderDateRange(start, end)}
+        </>
+    )
+
     const isMix = layoutType === "mix"
     const mainColSpan = layoutType === "one" ? "w-full" : layoutType === "two" ? "grid grid-cols-2 gap-6" : "w-full"
     const flexCols = layoutType === "one" ? "flex" : layoutType === "two" ? "flex gap-7" : "grid-cols-3"
@@ -285,9 +317,7 @@ export function LayoutsColumns(props: LayoutsColumnsProps) {
                                     <p className="font-semibold">
                                         {exp.cargo} - {exp.empresa}
                                     </p>
-                                    <p>
-                                        {exp.local} | {exp.dataInicio} a {exp.dataFim}
-                                    </p>
+                                    <p>{renderLabelWithDates(exp.local, exp.dataInicio, exp.dataFim, " | ")}</p>
                                     <RichTextPreview value={exp.descricao}/>
                                 </div>
                             ))}
@@ -304,9 +334,7 @@ export function LayoutsColumns(props: LayoutsColumnsProps) {
                                     <p className="font-semibold">
                                         {edu.curso} - {edu.instituicao}
                                     </p>
-                                    <p>
-                                        {edu.dataInicio} a {edu.dataFim}
-                                    </p>
+                                    <p>{renderDateRange(edu.dataInicio, edu.dataFim)}</p>
                                 </div>
                             ))}
                         </div>
@@ -354,9 +382,7 @@ export function LayoutsColumns(props: LayoutsColumnsProps) {
                             {formData.certificates.map((c: any, i: number) => (
                                 <div key={i} className="text-sm mb-2">
                                     <p className="font-semibold">{c.nome}</p>
-                                    <p>
-                                        {c.entidade} - {c.dataInicio} a {c.dataConclusao}
-                                    </p>
+                                    <p>{renderLabelWithDates(c.entidade, c.dataInicio, c.dataConclusao)}</p>
                                 </div>
                             ))}
                         </div>
