@@ -59,6 +59,8 @@ export interface INode {
     codigo_qualificacao: string;
     escolaridade_min: string;
     familia: string;
+    link_repor_rvcc: string,
+    programaFormativoUrl: string,
     questions: IQuestion[];
     programaFormativo: IProgramaFormativo;
     formacao: IFormacao[];

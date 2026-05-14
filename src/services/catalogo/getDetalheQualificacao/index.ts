@@ -24,7 +24,7 @@ export async function getDetalheQualificacao<T>(
             },
         });
 
-       return  mapper(data);
+       return mapper(data);
 
     } catch (error) {
         console.error("Failed to fetch oferta formativa data:", error);
