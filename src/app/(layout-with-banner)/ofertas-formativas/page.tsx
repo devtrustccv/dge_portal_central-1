@@ -4,6 +4,8 @@ import {notFound} from "next/navigation";
 import {getPageListaOfertasFormativas} from "@/services/page-list-oferta/getPageOferta";
 import {getPageListaOfertaFormativaArquivadas} from "@/services/pageListaOfertaFormativaArquivadas";
 import {getPageListaOfertaFormativaPrevista} from "@/services/pageListaOfertasFormativaPrevista";
+import NotFound from "@/app/not-found";
+
 export const dynamic = "force-dynamic";
 type TabType = 'ativas' | 'formacao_prevista' | 'arquivada';
 
@@ -17,7 +19,7 @@ export default async function PageOfertaFormativas({searchParams}: {
         const dataPrevista = await getPageListaOfertaFormativaPrevista();
         const dataArquivadas = await getPageListaOfertaFormativaArquivadas();
 
-        if (!data || !dataArquivadas || !dataPrevista) return
+        if (!data) return <NotFound/>
 
         const tab = (params?.tab as TabType) ?? 'ativas';
 

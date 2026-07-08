@@ -12,6 +12,8 @@ export default gql `
                 codigo_qualificacao
                 escolaridade_min
                 familia
+                link_repor_rvcc
+                programaFormativoUrl
                 questions {
                     id
                     questions

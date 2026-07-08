@@ -1,22 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { useFormContext, Controller } from "react-hook-form";
-import { Input } from "@/components/atoms/input";
-import { Button } from "@/components/atoms/button";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/atoms/select";
-import { Plus, Trash, Pencil, Check, X, Upload } from "lucide-react";
-import { toast } from "sonner";
-import { getDomainLabel } from "@/lib/utils";
-import { OptionsProps } from "../type";
-import { Modal } from "@/components/atoms/modal";
+import {useState} from "react";
+import {Controller, useFormContext} from "react-hook-form";
+import {Input} from "@/components/atoms/input";
+import {Button} from "@/components/atoms/button";
+import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue,} from "@/components/atoms/select";
+import {Check, Pencil, Plus, Trash, Upload, X} from "lucide-react";
+import {toast} from "sonner";
+import {getDomainLabel} from "@/lib/utils";
+import {OptionsProps} from "../type";
+import {Modal} from "@/components/atoms/modal";
 
 interface Academic {
     anoEscolar: string;
@@ -143,9 +136,11 @@ export function AcademicInformationSectionMobile({
     function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0] || null;
         if (file) {
-            const maxSizeInBytes = 6 * 1024 * 1024;
+            const maxSizeInMB = 50;
+            const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
+
             if (file.size > maxSizeInBytes) {
-                toast.error("O ficheiro deve ter no máximo 6MB.", {
+                toast.error(`O ficheiro deve ter no máximo ${maxSizeInMB}MB.`, {
                     style: { background: "#FEE2E2", color: "#DC2626" },
                 });
                 return;

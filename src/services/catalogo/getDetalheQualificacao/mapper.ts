@@ -1,4 +1,4 @@
-import { IQualificacaoModal } from "@/services/catalogo/getDetalheQualificacao/Types/type";
+import {IQualificacaoModal} from "@/services/catalogo/getDetalheQualificacao/Types/type";
 
 export function mapper(response: any): IQualificacaoModal | null {
     if (!response) return null;
@@ -14,6 +14,8 @@ export function mapper(response: any): IQualificacaoModal | null {
             codigo_qualificacao: node.codigo_qualificacao || '',
             escolaridade_min: node.escolaridade_min || '',
             familia: node.familia || '',
+            link_repor_rvcc: node.link_repor_rvcc || '',
+            programaFormativoUrl: node.programaFormativoUrl || '',
             questions: node.questions.map((q: any) => ({
                 id: q.id || '',
                 questions: q.questions || '',
