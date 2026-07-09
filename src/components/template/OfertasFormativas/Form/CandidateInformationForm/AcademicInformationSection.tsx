@@ -1,30 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useFormContext, Controller } from "react-hook-form";
-import { Input } from "@/components/atoms/input";
-import { Button } from "@/components/atoms/button";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-} from "@/components/atoms/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/atoms/table";
-import { Plus, Trash, Check, X, Upload, Pencil } from "lucide-react";
-import { toast } from "sonner";
-import { getDomainLabel } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
-import { OptionsProps } from "../type";
+import {useEffect, useState} from "react";
+import {Controller, useFormContext} from "react-hook-form";
+import {Input} from "@/components/atoms/input";
+import {Button} from "@/components/atoms/button";
+import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue,} from "@/components/atoms/select";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/atoms/table";
+import {Check, Pencil, Plus, Trash, Upload, X} from "lucide-react";
+import {toast} from "sonner";
+import {getDomainLabel} from "@/lib/utils";
+import {AnimatePresence, motion} from "framer-motion";
+import {OptionsProps} from "../type";
 
 interface Academic {
   anoEscolar: string;
@@ -169,15 +155,17 @@ export function AcademicInformationSection({
     const file = e.target.files?.[0] || null;
 
     if (file) {
-      const maxSizeInBytes = 6 * 1024 * 1024;
+      const maxSizeInMB = 50;
+      const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
 
       if (file.size > maxSizeInBytes) {
-        toast.error("O ficheiro deve ter no máximo 6MB.", {
+        toast.error(`O ficheiro deve ter no máximo ${maxSizeInMB}MB.`, {
           style: { background: "#FEE2E2", color: "#DC2626" },
         });
         return;
       }
     }
+
     setValue("novaFormacao.file", file);
   };
 

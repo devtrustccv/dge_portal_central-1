@@ -1,18 +1,17 @@
 'use client'
-import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { SidebarFilter } from "@/components/molecules/FiltersBeta";
-import { SaibaMais } from "@/components/atoms/saiba-mais";
-import { IPageListaServicoData } from "@/services/page-list-oferta/type";
-import { setCookie } from "nookies";
-import {
-    Tabs,
-    TabsContent
-} from "@/components/atoms/tabs";
-import { CandidaturasAbertas } from "@/components/template/OfertaFormativaTemplates/components/CandidaturasAbertas";
-import { FormacoesEmExecucao } from "@/components/template/OfertaFormativaTemplates/components/FormacoesEmExecucao";
+import {useEffect, useState} from "react";
+import {useRouter, useSearchParams} from "next/navigation";
+import {SidebarFilter} from "@/components/molecules/FiltersBeta";
+import {SaibaMais} from "@/components/atoms/saiba-mais";
+import {IPageListaServicoData} from "@/services/page-list-oferta/type";
+import {setCookie} from "nookies";
+import {Tabs, TabsContent} from "@/components/atoms/tabs";
+import {CandidaturasAbertas} from "@/components/template/OfertaFormativaTemplates/components/CandidaturasAbertas";
+import {FormacoesEmExecucao} from "@/components/template/OfertaFormativaTemplates/components/FormacoesEmExecucao";
 import {OfertaTabsList} from "@/components/template/OfertaFormativaTemplates/components/OfertaTabsList";
 import {FormacoesPrevista} from "@/components/template/OfertaFormativaTemplates/components/FormacoesPrevista";
+
+const SELECTED_OFERTAS_STORAGE_KEY = "ofertas-formativas:selected-items";
 
 export interface IPageOfertaFormativaData extends IPageListaServicoData {
     searchParams: { [key: string]: string | string[] | undefined };
@@ -20,9 +19,9 @@ export interface IPageOfertaFormativaData extends IPageListaServicoData {
 }
 
 export function ListaOfertaFormativaTemplates({
-  searchParams,
-  data
-}: IPageOfertaFormativaData) {
+                                                  searchParams,
+                                                  data
+                                              }: IPageOfertaFormativaData) {
     const router = useRouter();
     const params = useSearchParams();
     //const [formattedConfigs, setFormattedConfigs] = useState<any>()
@@ -38,25 +37,51 @@ export function ListaOfertaFormativaTemplates({
         total: number;
         page: number;
         perPage: number;
-    }>({ hits: [], total: 0, page: 1, perPage: 3 });
+    }>({hits: [], total: 0, page: 1, perPage: 3});
 
     const [ofertaFormacaoPrevista, setOfertaFormacaoPrevista] = useState<{
         hits: any[];
         total: number;
         page: number;
         perPage: number;
-    }>({ hits: [], total: 0, page: 1, perPage: 3 });
+    }>({hits: [], total: 0, page: 1, perPage: 3});
 
     const [ofertaArquivadas, setOfertaArquivadas] = useState<{
         hits: any[];
         total: number;
         page: number;
         perPage: number;
-    }>({ hits: [], total: 0, page: 1, perPage: 3 });
+    }>({hits: [], total: 0, page: 1, perPage: 3});
 
     const [selectedItems, setSelectedItems] = useState<string[]>([]);
+    const [hasLoadedSelectedItems, setHasLoadedSelectedItems] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        try {
+            const storedItems = sessionStorage.getItem(SELECTED_OFERTAS_STORAGE_KEY);
+            const parsedItems = storedItems ? JSON.parse(storedItems) : [];
+
+            if (Array.isArray(parsedItems)) {
+                setSelectedItems(
+                    parsedItems
+                        .filter((item): item is string => typeof item === "string" && item.trim().length > 0)
+                        .slice(0, 3)
+                );
+            }
+        } catch {
+            sessionStorage.removeItem(SELECTED_OFERTAS_STORAGE_KEY);
+        } finally {
+            setHasLoadedSelectedItems(true);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!hasLoadedSelectedItems) return;
+
+        sessionStorage.setItem(SELECTED_OFERTAS_STORAGE_KEY, JSON.stringify(selectedItems));
+    }, [hasLoadedSelectedItems, selectedItems]);
 
     useEffect(() => {
         const checkScreenSize = () => {
@@ -113,13 +138,13 @@ export function ListaOfertaFormativaTemplates({
         setActiveTab(value);
         const newParams = new URLSearchParams(window.location.search);
         newParams.set("tab", value);
-        router.replace(`?${newParams.toString()}`, { scroll: false });
+        router.replace(`?${newParams.toString()}`, {scroll: false});
     };
 
     useEffect(() => {
         const currentTab = params.get("tab");
         if (!currentTab) {
-            router.replace("?tab=ativas", { scroll: false });
+            router.replace("?tab=ativas", {scroll: false});
             setActiveTab("ativas");
         } else if (currentTab !== activeTab) {
             setActiveTab(currentTab);
@@ -134,7 +159,7 @@ export function ListaOfertaFormativaTemplates({
                     <div className="h-full text-white hidden lg:block py-3">
                         <SidebarFilter data={(formattedConfigs as any) ?? {}}/>
                     </div>
-                ):(
+                ) : (
                     <div className="h-[100px] flex justify-center items-center bg-[#2370BB] p-6 rounded-2xl">
                         <p className='text-white'>Sem filtros no momento</p>
                     </div>
@@ -216,7 +241,7 @@ export function ListaOfertaFormativaTemplates({
             </div>
 
             <div className="mt-16">
-                {data?.saiba_mais && <SaibaMais title="Saiba Mais" data={data?.saiba_mais} />}
+                {data?.saiba_mais && <SaibaMais title="Saiba Mais" data={data?.saiba_mais}/>}
             </div>
         </div>
     );

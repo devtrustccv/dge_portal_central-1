@@ -1,26 +1,18 @@
-// components/forms/PersonalDataForm.tsx
 "use client"
 
-import { Label } from "@/components/atoms/label"
-import { Input } from "@/components/atoms/input"
-import { useEffect, useState } from "react"
-
+import {Label} from "@/components/atoms/label"
+import {Input} from "@/components/atoms/input"
+import {useEffect, useState} from "react"
+import {Personal} from "@/services/get-curriculo-cv/type"
 
 type PersonalDataFormProps = {
-    data: {
-        nome?: string
-        socialMidia?: string
-        email?: string
-        telefone?: string
-        endereco?: string
-        foto?: string
-    }
+    data: Personal | undefined
     onChange: (data: any) => void
     onNext?: () => void
     onBack?: () => void
 }
 
-export function PersonalDataForm({ data, onChange, onNext, onBack }: PersonalDataFormProps) {
+export function PersonalDataForm({data, onChange, onNext, onBack}: PersonalDataFormProps) {
     const [formState, setFormState] = useState({
         nome: "",
         socialMidia: "",
@@ -49,14 +41,14 @@ export function PersonalDataForm({ data, onChange, onNext, onBack }: PersonalDat
     }, [data])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { id, value } = e.target
-        const updated = { ...formState, [id]: value }
+        const {id, value} = e.target
+        const updated = {...formState, [id]: value}
         setFormState(updated)
         onChange(updated)
 
-        // Clear error when user types
+        // Limpa erro ao digitar
         if (errors[id as keyof typeof errors] && value.trim()) {
-            setErrors(prev => ({ ...prev, [id]: false }))
+            setErrors(prev => ({...prev, [id]: false}))
         }
     }
 
@@ -69,13 +61,11 @@ export function PersonalDataForm({ data, onChange, onNext, onBack }: PersonalDat
         }
 
         setErrors(newErrors)
-
         return !Object.values(newErrors).some(error => error)
     }
 
     const handleNext = (e: React.FormEvent) => {
         e.preventDefault()
-
         if (validateForm() && onNext) {
             onNext()
         }
@@ -95,7 +85,7 @@ export function PersonalDataForm({ data, onChange, onNext, onBack }: PersonalDat
                             const reader = new FileReader()
                             reader.onloadend = () => {
                                 const base64 = reader.result as string
-                                const updated = { ...formState, foto: base64 }
+                                const updated = {...formState, foto: base64}
                                 setFormState(updated)
                                 onChange(updated)
                             }
@@ -104,11 +94,16 @@ export function PersonalDataForm({ data, onChange, onNext, onBack }: PersonalDat
                     }}
                 />
                 {formState.foto && (
-                    <img src={formState.foto} alt="Foto de perfil" className="mt-2 h-24 w-24 object-cover rounded-full" />
+                    <img
+                        src={formState.foto}
+                        alt="Foto de perfil"
+                        className="mt-2 h-24 w-24 object-cover rounded-full"
+                    />
                 )}
+
                 <Label htmlFor="nome">Nome Completo*</Label>
                 <Input
-                    required={true}
+                    required
                     id="nome"
                     type="text"
                     placeholder="Digite seu nome completo"
@@ -122,7 +117,7 @@ export function PersonalDataForm({ data, onChange, onNext, onBack }: PersonalDat
             <div>
                 <Label htmlFor="email">Email*</Label>
                 <Input
-                    required={true}
+                    required
                     id="email"
                     type="email"
                     placeholder="exemplo@email.com"
@@ -160,7 +155,7 @@ export function PersonalDataForm({ data, onChange, onNext, onBack }: PersonalDat
             </div>
 
             <div>
-                <Label htmlFor="socialMidia">LinkedLin / Website Pessoal</Label>
+                <Label htmlFor="socialMidia">LinkedIn / Website Pessoal</Label>
                 <Input
                     id="socialMidia"
                     type="text"

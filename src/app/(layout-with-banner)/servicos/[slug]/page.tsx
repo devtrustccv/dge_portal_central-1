@@ -1,7 +1,7 @@
-import { ServiceTemplate } from "@/components/template/ServicesDetailsTemplate";
-import { getAllServices } from "@/services/services/getAllServices";
-import { getService } from "@/services/services/getService";
-import { notFound } from "next/navigation";
+import {ServiceTemplate} from "@/components/template/ServicesDetailsTemplate";
+import {getAllServices} from "@/services/services/getAllServices";
+import {getService} from "@/services/services/getService";
+import {notFound} from "next/navigation";
 import {pageDetalheServicosDigitais} from "@/services/services/page-detalhe-servicos-digitais";
 
 export default async function Page({

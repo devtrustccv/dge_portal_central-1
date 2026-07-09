@@ -1,6 +1,7 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/atoms/table";
-import { INode } from "@/services/catalogo/getDetalheQualificacao/Types/type";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/atoms/table";
+import {INode} from "@/services/catalogo/getDetalheQualificacao/Types/type";
 import {ArrowDownToLine} from "lucide-react";
+
 //import {gerarPDF} from "@/components/template/DetalhesQualificacao/action/gerarPDF";
 
 interface IProps {
@@ -21,6 +22,7 @@ export function ProgramaGenerico({
 }:
  IProps) {
     const isFormacao = tipo === "formacao";
+    const pdfUrl = isFormacao ? data?.[0]?.programaFormativoUrl : data?.[0]?.link_repor_rvcc;
 
     // Aqui estamos verificando se 'duracao' está presente no objeto
     const duracaoOuCodigo = isFormacao ? (formacaoTitle as { denominacao: string; duracao: string }).duracao : (formacaoTitle as { denominacao: string; codigo: string }).codigo;
@@ -34,7 +36,7 @@ export function ProgramaGenerico({
                     </h1>
 
                     <button
-                        //onClick={() => gerarPDF(formacaoTitle, data, tipo)}
+                        onClick={() => pdfUrl && window.open(pdfUrl, "_blank")}
                         className="w-[83px] h-[30px] gap-[5px] bg-[#0454A0] rounded-[8px] text-white flex justify-center items-center">
                         PDF  <ArrowDownToLine size={18}/>
                     </button>

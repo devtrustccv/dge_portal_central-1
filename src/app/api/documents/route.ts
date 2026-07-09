@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import {NextRequest, NextResponse} from "next/server";
 
 const API_URL = process.env.API_URL ?? "";
 
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     try {
         const response = await fetch(remoteUrl, {
             method: "GET",
-        });
+        }); 
 
         if (!response.ok) {
             return NextResponse.json(

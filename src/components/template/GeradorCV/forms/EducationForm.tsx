@@ -1,48 +1,52 @@
 "use client"
 
-import { Label } from "@/components/atoms/label"
-import { Input } from "@/components/atoms/input"
-import { Textarea } from "@/components/atoms/textarea"
-import { useEffect, useState } from "react"
-
-
-
-type Education = {
-    instituicao: string
-    curso: string
-
-    dataInicio: string
-    dataFim: string
-    observacoes: string
-}
+import {Label} from "@/components/atoms/label"
+import {Input} from "@/components/atoms/input"
+import {useEffect, useState} from "react"
+import {Trash2} from "lucide-react";
+import {AlertConfirmacao} from "@/app/(layout-with-banner)/gerador-cv/AlertConfirmacao";
+import {Education} from "@/services/get-curriculo-cv/type";
+import {RichTextEditor} from "@/components/atoms/rich-text-editor";
 
 type EducationFormProps = {
-    data: Education[]
+    data: Education[] | undefined
     onChange: (data: Education[]) => void
     onNext?: () => void
     onBack?: () => void
 }
 
-export function EducationForm({ data, onChange, onNext, onBack }: EducationFormProps) {
+export function EducationForm({data, onChange, onNext, onBack}: EducationFormProps) {
     const [educations, setEducations] = useState<Education[]>([])
+    const [open, setOpen] = useState(false)
+    const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
+
     const [errors, setErrors] = useState<Array<{
         instituicao: boolean
         curso: boolean
-
         dataInicio: boolean
         dataFim: boolean
     }>>([])
 
+    const [expandedIndex, setExpandedIndex] = useState<number | null>(null)
+
     useEffect(() => {
-        setEducations(data || [])
-        setErrors((data || []).map(() => ({
+        const safeData = data || []
+        setEducations(safeData)
+        setErrors(safeData.map(() => ({
             instituicao: false,
             curso: false,
-
             dataInicio: false,
             dataFim: false
         })))
+        if (safeData.length > 0) {
+            setExpandedIndex(safeData.length - 1)
+        }
     }, [data])
+
+    const isValidDate = (dateString: string) => {
+        if (!dateString) return false
+        return !isNaN(Date.parse(dateString))
+    }
 
     const handleChange = (index: number, field: keyof Education, value: string) => {
         const updated = [...educations]
@@ -52,7 +56,7 @@ export function EducationForm({ data, onChange, onNext, onBack }: EducationFormP
 
         if (errors[index]?.[field as keyof typeof errors[number]]) {
             const newErrors = [...errors]
-            newErrors[index] = { ...newErrors[index], [field]: false }
+            newErrors[index] = {...newErrors[index], [field]: false}
             setErrors(newErrors)
         }
     }
@@ -61,11 +65,11 @@ export function EducationForm({ data, onChange, onNext, onBack }: EducationFormP
         const newEdu: Education = {
             instituicao: "",
             curso: "",
-
             dataInicio: "",
             dataFim: "",
             observacoes: ""
         }
+
         const updated = [...educations, newEdu]
         setEducations(updated)
         onChange(updated)
@@ -75,6 +79,8 @@ export function EducationForm({ data, onChange, onNext, onBack }: EducationFormP
             dataInicio: false,
             dataFim: false
         }])
+
+        setExpandedIndex(updated.length - 1)
     }
 
     const removeEducation = (index: number) => {
@@ -83,130 +89,143 @@ export function EducationForm({ data, onChange, onNext, onBack }: EducationFormP
         onChange(updated)
         const newErrors = errors.filter((_, i) => i !== index)
         setErrors(newErrors)
-    }
 
-    const isValidDate = (dateString: string) => {
-        if (!dateString) return false
-        return !isNaN(Date.parse(dateString))
+        if (expandedIndex === index) {
+            setExpandedIndex(updated.length > 0 ? updated.length - 1 : null)
+        }
     }
 
     const validateForm = () => {
-        if (educations.length === 0) return true // Permite avançar sem formações
+        if (educations.length === 0) return true
 
-        const newErrors = educations.map(edu => {
-            return {
-                instituicao: !edu.instituicao.trim(),
-                curso: !edu.curso.trim(),
-                dataInicio: !edu.dataInicio || !isValidDate(edu.dataInicio),
-                dataFim: edu.dataFim ?
-                    (!isValidDate(edu.dataFim) || new Date(edu.dataFim) < new Date(edu.dataInicio)) : false
-            }
-        })
+        const newErrors = educations.map(edu => ({
+            instituicao: !edu.instituicao.trim(),
+            curso: !edu.curso.trim(),
+            dataInicio: !edu.dataInicio || !isValidDate(edu.dataInicio),
+            dataFim: edu.dataFim ? (!isValidDate(edu.dataFim) || new Date(edu.dataFim) < new Date(edu.dataInicio || "")) : false
+        }))
 
         setErrors(newErrors)
 
-        // Verifica se todas as formações estão válidas
-        return !newErrors.some(err =>
-            err.instituicao || err.curso || err.dataInicio || err.dataFim
-        )
+        return !newErrors.some(err => err.instituicao || err.curso || err.dataInicio || err.dataFim)
     }
 
     const handleNext = (e: React.FormEvent) => {
         e.preventDefault()
-
-        if (validateForm() && onNext) {
-            onNext()
-        }
+        if (validateForm() && onNext) onNext()
     }
 
     return (
         <form className="space-y-6" onSubmit={handleNext}>
-            {educations.map((edu, index) => (
-                <div key={index} className="space-y-4 border rounded p-4">
-                    <div>
-                        <Label htmlFor={`instituicao-${index}`}>Instituição de Ensino*</Label>
-                        <Input
-                            id={`instituicao-${index}`}
-                            type="text"
-                            placeholder="Ex: Universidade de Cabo Verde"
-                            value={edu.instituicao}
-                            onChange={(e) => handleChange(index, "instituicao", e.target.value)}
-                            className={errors[index]?.instituicao ? "border-red-500" : ""}
-                        />
-                        {errors[index]?.instituicao && (
-                            <p className="text-red-500 text-sm mt-1">Este campo é obrigatório</p>
-                        )}
-                    </div>
 
-                    <div>
-                        <Label htmlFor={`curso-${index}`}>Curso/Área de Estudo*</Label>
-                        <Input
-                            id={`curso-${index}`}
-                            type="text"
-                            placeholder="Ex: Engenharia Informática"
-                            value={edu.curso}
-                            onChange={(e) => handleChange(index, "curso", e.target.value)}
-                            className={errors[index]?.curso ? "border-red-500" : ""}
-                        />
-                        {errors[index]?.curso && (
-                            <p className="text-red-500 text-sm mt-1">Este campo é obrigatório</p>
-                        )}
-                    </div>
+            {educations.map((edu, index) => {
+                const isExpanded = expandedIndex === index
 
+                return (
+                    <div key={index}>
+                        <div key={index} className="border rounded overflow-hidden">
 
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <Label htmlFor={`dataInicio-${index}`}>Data de Início*</Label>
-                            <Input
-                                id={`dataInicio-${index}`}
-                                type="date"
-                                value={edu.dataInicio}
-                                onChange={(e) => handleChange(index, "dataInicio", e.target.value)}
-                                className={errors[index]?.dataInicio ? "border-red-500" : ""}
-                            />
-                            {errors[index]?.dataInicio && (
-                                <p className="text-red-500 text-sm mt-1">
-                                    {!edu.dataInicio ? "Este campo é obrigatório" : "Data inválida"}
-                                </p>
+                            <div className='bg-gray-100 flex justify-between'>
+                                {/* HEADER COLAPSADO */}
+                                <div
+                                    className="w-full p-4 cursor-pointer flex justify-between items-center"
+                                    onClick={() => setExpandedIndex(isExpanded ? null : index)}
+                                >
+                                    <div>
+                                        <p className="font-semibold">
+                                            {edu.instituicao || "Instituição não definida"} - <span
+                                            className="text-sm font-medium text-gray-500">{edu.curso || "Curso não definido"}</span>
+                                        </p>
+                                    </div>
+                                    <span className="text-sm">{isExpanded ? "▲" : "▼"}</span>
+                                </div>
+
+                                <div className='flex justify-center items-center px-1'>
+                                    <button
+                                        type="button"
+                                        className="text-red-500 hover:underline"
+                                        //onClick={() => removeExperience(index)}
+                                        onClick={() => {
+                                            setSelectedIndex(index)
+                                            setOpen(true)
+                                        }}
+                                    >
+                                        <Trash2 className="w-4 h-4"/>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* CONTEÚDO EXPANDIDO */}
+                            {isExpanded && (
+                                <div className="space-y-4 p-4">
+                                    <div>
+                                        <Label>Instituição de Ensino*</Label>
+                                        <Input
+                                            type="text"
+                                            value={edu.instituicao}
+                                            onChange={(e) => handleChange(index, "instituicao", e.target.value)}
+                                            className={errors[index]?.instituicao ? "border-red-500" : ""}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <Label>Curso/Área de Estudo*</Label>
+                                        <Input
+                                            type="text"
+                                            value={edu.curso}
+                                            onChange={(e) => handleChange(index, "curso", e.target.value)}
+                                            className={errors[index]?.curso ? "border-red-500" : ""}
+                                        />
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <Label>Data de Início*</Label>
+                                            <Input
+                                                type="date"
+                                                value={edu.dataInicio}
+                                                onChange={(e) => handleChange(index, "dataInicio", e.target.value)}
+                                                className={errors[index]?.dataInicio ? "border-red-500" : ""}
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <Label>Data de Conclusão</Label>
+                                            <Input
+                                                type="date"
+                                                value={edu.dataFim}
+                                                onChange={(e) => handleChange(index, "dataFim", e.target.value)}
+                                                className={errors[index]?.dataFim ? "border-red-500" : ""}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <Label>Observações</Label>
+                                        <RichTextEditor
+                                            value={edu.observacoes || ""}
+                                            onChange={(value) => handleChange(index, "observacoes", value)}
+                                            minHeightClassName="min-h-[120px]"
+                                        />
+                                    </div>
+                                </div>
                             )}
                         </div>
-
-                        <div>
-                            <Label htmlFor={`dataFim-${index}`}>Data de Conclusão</Label>
-                            <Input
-                                id={`dataFim-${index}`}
-                                type="date"
-                                value={edu.dataFim}
-                                onChange={(e) => handleChange(index, "dataFim", e.target.value)}
-                                className={errors[index]?.dataFim ? "border-red-500" : ""}
-                            />
-                            {errors[index]?.dataFim && (
-                                <p className="text-red-500 text-sm mt-1">
-                                    {!isValidDate(edu.dataFim) ? "Data inválida" : "A data de conclusão deve ser após a data de início"}
-                                </p>
-                            )}
-                        </div>
-                    </div>
-
-                    <div>
-                        <Label htmlFor={`observacoes-${index}`}>Observações</Label>
-                        <Textarea
-                            id={`observacoes-${index}`}
-                            placeholder="Observações opcionais"
-                            value={edu.observacoes}
-                            onChange={(e) => handleChange(index, "observacoes", e.target.value)}
+                        <AlertConfirmacao
+                            open={open}
+                            setOpen={setOpen}
+                            title={'Deseja remover esta formação?'}
+                            onConfirm={async () => {
+                                if (selectedIndex !== null) {
+                                    removeEducation(selectedIndex)
+                                    setSelectedIndex(null)
+                                }
+                                setOpen(false)
+                            }}
                         />
                     </div>
-
-                    <button
-                        type="button"
-                        className="text-red-500 hover:underline mt-2"
-                        onClick={() => removeEducation(index)}
-                    >
-                        Remover
-                    </button>
-                </div>
-            ))}
+                )
+            })}
 
             <button
                 type="button"
