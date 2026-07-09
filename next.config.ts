@@ -1,4 +1,4 @@
-import type { NextConfig } from "next";
+import type {NextConfig} from "next";
 
 const nextConfig: NextConfig = {
     output: "standalone",
@@ -15,6 +15,13 @@ const nextConfig: NextConfig = {
             },
         ],
     },
+
+    experimental: {
+        serverActions: {
+            bodySizeLimit: "50mb",
+        },
+    },
+
     async rewrites() {
         return [
             {
