@@ -11,6 +11,8 @@ import {FormacoesEmExecucao} from "@/components/template/OfertaFormativaTemplate
 import {OfertaTabsList} from "@/components/template/OfertaFormativaTemplates/components/OfertaTabsList";
 import {FormacoesPrevista} from "@/components/template/OfertaFormativaTemplates/components/FormacoesPrevista";
 
+const SELECTED_OFERTAS_STORAGE_KEY = "ofertas-formativas:selected-items";
+
 export interface IPageOfertaFormativaData extends IPageListaServicoData {
     searchParams: { [key: string]: string | string[] | undefined };
     data: any | null
@@ -52,8 +54,34 @@ export function ListaOfertaFormativaTemplates({
     }>({hits: [], total: 0, page: 1, perPage: 3});
 
     const [selectedItems, setSelectedItems] = useState<string[]>([]);
+    const [hasLoadedSelectedItems, setHasLoadedSelectedItems] = useState(false);
     const [showAlert, setShowAlert] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        try {
+            const storedItems = sessionStorage.getItem(SELECTED_OFERTAS_STORAGE_KEY);
+            const parsedItems = storedItems ? JSON.parse(storedItems) : [];
+
+            if (Array.isArray(parsedItems)) {
+                setSelectedItems(
+                    parsedItems
+                        .filter((item): item is string => typeof item === "string" && item.trim().length > 0)
+                        .slice(0, 3)
+                );
+            }
+        } catch {
+            sessionStorage.removeItem(SELECTED_OFERTAS_STORAGE_KEY);
+        } finally {
+            setHasLoadedSelectedItems(true);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!hasLoadedSelectedItems) return;
+
+        sessionStorage.setItem(SELECTED_OFERTAS_STORAGE_KEY, JSON.stringify(selectedItems));
+    }, [hasLoadedSelectedItems, selectedItems]);
 
     useEffect(() => {
         const checkScreenSize = () => {
