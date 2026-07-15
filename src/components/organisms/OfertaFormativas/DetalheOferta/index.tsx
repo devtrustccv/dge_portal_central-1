@@ -26,13 +26,13 @@ export function CourseDetails({
     const image = pageInfoDetail?.pageInfo?.headerImage?.formats?.medium?.url || '/brooke-cagle-g1Kr4Ozfoac-unsplash 2.png';
     if (!data?.nodes.length) notFound();
     const handleLogin = () => {
-        const redirectPath = `${process.env.NEXT_PUBLIC_SITE_URL}/ofertas-formativas/candidatura?cursos=${data?.nodes[0]?.referencia_formacao}`;
+        const redirectPath = `/ofertas-formativas/candidatura?cursos=${data?.nodes[0]?.referencia_formacao}`;
         setCookie(null, "redirect_path", redirectPath, {
             path: "/",
             sameSite: "lax",
             secure: process.env.NODE_ENV === "production"
         });
-        const callbackUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
+        const callbackUrl = window.location.origin;
         const loginUrl = `${process.env.NEXT_PUBLIC_CENTRAL_BASE_URL}/api/auth/external/login?redirectUrl=${encodeURIComponent(callbackUrl)}`;
         window.location.href = loginUrl;
     };
