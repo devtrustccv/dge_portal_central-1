@@ -1,6 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
+function getSafeRedirectUrl(redirectPath: string | undefined, origin: string) {
+  if (!redirectPath) return new URL("/", origin);
+
+  try {
+    const redirectUrl = new URL(redirectPath, origin);
+
+    if (redirectUrl.origin !== origin) {
+      return new URL(`${redirectUrl.pathname}${redirectUrl.search}${redirectUrl.hash}`, origin);
+    }
+
+    return redirectUrl;
+  } catch {
+    return new URL("/", origin);
+  }
+}
+
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
   const tempToken = url.searchParams.get("access_token");
@@ -9,8 +25,8 @@ export async function GET(request: NextRequest) {
   }
 
   const cookieStore = await cookies();
-  const redirectPath = cookieStore.get("redirect_path")?.value || "/";
-  const absoluteRedirectUrl = new URL(redirectPath, url.origin);
+  const redirectPath = cookieStore.get("redirect_path")?.value;
+  const absoluteRedirectUrl = getSafeRedirectUrl(redirectPath, url.origin);
   const isDev = process.env.NODE_ENV !== "production";
 
   const response = new NextResponse(null, {

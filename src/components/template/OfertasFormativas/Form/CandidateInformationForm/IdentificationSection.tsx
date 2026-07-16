@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { useFormContext, Controller } from "react-hook-form";
-import { Input } from "@/components/atoms/input";
-import { PessoaInfo } from "@/context/NavigationContext";
+import {useEffect, useRef, useState} from "react";
+import {Controller, useFormContext} from "react-hook-form";
+import {Input} from "@/components/atoms/input";
+import {PessoaInfo} from "@/context/NavigationContext";
 import LocationSelect from "@/components/molecules/LocationSelect";
-import { getDomainLabel } from "@/lib/utils";
-import { Upload } from "lucide-react";
-import { Switch } from "@/components/atoms/switch";
-import { FormValues } from "../schema";
+import {getDomainLabel} from "@/lib/utils";
+import {Upload} from "lucide-react";
+import {Switch} from "@/components/atoms/switch";
+import {FormValues} from "../schema";
+import {isAllowedExternalImageUrl, toExternalImageProxySrc} from "@/lib/image-url";
 
 interface IdentificationSectionProps {
   sexo: { label: string; value: string }[];
@@ -16,6 +17,7 @@ interface IdentificationSectionProps {
 }
 
 export function IdentificationSection({ sexo, user }: IdentificationSectionProps) {
+  const [photoFailed, setPhotoFailed] = useState(false);
   const {
     register,
     watch,
@@ -28,8 +30,15 @@ export function IdentificationSection({ sexo, user }: IdentificationSectionProps
   const comprovativoFile = watch("comprovativo_morada");
   const agreeWithAddress = watch("agreeWithAddress");
   const watchedIlha = watch("ilha");
+  const photoSrc = isAllowedExternalImageUrl(user?.foto || "", ["sniacapps.gov.cv"])
+    ? toExternalImageProxySrc(user.foto)
+    : "";
 
   const prevAgreeRef = useRef<boolean | null>(null);
+
+  useEffect(() => {
+    setPhotoFailed(false);
+  }, [user?.foto]);
 
   useEffect(() => {
     if (!user) return;
@@ -66,13 +75,25 @@ export function IdentificationSection({ sexo, user }: IdentificationSectionProps
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row gap-4">
-        <div className="w-full md:w-[406px] h-[280px] md:h-auto lg:aspect-[1.2] relative rounded-[10px] flex items-center justify-center">
-          {user?.foto && (
+        <div className="w-full md:w-[406px] h-[280px] md:h-auto lg:aspect-[1.2] relative rounded-[10px] flex items-center justify-center bg-slate-50">
+          {photoSrc && !photoFailed ? (
             <img
-              src={user?.foto || ""}
+              src={photoSrc}
               alt="foto"
               className="object-contain h-full w-full rounded-lg relative"
+              loading="lazy"
+              onError={() => setPhotoFailed(true)}
             />
+          ) : (
+            <div className="text-sm text-slate-500 text-center px-4">
+              <img
+                  src={"/public/assets/user.png"}
+                  alt="foto"
+                  className="object-contain h-full w-full rounded-lg relative filter"
+                  loading="lazy"
+                  onError={() => setPhotoFailed(true)}
+              />
+            </div>
           )}
         </div>
 
