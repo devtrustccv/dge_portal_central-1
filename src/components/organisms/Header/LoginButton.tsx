@@ -23,7 +23,10 @@ export function AuthMenu() {
     const searchParams = useSearchParams();
     const path = usePathname();
 
-    const portal_url = process.env.KREMAIS_PORTAL_URL || "https://portal-kremais.gov.cv/";
+    const portal_url =
+        process.env.NEXT_PUBLIC_KREMAIS_PORTAL_URL ||
+        process.env.NEXT_PUBLIC_CENTRAL_BASE_URL ||
+        "/";
 
     const handleLogin = () => {
         const queryString = searchParams.toString();

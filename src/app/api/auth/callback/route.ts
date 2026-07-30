@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
     },
   });
 
-  response.cookies.set("my_app_token", tempToken, {
+  response.cookies.set("session_token", tempToken, {
     httpOnly: true,
     path: "/",
     sameSite: isDev ? "lax" : "none",
@@ -44,6 +44,10 @@ export async function GET(request: NextRequest) {
   });
 
   response.cookies.set("redirect_path", "", {
+    path: "/",
+    maxAge: -1,
+  });
+  response.cookies.set("my_app_token", "", {
     path: "/",
     maxAge: -1,
   });
