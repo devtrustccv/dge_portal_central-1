@@ -15,13 +15,11 @@ const nextConfig: NextConfig = {
             },
         ],
     },
-
-    experimental: {
+     experimental: {
         serverActions: {
-            bodySizeLimit: "50mb",
+            bodySizeLimit: "50mb", // ajuste o valor conforme o tamanho real que você precisa enviar
         },
     },
-
     async rewrites() {
         return [
             {
