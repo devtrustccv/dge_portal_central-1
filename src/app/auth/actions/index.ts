@@ -5,12 +5,13 @@ import { customGlobalFetch } from "@/lib/customGlobalFetch";
 
 export async function getSessionInfo() {
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get("my_app_token")?.value;
+  const accessToken = cookieStore.get("session_token")?.value;
   return accessToken ? { accessToken } : null;
 }
 
 export async function logout() {
   const cookieStore = await cookies();
+  cookieStore.delete("session_token");
   cookieStore.delete("my_app_token");
 }
 

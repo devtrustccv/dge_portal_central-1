@@ -23,7 +23,10 @@ export function AuthMenu() {
     const searchParams = useSearchParams();
     const path = usePathname();
 
-    const portal_url = process.env.KREMAIS_PORTAL_URL || "https://portal-kremais.gov.cv/";
+    const portal_url =
+        process.env.NEXT_PUBLIC_KREMAIS_PORTAL_URL ||
+        process.env.NEXT_PUBLIC_CENTRAL_BASE_URL ||
+        "/";
 
     const handleLogin = () => {
         const queryString = searchParams.toString();
@@ -33,7 +36,7 @@ export function AuthMenu() {
             sameSite: "lax",
             secure: process.env.NODE_ENV === "production",
         });
-        const callbackUrl = window.location.origin;
+        const callbackUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
         const loginUrl = `${process.env.NEXT_PUBLIC_CENTRAL_BASE_URL}/api/auth/external/login?redirectUrl=${encodeURIComponent(callbackUrl)}`;
         window.location.href = loginUrl;
     };
@@ -42,9 +45,10 @@ export function AuthMenu() {
         logout();
         setUser(undefined);
         setHasSession(false);
-        const callbackUrl = window.location.origin;
+        const callbackUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
         const logoutUrl = `${process.env.NEXT_PUBLIC_CENTRAL_BASE_URL}/api/auth/external/logout?redirectUrl=${encodeURIComponent(callbackUrl)}`;
         window.location.href = logoutUrl;
+        
         // window.location.reload();
     };
 

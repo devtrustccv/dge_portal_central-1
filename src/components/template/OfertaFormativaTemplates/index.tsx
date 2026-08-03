@@ -97,13 +97,13 @@ export function ListaOfertaFormativaTemplates({
     const page = searchParams?.page ? Number(searchParams.page) : 1;
 
     const handleLogin = () => {
-        const redirectPath = `/ofertas-formativas/candidatura?cursos=${selectedItems?.join(",")}`;
+        const redirectPath = `${process.env.NEXT_PUBLIC_SITE_URL}/ofertas-formativas/candidatura?cursos=${selectedItems?.join(",")}`;
         setCookie(null, "redirect_path", redirectPath, {
             path: "/",
             sameSite: "lax",
             secure: process.env.NODE_ENV === "production"
         });
-        const callbackUrl = window.location.origin;
+         const callbackUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
         const loginUrl = `${process.env.NEXT_PUBLIC_CENTRAL_BASE_URL}/api/auth/external/login?redirectUrl=${encodeURIComponent(callbackUrl)}`;
         window.location.href = loginUrl;
     };
