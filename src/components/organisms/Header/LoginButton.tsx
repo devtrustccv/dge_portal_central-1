@@ -3,98 +3,88 @@
 import React from "react";
 import { useNavigation } from "@/context/NavigationContext";
 import {
-    DropdownMenu,
-    DropdownMenuTrigger,
-    DropdownMenuContent,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuItem,
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
 } from "@/components/atoms/dropdown-menu";
 import Icon from "@/components/atoms/Icons";
-import {KeyRound, LogOut} from "lucide-react";
-import { setCookie } from "nookies";
+import { KeyRound, LogOut } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { logout } from "@/app/auth/actions";
 import Link from "next/link";
-
+import { startCentralLogin } from "@/lib/central-auth";
 
 export function AuthMenu() {
-    const { hasSession, user, setUser, setHasSession } = useNavigation();
-    const searchParams = useSearchParams();
-    const path = usePathname();
+  const { hasSession, user, setUser, setHasSession } = useNavigation();
+  const searchParams = useSearchParams();
+  const path = usePathname();
 
-    const portal_url =
-        process.env.NEXT_PUBLIC_KREMAIS_PORTAL_URL ||
-        process.env.NEXT_PUBLIC_CENTRAL_BASE_URL ||
-        "/";
+  const portal_url =
+    process.env.NEXT_PUBLIC_KREMAIS_PORTAL_URL ||
+    process.env.NEXT_PUBLIC_CENTRAL_BASE_URL ||
+    "/";
 
-    const handleLogin = () => {
-        const queryString = searchParams.toString();
-        const redirectPath = `${path}${queryString ? `?${queryString}` : ""}`;
-        setCookie(null, "redirect_path", redirectPath, {
-            path: "/",
-            sameSite: "lax",
-            secure: process.env.NODE_ENV === "production",
-        });
-        const callbackUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
-        const loginUrl = `${process.env.NEXT_PUBLIC_CENTRAL_BASE_URL}/api/auth/external/login?redirectUrl=${encodeURIComponent(callbackUrl)}`;
-        window.location.href = loginUrl;
-    };
+  const handleLogin = () => {
+    const queryString = searchParams.toString();
+    const redirectPath = `${path}${queryString ? `?${queryString}` : ""}`;
+    startCentralLogin(redirectPath);
+  };
 
-    const handleLogout = () => {
-        logout();
-        setUser(undefined);
-        setHasSession(false);
-        const callbackUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
-        const logoutUrl = `${process.env.NEXT_PUBLIC_CENTRAL_BASE_URL}/api/auth/external/logout?redirectUrl=${encodeURIComponent(callbackUrl)}`;
-        window.location.href = logoutUrl;
-        
-        // window.location.reload();
-    };
+  // Logout: mantém o fluxo actual (não alterado neste pedido)
+  const handleLogout = () => {
+    logout();
+    setUser(undefined);
+    setHasSession(false);
+    const callbackUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
+    const logoutUrl = `${process.env.NEXT_PUBLIC_CENTRAL_BASE_URL}/api/auth/external/logout?redirectUrl=${encodeURIComponent(callbackUrl)}`;
+    window.location.href = logoutUrl;
+  };
 
-    if (!hasSession) {
-        return (
-            <button onClick={handleLogin} className="hover:text-primary">
-                <Icon name="user" />
-            </button>
-        );
-    }
-
+  if (!hasSession) {
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <button className="hover:text-primary focus:outline-none focus:ring-0">
-                    <Icon name="user" />
-                </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-                className="w-56"
-                align="end"
-                sideOffset={4}
-                avoidCollisions={true}
-                collisionPadding={8}
-            >
-                <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <Link href="/perfil">
-                    <DropdownMenuItem>
-                        <Icon name="user" className="mr-2 h-4 w-4" />
-                        <span>{user?.name || "Conta"}</span>
-                    </DropdownMenuItem>
-                </Link>
-                <Link href={portal_url} target={'_blank'}>
-                    <DropdownMenuItem>
-                        <KeyRound className="mr-2 h-4 w-4" />
-                        <span>Area Reservada</span>
-                    </DropdownMenuItem>
-                </Link>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
-                </DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
-
+      <button onClick={handleLogin} className="hover:text-primary">
+        <Icon name="user" />
+      </button>
     );
+  }
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="hover:text-primary focus:outline-none focus:ring-0">
+          <Icon name="user" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        className="w-56"
+        align="end"
+        sideOffset={4}
+        avoidCollisions={true}
+        collisionPadding={8}
+      >
+        <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <Link href="/perfil">
+          <DropdownMenuItem>
+            <Icon name="user" className="mr-2 h-4 w-4" />
+            <span>{user?.name || "Conta"}</span>
+          </DropdownMenuItem>
+        </Link>
+        <Link href={portal_url} target={"_blank"}>
+          <DropdownMenuItem>
+            <KeyRound className="mr-2 h-4 w-4" />
+            <span>Area Reservada</span>
+          </DropdownMenuItem>
+        </Link>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handleLogout}>
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>Log out</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
 }
