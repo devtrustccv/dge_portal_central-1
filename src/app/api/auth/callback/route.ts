@@ -1,38 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { toAbsoluteSiteUrl } from "@/lib/central-auth";
 
-function getSafeRedirectUrl(redirectPath: string | undefined, origin: string) {
-  if (!redirectPath) return new URL("/", origin);
-
-  try {
-    const redirectUrl = new URL(redirectPath, origin);
-
-    if (redirectUrl.origin !== origin) {
-      return new URL(`${redirectUrl.pathname}${redirectUrl.search}${redirectUrl.hash}`, origin);
-    }
-
-    return redirectUrl;
-  } catch {
-    return new URL("/", origin);
-  }
-}
 
 export async function GET(request: NextRequest) {
-  const url = new URL(request.url);
-  const tempToken = url.searchParams.get("access_token");
+  const tempToken = new URL(request.url).searchParams.get("access_token");
+
+  const homeUrl = toAbsoluteSiteUrl("/");
+
   if (!tempToken) {
-    return NextResponse.redirect(new URL("/", url.origin));
+    return NextResponse.redirect(homeUrl);
   }
 
   const cookieStore = await cookies();
   const redirectPath = cookieStore.get("redirect_path")?.value;
-  const absoluteRedirectUrl = getSafeRedirectUrl(redirectPath, url.origin);
+   const absoluteRedirectUrl = toAbsoluteSiteUrl(redirectPath);
   const isDev = process.env.NODE_ENV !== "production";
 
   const response = new NextResponse(null, {
     status: 302,
     headers: {
-      Location: absoluteRedirectUrl.toString(),
+      Location: absoluteRedirectUrl,
     },
   });
 
