@@ -7,7 +7,7 @@ import {IOfertaEmprego} from "@/services/ofertas-emprego/type";
 import {IPageInfoModal} from "@/services/page-detalhe-oferta/type";
 import {useNavigation} from "@/context/NavigationContext";
 import {useRouter} from "next/navigation";
-import {setCookie} from "nookies";
+import { startCentralLogin } from "@/lib/central-auth";
 
 export function DetailEmpregoAndEstagio({
   item,
@@ -19,15 +19,9 @@ export function DetailEmpregoAndEstagio({
     const { hasSession } = useNavigation();
     const router = useRouter()
     const handleLogin = () => {
-        const redirectPath = `/ofertas-formativas/candidatura?cursos=${item?.documentId}`;
-        setCookie(null, "redirect_path", redirectPath, {
-            path: "/",
-            sameSite: "lax",
-            secure: process.env.NODE_ENV === "production"
-        });
-        const callbackUrl = window.location.origin;
-        const loginUrl = `${process.env.NEXT_PUBLIC_CENTRAL_BASE_URL}/api/auth/external/login?redirectUrl=${encodeURIComponent(callbackUrl)}`;
-        window.location.href = loginUrl;
+        startCentralLogin(
+            `/ofertas-formativas/candidatura?cursos=${item?.documentId}`
+        );
     };
 
     return (

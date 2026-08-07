@@ -64,6 +64,4 @@ const AppIa = () => {
 
 };
 
-
-
 export default AppIa;

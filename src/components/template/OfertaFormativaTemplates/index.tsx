@@ -4,7 +4,7 @@ import {useRouter, useSearchParams} from "next/navigation";
 import {SidebarFilter} from "@/components/molecules/FiltersBeta";
 import {SaibaMais} from "@/components/atoms/saiba-mais";
 import {IPageListaServicoData} from "@/services/page-list-oferta/type";
-import {setCookie} from "nookies";
+import {startCentralLogin} from "@/lib/central-auth";
 import {Tabs, TabsContent} from "@/components/atoms/tabs";
 import {CandidaturasAbertas} from "@/components/template/OfertaFormativaTemplates/components/CandidaturasAbertas";
 import {FormacoesEmExecucao} from "@/components/template/OfertaFormativaTemplates/components/FormacoesEmExecucao";
@@ -97,15 +97,9 @@ export function ListaOfertaFormativaTemplates({
     const page = searchParams?.page ? Number(searchParams.page) : 1;
 
     const handleLogin = () => {
-        const redirectPath = `/ofertas-formativas/candidatura?cursos=${selectedItems?.join(",")}`;
-        setCookie(null, "redirect_path", redirectPath, {
-            path: "/",
-            sameSite: "lax",
-            secure: process.env.NODE_ENV === "production"
-        });
-        const callbackUrl = window.location.origin;
-        const loginUrl = `${process.env.NEXT_PUBLIC_CENTRAL_BASE_URL}/api/auth/external/login?redirectUrl=${encodeURIComponent(callbackUrl)}`;
-        window.location.href = loginUrl;
+        startCentralLogin(
+            `/ofertas-formativas/candidatura?cursos=${selectedItems?.join(",")}`
+        );
     };
 
     const handleSelectCard = (documentId: string) => {

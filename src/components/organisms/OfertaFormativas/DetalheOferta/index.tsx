@@ -9,8 +9,8 @@ import { CriteriaForAcceptanceAndExit } from "@/components/organisms/OfertaForma
 import { IPageInfoModal } from "@/services/page-detalhe-oferta/type";
 import { notFound, useRouter } from "next/navigation";
 import { DocumentNecessario } from "@/components/organisms/OfertaFormativas/DetalheOferta/components/DocumentNecessario";
-import { setCookie } from "nookies";
 import { useNavigation } from "@/context/NavigationContext";
+import { startCentralLogin } from "@/lib/central-auth";
 
 export function CourseDetails({
     data,
@@ -26,15 +26,9 @@ export function CourseDetails({
     const image = pageInfoDetail?.pageInfo?.headerImage?.formats?.medium?.url || '/brooke-cagle-g1Kr4Ozfoac-unsplash 2.png';
     if (!data?.nodes.length) notFound();
     const handleLogin = () => {
-        const redirectPath = `/ofertas-formativas/candidatura?cursos=${data?.nodes[0]?.referencia_formacao}`;
-        setCookie(null, "redirect_path", redirectPath, {
-            path: "/",
-            sameSite: "lax",
-            secure: process.env.NODE_ENV === "production"
-        });
-        const callbackUrl = window.location.origin;
-        const loginUrl = `${process.env.NEXT_PUBLIC_CENTRAL_BASE_URL}/api/auth/external/login?redirectUrl=${encodeURIComponent(callbackUrl)}`;
-        window.location.href = loginUrl;
+        startCentralLogin(
+            `/ofertas-formativas/candidatura?cursos=${data?.nodes[0]?.referencia_formacao}`
+        );
     };
 
     return (
