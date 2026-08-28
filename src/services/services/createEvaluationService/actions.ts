@@ -11,11 +11,12 @@ export async function createEvaluationService(dataForm: string) {
                 data: dataJson,
             },
         });
-        console.log({ errors })
+        if (errors?.length) {
+            console.error(`Evaluation service mutation returned ${errors.length} error(s).`);
+        }
         return data;
     } catch (e: any) {
-        console.error({ e });
+        console.error("Failed to create evaluation service.");
         throw new Error(e.message);
     }
 }
-

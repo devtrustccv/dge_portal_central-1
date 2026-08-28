@@ -33,8 +33,8 @@ export async function POST(req: Request) {
 
         return NextResponse.json(data)
 
-    } catch (error) {
-        console.error(error)
+    } catch {
+        console.error("logDownloadCV: erro interno.")
         return NextResponse.json(
             {error: "Erro interno"},
             {status: 500}

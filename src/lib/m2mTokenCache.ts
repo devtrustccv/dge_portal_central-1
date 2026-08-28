@@ -14,14 +14,6 @@ export async function getM2MToken(): Promise<string> {
 }
 
 export async function refreshM2MToken(): Promise<string> {
-
-  console.log("=========== KEVIN =============");
-  console.log({
-    CLIENT: process.env.API_GATEWAY_CLIENT_ID,
-    SCRET: process.env.API_GATEWAY_CLIENT_SECRET
-  });
-  console.log("========================");
-
   const res = await fetch(`${process.env.API_URL}/public/token`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -32,7 +24,7 @@ export async function refreshM2MToken(): Promise<string> {
   });
 
   if (!res.ok) {
-    console.error(`M2M token request failed: ${res.statusText}`, res);
+    console.error(`M2M token request failed: ${res.status} ${res.statusText}`);
     throw new Error(`M2M token request failed: ${res.statusText}`);
   }
 

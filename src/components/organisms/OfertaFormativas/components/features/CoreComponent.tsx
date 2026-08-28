@@ -1,8 +1,39 @@
 'use client';
 import {Card, CardContent, CardTitle} from "@/components/atoms/card";
+import {Badge} from "@/components/atoms/badge";
 import Link from "next/link";
-import {CheckCircle, CalendarDays, MapPinHouse, Signal, FileBadge} from "lucide-react";
+import {CheckCircle, CalendarDays, MapPinHouse, Signal, FileBadge, Hash} from "lucide-react";
 import {useSearchParams} from "next/navigation";
+
+const tipoOfertaStyles: Record<string, string> = {
+    "ESPONTÁNEA": "border-0 bg-[#EDF4FF] text-[#2F80ED] hover:bg-[#EDF4FF]",
+    "ANUAL": "border-0 bg-[#EDFFF2] text-[#219653] hover:bg-[#EDFFF2]",
+    "PONTUAL": "border-0 bg-[#FFF1E4] text-[#F2994A] hover:bg-[#FFF1E4]",
+};
+
+function getTipoOfertaStyle(tipoOferta?: string) {
+    const normalizedTipo = tipoOferta
+        ?.normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toUpperCase();
+
+    const styleKey = Object.keys(tipoOfertaStyles).find(key =>
+        normalizedTipo?.includes(
+            key.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        )
+    );
+
+    return styleKey
+        ? tipoOfertaStyles[styleKey]
+        : "border-0 bg-[#EFF2F5] text-[#616E85] hover:bg-[#EFF2F5]";
+}
+
+function getTipoOfertaLabel(tipoOferta: string) {
+    const words = tipoOferta.trim().split(/\s+/);
+
+    return words.length === 3 ? words[2] : tipoOferta;
+}
+
 interface CardFormacaoItemProps {
     item: {
         documentId: string;
@@ -20,6 +51,8 @@ interface CardFormacaoItemProps {
         nivel?: string;
         modalidade?: string;
         referencia_formacao: string;
+        numero_edital?: string;
+        tipo_oferta?: string;
     };
     isSelect?: boolean;
     onSelect?: (documentId: string) => void;
@@ -54,18 +87,6 @@ export function CardFormacaoItem({
             className={`relative flex p-3 rounded-2xl border-[0.5px] border-[#BFC4CD] w-full shadow-none items-center
                 ${isSelect ? 'cursor-pointer' : ''} ${isSelected ? 'border-2 border-green-500' : ''}`}
         >
-            {
-                (isSelect && tab === "ativas") && (
-                    <div className="bg-red-400">
-                        {isSelected ? (
-                            <CheckCircle className="absolute top-2 right-2 text-green-500" size={24}/>
-                        ) : (
-                            <CheckCircle className="absolute top-2 right-2 text-gray-300" size={24}/>
-                        )}
-                    </div>
-                )
-            }
-
             <div className="flex gap-4 w-full h-auto overflow-hidden md:mb-0">
                 <img
                     src={item?.url_logo_entidade || "/logotipos.svg"}
@@ -83,12 +104,33 @@ export function CardFormacaoItem({
 
                 <CardContent className="w-full grid h-auto">
                     <div>
-                        <CardTitle
-                            title={item.formacao || item?.title}
-                            className="font-poppins w-[90%] font-medium text-[14px] md:text-[16px] text-[#334155] leading-4 md:leading-[24px] tracking-normal line-clamp-2"
-                        >
-                            {item.formacao || item?.title}
-                        </CardTitle>
+                        <div className="flex items-start justify-between gap-2">
+                            <CardTitle
+                                title={item.formacao || item?.title}
+                                className="min-w-0 flex-1 font-poppins font-medium text-[14px] md:text-[16px] text-[#334155] leading-4 md:leading-[24px] tracking-normal line-clamp-2"
+                            >
+                                {item.formacao || item?.title}
+                            </CardTitle>
+
+                            {tab === "ativas" && (
+                                <div className="flex shrink-0 items-center gap-2">
+                                    {item?.tipo_oferta && (
+                                        <Badge className={`max-w-[190px] shadow-none ${getTipoOfertaStyle(item.tipo_oferta)}`}>
+                                            <span className="truncate" title={item.tipo_oferta}>
+                                                {getTipoOfertaLabel(item.tipo_oferta)}
+                                            </span>
+                                        </Badge>
+                                    )}
+                                    {isSelect && (
+                                        isSelected ? (
+                                            <CheckCircle className="shrink-0 text-green-500" size={24}/>
+                                        ) : (
+                                            <CheckCircle className="shrink-0 text-gray-300" size={24}/>
+                                        )
+                                    )}
+                                </div>
+                            )}
+                        </div>
                         <div
                             title={item.description}
                             className={`font-poppins text-[#616E85] font-normal text-[12px] md:text-[14px] leading-4 md:leading-[20px] overflow-hidden ${
@@ -138,6 +180,13 @@ export function CardFormacaoItem({
                                             <span>{`${item.concelho} | ${item.ilha}`}</span>
                                         </p>
                                     )}
+
+                                    {tab === "ativas" && (item?.numero_edital || item?.referencia_formacao) && (
+                                        <p className="flex gap-1">
+                                            <Hash size={17} />
+                                            <span>N.º Edital: {item.numero_edital || item.referencia_formacao}</span>
+                                        </p>
+                                    )}
                                 </>
                             )}
                         </div>
@@ -158,4 +207,3 @@ export function CardFormacaoItem({
         </Card>
     );
 }
-

@@ -29,8 +29,8 @@ export async function POST(req: Request) {
             }),
         });
 
-        const data = await response.json().catch(err => {
-            console.error("route.ts → erro ao parsear JSON da resposta:", err);
+        const data = await response.json().catch(() => {
+            console.error("save-cv: erro ao parsear JSON da resposta.");
             return null;
         });
 
@@ -43,8 +43,8 @@ export async function POST(req: Request) {
 
         return NextResponse.json(data);
 
-    } catch (error) {
-        console.error("route.ts → catch geral:", error);
+    } catch {
+        console.error("save-cv: erro interno.");
 
         return NextResponse.json(
             {error: "Erro interno"},

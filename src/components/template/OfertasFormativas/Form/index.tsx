@@ -132,8 +132,8 @@ export default function CandidaturaPage({
           style: { background: "#FEE2E2", color: "#DC2626" },
         });
       }
-    } catch (err) {
-      console.error(err);
+    } catch {
+      console.error("Erro ao submeter candidatura.");
       toast.error("Ocorreu um erro. Tente novamente.", {
         style: { background: "#FEE2E2", color: "#DC2626" },
       });
@@ -141,7 +141,8 @@ export default function CandidaturaPage({
   };
 
   const onError = (errors: any) => {
-    console.log({ errors });
+    const errorCount = Object.keys(errors ?? {}).length;
+    console.error(`Formulario de candidatura contem ${errorCount} campo(s) invalido(s).`);
     toast.error("Por favor, preencha todos os campos obrigatórios.", {
       style: { background: "#FEE2E2", color: "#DC2626" },
     });

@@ -12,7 +12,6 @@ export default async function page() {
     }
 
     const data = await getCandidaturasByPessoaId(user?.pessoa_info?.id);
-   // console.log({ data })
     return (
         <div className='min-h-screen'>
             {data?.data && <PerfilTemplate pessoaInfo={user?.pessoa_info} candidaturas={data?.data} />}

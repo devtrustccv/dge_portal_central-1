@@ -10,8 +10,8 @@ type StrapiEntry = {
 }
 
 async function parseJsonSafely(response: Response) {
-    return response.json().catch(err => {
-        console.error("update-cv → erro ao parsear JSON da resposta:", err)
+    return response.json().catch(() => {
+        console.error("update-cv: erro ao parsear JSON da resposta.")
         return null
     })
 }
@@ -127,7 +127,7 @@ export async function PUT(req: Request) {
             {status: lastError?.status || 500}
         )
     } catch (error) {
-        console.error("update-cv → catch geral:", error)
+        console.error("update-cv: erro interno.")
 
         return NextResponse.json(
             {error: error instanceof Error ? error.message : "Erro interno"},

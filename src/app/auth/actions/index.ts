@@ -1,7 +1,7 @@
 "use server";
 
-import { cookies } from "next/headers";
-import { customGlobalFetch } from "@/lib/customGlobalFetch";
+import {cookies} from "next/headers";
+import {customGlobalFetch} from "@/lib/customGlobalFetch";
 
 export async function getSessionInfo() {
   const cookieStore = await cookies();
@@ -55,7 +55,18 @@ export async function getMyAccount(fingerprint: string) {
       true
     );
 
-    return result ?? null;
+    //return result ?? null;
+
+    if (!result || typeof result !== "object") return result ?? null;
+
+    const safeResult = { ...result };
+    delete safeResult.session_token;
+    delete safeResult.access_token;
+    delete safeResult.refresh_token;
+    delete safeResult.token;
+
+    return safeResult;
+
   } catch {
     return null;
   }
