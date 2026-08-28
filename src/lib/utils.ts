@@ -22,7 +22,6 @@ export function youtubeToEmbedUrl(youtubeUrl: string): string {
     }
   }
 
-  console.log("Invalid YouTube URL");
   return "#";
 }
 

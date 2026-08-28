@@ -9,8 +9,8 @@ export const saveCV = async (data: any) => {
             body: JSON.stringify(data),
         });
 
-        const responseData = await response.json().catch(err => {
-            console.error("saveCV → erro ao parsear JSON:", err);
+        const responseData = await response.json().catch(() => {
+            console.error("saveCV: erro ao parsear JSON.");
             return null;
         });
 
@@ -22,7 +22,7 @@ export const saveCV = async (data: any) => {
         return responseData;
 
     } catch (err) {
-        console.error("saveCV → catch geral:", err);
+        console.error("saveCV: erro ao salvar curriculo.");
         throw err;
     }
 };
@@ -38,8 +38,8 @@ export const updateCV = async (data: any) => {
             body: JSON.stringify(data),
         });
 
-        const responseData = await response.json().catch(err => {
-            console.error("updateCV → erro ao parsear JSON:", err);
+        const responseData = await response.json().catch(() => {
+            console.error("updateCV: erro ao parsear JSON.");
             return null;
         });
 
@@ -51,7 +51,7 @@ export const updateCV = async (data: any) => {
         return responseData;
 
     } catch (err) {
-        console.error("updateCV → catch geral:", err);
+        console.error("updateCV: erro ao atualizar curriculo.");
         throw err;
     }
 };

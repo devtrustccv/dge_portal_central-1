@@ -38,7 +38,6 @@ export interface PessoaInfo {
 
 interface User {
     user_id: number;
-    session_token: string;
     email: string;
     name: string;
     pessoa_info: PessoaInfo;
@@ -76,8 +75,8 @@ export const NavigationProvider = ({ children }: NavigationProviderProps) => {
                 setHasSession(false);
                 setUser(undefined);
             }
-        } catch (error) {
-            console.error("Erro ao validar a sessão:", error);
+        } catch {
+            console.error("Erro ao validar a sessao.");
             setHasSession(false);
             setUser(undefined);
         }

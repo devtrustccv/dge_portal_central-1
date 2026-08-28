@@ -17,10 +17,6 @@ export function MobileSidebarFilter({
     }: MobileSidebarFilterProps) {
 
     if (!open) return null;
-    console.log("========================");
-    console.log({configs: configs});
-    console.log("========================");
-
     return (
         <div className="fixed inset-0 bg-white z-50 flex flex-col">
             <div className="flex justify-end p-4">

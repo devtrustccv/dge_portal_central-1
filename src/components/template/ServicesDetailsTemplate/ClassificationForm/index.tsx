@@ -40,8 +40,8 @@ export function ClassificationForm({ serviceId }: ClassificationFormProps) {
       });
       reset();
       setHoveredStar(null);
-    } catch (error) {
-      console.log({ error })
+    } catch {
+      console.error("Erro ao classificar servico.");
       toast.error("Ocorreu um erro. Tente novamente.", {
         style: {
           background: "#FEE2E2",
@@ -82,4 +82,3 @@ export function ClassificationForm({ serviceId }: ClassificationFormProps) {
     </form>
   );
 }
-

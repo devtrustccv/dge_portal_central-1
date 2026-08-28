@@ -35,7 +35,6 @@ export async function customFetch<T>(
 
   if (!response.ok) {
     const message = response.statusText || `Erro ${response.status}`;
-   // console.log({ message, response });
     const apiError = new Error(message);
     (apiError as any).status = response.status;
     (apiError as any).data = data;

@@ -14,10 +14,6 @@ export async function getDataProcessoRVCC(){
 
         return mapper(data);
 
- /*       console.log("========================");
-        console.log({dataMapper: dataMapper});
-        console.log("========================");*/
-
     }catch (error){
         console.error("Failed to fetch header data:", error);
     }

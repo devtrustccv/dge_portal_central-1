@@ -31,7 +31,7 @@ export default function DetalhesEntidadesTemplate({
     const [selectedAlvara, setSelectedAlvara] = useState<string | undefined>("Todos");
 
     if (!Array.isArray(data)) {
-        console.error("Erro: 'data' não é um array", data);
+        console.error("Erro: dados de entidades formadoras em formato invalido.");
         return null;
     }
 
@@ -112,5 +112,4 @@ export default function DetalhesEntidadesTemplate({
         </section>
     );
 }
-
 

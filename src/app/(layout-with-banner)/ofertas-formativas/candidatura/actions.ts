@@ -178,11 +178,7 @@ export async function getCandidaturasDetalhe({
       data: response || null,
     };
   } catch (error: any) {
-    console.error("Erro ao buscar candidaturas:", {
-      message: error?.message,
-      status: error?.status,
-      data: error?.data,
-    });
+    console.error(`Erro ao buscar candidaturas: ${error?.status ?? "sem-status"} ${error?.message ?? ""}`.trim());
 
     return {
       success: false,

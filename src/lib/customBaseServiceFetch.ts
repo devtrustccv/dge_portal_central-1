@@ -36,7 +36,7 @@ export async function customFetchBaseAPI<T>(
 
   if (!response.ok) {
     const message = response.statusText || `Erro ${response.status}`;
-    console.log({ message, response });
+    console.error(`Base service request failed: ${response.status} ${message}`);
     const apiError = new Error(message);
     (apiError as any).status = response.status;
     (apiError as any).data = data;
